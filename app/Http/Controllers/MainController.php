@@ -1,0 +1,266 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Course;
+use App\Models\Course_Lessons;
+use App\Models\Subscriptions;
+use App\Models\UserCourseLesson;
+use App\Models\CourseAssessment;
+use App\Models\CourseAssessmentSubmission;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use Unicodeveloper\Paystack\Facades\Paystack;
+
+class MainController extends Controller
+{
+    // Student Dashboard
+    public function dashboard(){
+        $user = Auth::user();
+        $courses = Course::all();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $course = '';
+
+        return view('student.dashboard', compact('user', 'routeNamePart', 'courses', 'course'));
+    }
+
+    // Student Courses
+    public function courses(){
+        $user = Auth::user();
+        $courses = Course::all();
+        $routeName = Route::currentRouteName();
+        $mycourses = Course::whereIn('id', $user->subscriptions->pluck('course_id'))->get();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('student.courses', compact('user', 'routeNamePart', 'courses', 'mycourses'));
+    }
+
+    // Show Course
+    public function show($id)
+    {
+        $course = Course::find($id);
+
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404);
+        }
+
+        return response()->json($course);
+    }
+
+    // Show Course Details
+    public function showcourse($id)
+    {
+        $user = Auth::user();
+        $course = Course::with(['lessons.users' => function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])->findOrFail($id);
+
+        $routeNamePart = 'Courses';
+        $lessons = $course->lessons;
+
+        return view('student.coursedesc', compact('user', 'routeNamePart', 'course', 'lessons'));
+    }
+
+    // Update Lesson Progress
+    public function updateProgress(Request $request)
+    {
+        $user = Auth::user();
+        $lessonId = $request->lesson_id;
+        $courseId = $request->course_id;
+
+        UserCourseLesson::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'course_id' => $courseId,
+                'lesson_id' => $lessonId
+            ],
+            [
+                'completed' => true
+            ]
+        );
+
+        return response()->json(['success' => true]);
+    }
+
+    // Handle Payment
+    public function handlePayment(Request $request)
+    {
+        $validated = $request->validate([
+            'reference' => 'required|string',
+            'email' => 'required|email',
+            'amount' => 'required|numeric',
+            'course_id' => 'required|integer|exists:courses,id',
+        ]);
+
+        $existingSubscription = Subscriptions::where('student_id', auth()->id())
+            ->where('course_id', $validated['course_id'])
+            ->first();
+
+        if ($existingSubscription) {
+            return response()->json(['status' => false, 'message' => 'You are already enrolled in this course.']);
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', 'https://api.paystack.co/transaction/verify/' . $validated['reference'], [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . env('PAYSTACK_SECRET_KEY'),
+                ],
+                'verify' => false,
+            ]);
+
+            $paymentDetails = json_decode($response->getBody()->getContents(), true);
+
+            if ($paymentDetails['status'] && $paymentDetails['data']['status'] === 'success') {
+                Subscriptions::create([
+                    'student_id' => auth()->id(),
+                    'course_id' => $validated['course_id'],
+                    'active' => 1,
+                    'expires_at' => now()->addMonths(1),
+                    'amount' => $validated['amount'],
+                    'reference' => $validated['reference']
+                ]);
+
+                return response()->json(['status' => true, 'message' => 'Payment successful']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Payment verification failed']);
+            }
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            return response()->json(['status' => false, 'message' => 'Payment verification failed', 'error' => $e->getMessage()]);
+        }
+    }
+
+    // Handle Gateway Callback
+    public function handleGatewayCallback()
+    {
+        $paymentDetails = Paystack::getPaymentData();
+        if ($paymentDetails['status'] && $paymentDetails['data']['status'] === 'success') {
+            Subscriptions::create([
+                'student_id' => auth()->id(),
+                'course_id' => request()->input('course_id'),
+                'active' => 1,
+                'expires_at' => now()->addMonths(1)
+            ]);
+
+            return redirect()->route('courses')->with('success', 'Payment successful!');
+        } else {
+            return redirect()->route('courses')->with('error', 'Payment verification failed.');
+        }
+    }
+
+    // Student Profile
+    public function profile(){
+        $user = Auth::user();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $course = '';
+
+        return view('student.profile', compact('user', 'routeNamePart', 'course'));
+    }
+
+    // Assessments
+    public function assessments(Course $course)
+    {
+        $user = Auth::user();
+        if (!$user->courses->contains($course->id)) {
+            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+        }
+
+        // Check if the student has completed all lessons
+        $completedLessons = UserCourseLesson::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+           // ->where('completed', true)
+            ->count();
+
+        if ($completedLessons !== $course->lessons->count()) {
+           // return redirect()->route('student.courses')->with('error', 'You must complete all lessons before taking the assessment.');
+        }
+
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $assessments = $course->assessments;
+
+        return view('student.assessments.index', compact('course', 'assessments', 'routeNamePart'));
+    }
+
+    // Show Assessment
+    public function showAssessment(Course $course, CourseAssessment $assessment)
+{
+    $user = Auth::user();
+    if (!$user->courses->contains($course->id)) {
+        return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+    }
+
+    $assessment->questions = json_decode($assessment->questions, true);  // Ensure questions are decoded to an array
+
+    $routeName = Route::currentRouteName();
+    $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+    return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart'));
+}
+
+    // Submit Assessment
+    public function submitAssessment(Request $request, Course $course, CourseAssessment $assessment)
+    {
+        $validatedData = $request->validate([
+            'questions' => 'required|array',
+            'questions.*' => 'required|integer',
+        ]);
+
+        $user = Auth::user();
+        $answers = $validatedData['questions'];
+        $score = 0;
+
+        // Log the questions attribute to check its structure
+        \Log::info('Assessment Questions: ', ['questions' => $assessment->questions]);
+
+        // Ensure questions is treated as an array
+        $questions = is_array($assessment->questions) ? $assessment->questions : json_decode($assessment->questions, true);
+
+        // Log the decoded questions to ensure it's an array
+        \Log::info('Decoded Assessment Questions: ', ['questions' => $questions]);
+
+        if (!is_array($questions)) {
+            return redirect()->route('student.courses.assessments', $course->id)
+                ->with('error', 'There was an issue with the assessment format. Please contact support.');
+        }
+
+        $totalQuestions = count($questions);
+
+        foreach ($questions as $questionIndex => $question) {
+            $selectedOptionIndex = $answers[$questionIndex];
+
+            if (isset($question['options'][$selectedOptionIndex]['correct']) && $question['options'][$selectedOptionIndex]['correct']) {
+                $score += 2; // Each correct answer gives 2 points
+            }
+        }
+
+        $percentageScore = ($score / ($totalQuestions * 2)) * 100;
+
+        CourseAssessmentSubmission::create([
+            'user_id' => $user->id,
+            'course_assessment_id' => $assessment->id,
+            'answers' => json_encode($answers),
+            'score' => $score,
+        ]);
+
+        if ($percentageScore >= 80) {
+            // Award leaderboard points
+            $user->increment('leaderboard_points', 5);
+
+            // Generate certificate
+            $this->generateCertificate($user, $course);
+        }
+
+        return redirect()->route('student.courses.assessments', $course->id)
+            ->with('success', "Assessment submitted successfully. You scored {$percentageScore}%");
+    }
+    // Generate Certificate (stub function, replace with actual implementation)
+    protected function generateCertificate($user, $course)
+    {
+        // Logic for certificate generation
+    }
+}

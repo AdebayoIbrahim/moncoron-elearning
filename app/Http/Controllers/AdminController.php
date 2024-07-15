@@ -1,0 +1,406 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Log;
+use App\Models\Course;
+use App\Models\Course_Lessons;
+use App\Models\CourseAssessment;
+use App\Models\Dawah;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+class AdminController extends Controller
+{
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $adminusers = User::where('role', 'admin')->get();
+        $studentusers = User::where('role', 'student')->get();
+        $lecturerusers = User::where('role', 'lecturer')->get();
+        $teacherusers = User::where('role', 'teacher')->get();
+        $dawahs = Dawah::all();
+        $courses = Course::all();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.dashboard', compact('user', 'adminusers', 'studentusers', 'lecturerusers', 'teacherusers', 'dawahs', 'courses', 'routeNamePart'));
+    }
+
+    public function students()
+    {
+        $user = Auth::user();
+        $studentusers = User::where('role', 'student')->get();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.students', compact('user', 'studentusers', 'routeNamePart'));
+    }
+
+    public function teachers()
+    {
+        $user = Auth::user();
+        $teacherusers = User::where('role', 'teacher')->get();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.teachers', compact('user', 'teacherusers', 'routeNamePart'));
+    }
+
+    public function lecturers()
+    {
+        $user = Auth::user();
+        $lecturerusers = User::where('role', 'lecturer')->get();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.lecturers', compact('user', 'lecturerusers', 'routeNamePart'));
+    }
+
+    public function registerStudent(Request $request)
+    {
+        $data = array_merge($request->all(), [
+            'ref' => uniqid('USR_', true),
+            'role' => 'student',
+        ]);
+
+        $emailExists = User::where('email', $data['email'])->exists();
+        if ($emailExists) {
+            return redirect()->back()->with('error', 'A User with this email already exists, please try again.');
+        } else {
+            User::create($data);
+            return redirect()->back()->with('success', 'New Student Account has been created successfully.');
+        }
+    }
+
+    public function registerTeacher(Request $request)
+    {
+        $data = array_merge($request->all(), [
+            'ref' => uniqid('USR_', true),
+            'role' => 'teacher',
+        ]);
+
+        $emailExists = User::where('email', $data['email'])->exists();
+        if ($emailExists) {
+            return redirect()->back()->with('error', 'A User with this email already exists, please try again.');
+        } else {
+            User::create($data);
+            return redirect()->back()->with('success', 'New Teacher Account has been created successfully.');
+        }
+    }
+
+    public function registerLecturer(Request $request)
+    {
+        $data = array_merge($request->all(), [
+            'ref' => uniqid('USR_', true),
+            'role' => 'lecturer',
+        ]);
+
+        $emailExists = User::where('email', $data['email'])->exists();
+        if ($emailExists) {
+            return redirect()->back()->with('error', 'A User with this email already exists, please try again.');
+        } else {
+            User::create($data);
+            return redirect()->back()->with('success', 'New Lecturer Account has been created successfully.');
+        }
+    }
+
+    public function courses()
+    {
+        $user = Auth::user();
+        $courses = Course::all();
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.courses', compact('user', 'routeNamePart', 'courses'));
+    }
+
+    public function registerCourse(Request $request)
+    {
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            Log::info('Image file detected.');
+            $imagePath = $request->file('image')->store('images', 'public');
+            Log::info('Image Path: ' . $imagePath);
+        } else {
+            Log::info('No image file uploaded.');
+        }
+
+        $data = array_merge($request->all(), [
+            'reference' => uniqid('CS_', true),
+            'image' => $imagePath,
+        ]);
+
+        $titleExists = Course::where('name', $data['name'])->exists();
+        if ($titleExists) {
+            return redirect()->back()->with('error', 'A Course with this Title already exists, please try again.');
+        } else {
+            Course::create($data);
+            return redirect()->back()->with('success', 'New Course was created successfully.');
+        }
+    }
+
+    public function editCourse($id)
+    {
+        $user = Auth::user();
+        $course = Course::find($id);
+        $routeNamePart = 'Courses';
+
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404);
+        }
+
+        return view('admin.courseview', compact('user', 'routeNamePart', 'course'));
+    }
+
+    public function viewCourse($id)
+    {
+        $user = Auth::user();
+        $course = Course::find($id);
+        $lessons = $course->lessons()->get();
+        $routeNamePart = 'Courses';
+        session(['current_course_id' => $id]);
+
+
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404);
+        }
+
+        return view('admin.courseview', compact('user', 'routeNamePart', 'course', 'lessons'));
+    }
+
+    public function deleteCourse($id)
+    {
+        Course::find($id)->delete();
+        return redirect()->back()->with('success', 'Course was deleted successfully.');
+    }
+
+    public function fetchCourse($id)
+    {
+        $course = Course::find($id);
+
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404);
+        }
+
+        return response()->json($course);
+    }
+
+    public function updateCourse(Request $request)
+    {
+        $id = $request->id;
+        $updatecourse = Course::find($id)->update($request->all());
+        Log::info('update info: ' . $updatecourse);
+        Log::info('course id: ' . $id);
+
+        return redirect()->route('admin.courses')->with('success', 'Course was updated successfully');
+    }
+
+    public function addLesson(Request $request)
+    {
+        Log::info('Request data:', $request->all());
+
+        $request->validate([
+            'video' => 'nullable|file|mimes:mp4,avi,mkv|max:51200',  // 50 MB max size
+            'audio' => 'nullable|file|mimes:mp3,wav|max:51200',
+        ]);
+
+        $videoPath = null;
+        $audioPath = null;
+
+        if ($request->hasFile('video') && $request->file('video')->isValid()) {
+            Log::info('Video file detected and is valid.');
+            $video = $request->file('video');
+            $originalFileName = $video->getClientOriginalName();
+            $uniqueFileName = pathinfo($originalFileName, PATHINFO_FILENAME) . '_' . time() . '.' . $video->getClientOriginalExtension();
+            $videoPath = $video->storeAs('videos', $uniqueFileName, 'public');
+            Log::info('Video Path: ' . $videoPath);
+        } else {
+            Log::info('No valid video file uploaded.');
+        }
+
+        if ($request->hasFile('audio') && $request->file('audio')->isValid()) {
+            Log::info('Audio file detected and is valid.');
+            $audio = $request->file('audio');
+            $originalFileName = $audio->getClientOriginalName();
+            $uniqueFileName = pathinfo($originalFileName, PATHINFO_FILENAME) . '_' . time() . '.' . $audio->getClientOriginalExtension();
+            $audioPath = $audio->storeAs('audios', $uniqueFileName, 'public');
+            Log::info('Audio Path: ' . $audioPath);
+        } else {
+            Log::info('No valid audio file uploaded.');
+        }
+
+        $data = array_merge($request->all(), [
+            'video' => $videoPath,
+            'audio' => $audioPath,
+            'status' => 0,
+        ]);
+
+        Log::info('Merged data:', $data);
+
+        $titleExists = Course_Lessons::where('course_id', $data['course_id'])
+            ->where('name', $data['name'])
+            ->exists();
+        if ($titleExists) {
+            return redirect()->back()->with('error', 'This Lesson with this Title for this Course already exists, please try again.');
+        } else {
+            Course_Lessons::create($data);
+            return redirect()->back()->with('success', 'New Lesson was created successfully.');
+        }
+    }
+
+    // Course Assessment Methods
+
+    public function assessments($courseId)
+    {
+        $user = Auth::user();
+        $course = Course::find($courseId);
+        $assessments = $course->assessments; // Assuming you have a relationship defined in the Course model
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.assessments.index', compact('user', 'course', 'assessments', 'routeNamePart'));
+    }
+
+    public function createAssessment($courseId)
+    {
+        $user = Auth::user();
+        $course = Course::find($courseId);
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.assessments.create', compact('user', 'course', 'routeNamePart'));
+    }
+
+    public function storeAssessment(Request $request, $courseId)
+{
+    // Validate the request data
+    $validatedData = $request->validate([
+        'questions' => 'required|array',
+        'questions.*.text' => 'required|string',
+        'questions.*.media' => 'nullable|file|mimes:mp4,mp3',
+        'questions.*.options' => 'required|array',
+        'questions.*.options.*.text' => 'required|string',
+        'questions.*.options.*.media' => 'nullable|file|mimes:mp4,mp3',
+    ]);
+
+    // Initialize an array to store questions
+    $questions = [];
+
+    // Loop through each question and process it
+    foreach ($validatedData['questions'] as $index => $question) {
+        // Check if the question has a media file and store it
+        if (isset($question['media'])) {
+            $question['media'] = $question['media']->store('questions', 'public');
+        }
+
+        // Loop through each option of the question and process it
+        foreach ($question['options'] as $optionIndex => $option) {
+            // Check if the option has a media file and store it
+            if (isset($option['media'])) {
+                $question['options'][$optionIndex]['media'] = $option['media']->store('options', 'public');
+            }
+
+            // Check if the option is marked as correct
+            $question['options'][$optionIndex]['correct'] = isset($option['correct']) ? true : false;
+        }
+
+        // Add the processed question to the questions array
+        $questions[] = $question;
+    }
+
+    // Create a new course assessment with the processed questions
+    $courseAssessment = new CourseAssessment([
+        'course_id' => $courseId,
+        'questions' => json_encode($questions), // Ensure the questions are stored as JSON
+    ]);
+
+    // Save the course assessment to the database
+    $courseAssessment->save();
+
+    // Redirect back to the assessments page with a success message
+    return redirect()->route('admin.courses.assessments', $courseId)
+        ->with('success', 'Course assessment created successfully.');
+}
+
+
+    public function showAssessment($courseId, $assessmentId)
+    {
+        $user = Auth::user();
+        $course = Course::find($courseId);
+        $assessment = CourseAssessment::find($assessmentId);
+
+        if (!$assessment) {
+            return redirect()->back()->with('error', 'Assessment not found.');
+        }
+
+        $assessment->questions = json_decode($assessment->questions, true);
+
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        return view('admin.assessments.show', compact('user', 'course', 'assessment', 'routeNamePart'));
+    }
+
+    public function editAssessment($courseId, $assessmentId)
+    {
+        $user = Auth::user();
+        $course = Course::find($courseId);
+        $assessment = CourseAssessment::find($assessmentId);
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+        $assessment->questions = json_decode($assessment->questions, true);
+
+        return view('admin.assessments.edit', compact('user', 'course', 'assessment', 'routeNamePart'));
+    }
+
+    public function updateAssessment(Request $request, $courseId, $assessmentId)
+    {
+        $validatedData = $request->validate([
+            'questions' => 'required|array',
+            'questions.*.text' => 'required|string',
+            'questions.*.media' => 'nullable|file|mimes:mp4,mp3',
+            'questions.*.options' => 'required|array',
+            'questions.*.options.*.text' => 'required|string',
+            'questions.*.options.*.media' => 'nullable|file|mimes:mp4,mp3',
+        ]);
+
+        $questions = [];
+
+        foreach ($validatedData['questions'] as $index => $question) {
+            if (isset($question['media'])) {
+                $question['media'] = $question['media']->store('questions', 'public');
+            }
+
+            foreach ($question['options'] as $optionIndex => $option) {
+                if (isset($option['media'])) {
+                    $question['options'][$optionIndex]['media'] = $option['media']->store('options', 'public');
+                }
+                $question['options'][$optionIndex]['correct'] = isset($option['correct']) ? true : false;
+            }
+
+            $questions[] = $question;
+        }
+
+        $assessment = CourseAssessment::find($assessmentId);
+        $assessment->update([
+            'questions' => $questions,
+        ]);
+
+        return redirect()->route('admin.courses.assessments', $courseId)
+            ->with('success', 'Course assessment updated successfully.');
+    }
+
+    public function deleteAssessment($courseId, $assessmentId)
+    {
+        $assessment = CourseAssessment::find($assessmentId);
+        $assessment->delete();
+
+        return redirect()->route('admin.courses.assessments', $courseId)
+            ->with('success', 'Course assessment deleted successfully.');
+    }
+}
