@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class UserCourseLesson extends Model
 {
-    use HasFactory;
+    protected $fillable = ['user_id', 'course_id', 'lesson_id', 'file_path', 'audio_path'];
 
-    protected $table = 'user_course_lessons';
-
-    protected $fillable = ['user_id', 'course_id', 'lesson_id', 'completed'];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

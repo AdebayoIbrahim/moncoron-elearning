@@ -15,6 +15,17 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo Paaji 2:wght@400;600&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+
+    
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+<!-- Add this in your header -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/css/emoji.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/js/config.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/js/util.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/js/jquery.emojiarea.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/js/emoji-picker.min.js"></script>
+
+    
 </head>
 <body>
     <div>
@@ -92,5 +103,9 @@
         });
     </script>
     <script src="{{ asset('js/sidebar.js') }}"></script>
+
+    
 </body>
+
+
 </html>

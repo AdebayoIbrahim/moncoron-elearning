@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
+
     protected $casts = [
         'price'             => 'float',
         'capacity'          => 'int',
@@ -31,16 +33,10 @@ class Course extends Model
         return $this->hasMany(Subscriptions::class, 'course_id');
     }
 
-    // public function lessons()
-    // {
-    //     return $this->hasMany(Course_Lessons::class, 'course_id', 'id');
-    // }
-
     public function lessons()
     {
-        return $this->hasMany(Course_Lessons::class);
+        return $this->hasMany(CourseLesson::class);
     }
-
 
     public function assessments()
     {
@@ -51,7 +47,25 @@ class Course extends Model
     {
         return $this->belongsToMany(User::class, 'user_course', 'course_id', 'user_id');
     }
-    
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')->withPivot('role');
+    }
+
+    public function lecturers()
+    {
+        return $this->users()->wherePivot('role', 'lecturer');
+    }
+
+    public function teachers()
+    {
+        return $this->users()->wherePivot('role', 'teacher');
+    }
+    public function dawah()
+    {
+        return $this->hasOne(Dawah::class);
+    }
 
 
 }

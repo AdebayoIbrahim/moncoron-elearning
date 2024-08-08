@@ -17,23 +17,25 @@ use Unicodeveloper\Paystack\Facades\Paystack;
 class MainController extends Controller
 {
     // Student Dashboard
-    public function dashboard(){
+    public function dashboard()
+    {
         $user = Auth::user();
         $courses = Course::all();
         $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Dashboard';
         $course = '';
 
         return view('student.dashboard', compact('user', 'routeNamePart', 'courses', 'course'));
     }
 
     // Student Courses
-    public function courses(){
+    public function courses()
+    {
         $user = Auth::user();
         $courses = Course::all();
         $routeName = Route::currentRouteName();
         $mycourses = Course::whereIn('id', $user->subscriptions->pluck('course_id'))->get();
-        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Courses';
 
         return view('student.courses', compact('user', 'routeNamePart', 'courses', 'mycourses'));
     }
@@ -152,10 +154,11 @@ class MainController extends Controller
     }
 
     // Student Profile
-    public function profile(){
+    public function profile()
+    {
         $user = Auth::user();
         $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Profile';
         $course = '';
 
         return view('student.profile', compact('user', 'routeNamePart', 'course'));
@@ -172,15 +175,17 @@ class MainController extends Controller
         // Check if the student has completed all lessons
         $completedLessons = UserCourseLesson::where('user_id', $user->id)
             ->where('course_id', $course->id)
-           // ->where('completed', true)
             ->count();
 
-        if ($completedLessons !== $course->lessons->count()) {
-           // return redirect()->route('student.courses')->with('error', 'You must complete all lessons before taking the assessment.');
+        // Ensure lessons is treated as an array
+        $lessons = is_array($course->lessons) ? $course->lessons : json_decode($course->lessons, true);
+
+        if ($completedLessons !== count($lessons)) {
+            return redirect()->route('student.courses')->with('error', 'You must complete all lessons before taking the assessment.');
         }
 
         $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessments';
         $assessments = $course->assessments;
 
         return view('student.assessments.index', compact('course', 'assessments', 'routeNamePart'));
@@ -188,19 +193,44 @@ class MainController extends Controller
 
     // Show Assessment
     public function showAssessment(Course $course, CourseAssessment $assessment)
-{
-    $user = Auth::user();
-    if (!$user->courses->contains($course->id)) {
-        return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+    {
+        $user = Auth::user();
+        if (!$user->courses->contains($course->id)) {
+            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+        }
+
+        $assessment->questions = json_decode($assessment->questions, true);  // Ensure questions are decoded to an array
+
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
+
+        return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart'));
     }
 
-    $assessment->questions = json_decode($assessment->questions, true);  // Ensure questions are decoded to an array
+    // Attempt Assessment
+    public function attemptAssessment(Request $request, Course $course, CourseAssessment $assessment)
+    {
+        $user = Auth::user();
+        if (!$user->courses->contains($course->id)) {
+            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+        }
 
-    $routeName = Route::currentRouteName();
-    $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $assessment->questions = json_decode($assessment->questions, true);
+        $routeName = Route::currentRouteName();
+        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
 
-    return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart'));
-}
+        // Retrieve previous attempts
+        $previousAttempts = CourseAssessmentSubmission::where('user_id', $user->id)
+            ->where('course_assessment_id', $assessment->id)
+            ->count();
+
+        if ($previousAttempts >= 3) {
+            return redirect()->route('student.courses.assessments', $course->id)
+                ->with('error', 'You have reached the maximum number of attempts for this assessment.');
+        }
+
+        return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart', 'previousAttempts'));
+    }
 
     // Submit Assessment
     public function submitAssessment(Request $request, Course $course, CourseAssessment $assessment)
@@ -209,58 +239,51 @@ class MainController extends Controller
             'questions' => 'required|array',
             'questions.*' => 'required|integer',
         ]);
-
+    
         $user = Auth::user();
         $answers = $validatedData['questions'];
         $score = 0;
-
-        // Log the questions attribute to check its structure
-        \Log::info('Assessment Questions: ', ['questions' => $assessment->questions]);
-
+    
         // Ensure questions is treated as an array
         $questions = is_array($assessment->questions) ? $assessment->questions : json_decode($assessment->questions, true);
-
-        // Log the decoded questions to ensure it's an array
-        \Log::info('Decoded Assessment Questions: ', ['questions' => $questions]);
-
+    
         if (!is_array($questions)) {
             return redirect()->route('student.courses.assessments', $course->id)
                 ->with('error', 'There was an issue with the assessment format. Please contact support.');
         }
-
+    
         $totalQuestions = count($questions);
-
+    
         foreach ($questions as $questionIndex => $question) {
+            if (!isset($answers[$questionIndex])) {
+                continue;
+            }
+    
             $selectedOptionIndex = $answers[$questionIndex];
-
+    
             if (isset($question['options'][$selectedOptionIndex]['correct']) && $question['options'][$selectedOptionIndex]['correct']) {
                 $score += 2; // Each correct answer gives 2 points
             }
         }
-
+    
         $percentageScore = ($score / ($totalQuestions * 2)) * 100;
-
+    
         CourseAssessmentSubmission::create([
             'user_id' => $user->id,
             'course_assessment_id' => $assessment->id,
             'answers' => json_encode($answers),
             'score' => $score,
         ]);
-
-        if ($percentageScore >= 80) {
+    
+        if ($percentageScore >= 70) {
             // Award leaderboard points
             $user->increment('leaderboard_points', 5);
-
+    
             // Generate certificate
             $this->generateCertificate($user, $course);
         }
-
+    
         return redirect()->route('student.courses.assessments', $course->id)
             ->with('success', "Assessment submitted successfully. You scored {$percentageScore}%");
-    }
-    // Generate Certificate (stub function, replace with actual implementation)
-    protected function generateCertificate($user, $course)
-    {
-        // Logic for certificate generation
     }
 }

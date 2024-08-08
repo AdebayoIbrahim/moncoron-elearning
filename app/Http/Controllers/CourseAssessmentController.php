@@ -25,6 +25,7 @@ class CourseAssessmentController extends Controller
     public function store(Request $request, Course $course)
     {
         $validatedData = $request->validate([
+            'name' => 'required|string',
             'questions' => 'required|array',
             'questions.*.text' => 'required|string',
             'questions.*.media' => 'nullable|file|mimes:mp4,mp3',
@@ -53,6 +54,7 @@ class CourseAssessmentController extends Controller
 
         $courseAssessment = new CourseAssessment([
             'course_id' => $course->id,
+            'name' => $validatedData['name'],
             'questions' => json_encode($questions),
         ]);
         $courseAssessment->save();
@@ -77,6 +79,7 @@ class CourseAssessmentController extends Controller
     public function update(Request $request, Course $course, CourseAssessment $assessment)
     {
         $validatedData = $request->validate([
+            'name' => 'required|string',
             'questions' => 'required|array',
             'questions.*.text' => 'required|string',
             'questions.*.media' => 'nullable|file|mimes:mp4,mp3',
@@ -104,6 +107,7 @@ class CourseAssessmentController extends Controller
         }
 
         $assessment->update([
+            'name' => $validatedData['name'],
             'questions' => json_encode($questions),
         ]);
 

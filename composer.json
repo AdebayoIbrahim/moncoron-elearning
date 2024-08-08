@@ -8,7 +8,9 @@
         "php": "^8.2",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.5",
         "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-medialibrary": "^11.8",
         "unicodeveloper/laravel-paystack": "^1.2"
     },
     "require-dev": {

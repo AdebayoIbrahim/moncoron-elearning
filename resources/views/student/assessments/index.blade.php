@@ -3,7 +3,7 @@
 @include('partials.admin_header')
 <div class="container-fluid">
     <div class="row">
-        @include('partials.admin_sidebar')
+    @include('partials.student_sidebar')
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 p-4">
             <div class="card">
                 @if(session('error'))
@@ -19,20 +19,44 @@
                     </div>
                 @endif
                 <div class="card-header">
-                    <h2>Assessments for {{ $course->name }}</h2>
+                    <h2>
+                        Course Assessments for {{ $course->name }}
+                    </h2>
                 </div>
                 <div class="card-body">
-                    <ul>
-                        @foreach($assessments as $assessment)
-                            <li>
-                                <a href="{{ route('student.courses.assessments.show', [$course->id, $assessment->id]) }}">Assessment {{ $assessment->id }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
+                    @if($assessments->isEmpty())
+                        <p>No assessments available.</p>
+                    @else
+                        <table class="table-bordered table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Assessment Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($assessments as $assessment)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <a href="{{ route('student.courses.assessments.show', [$course->id, $assessment->id]) }}">
+                                            {{ $assessment->name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('student.courses.assessments.show', [$course->id, $assessment->id]) }}" class="btn btn-primary">
+                                            Take Assessment
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </main>
     </div>
 </div>
 @endsection
-

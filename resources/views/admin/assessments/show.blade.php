@@ -23,11 +23,11 @@
                 </div>
                 <div class="card-body">
                     @if (!empty($assessment->questions))
-                        <ul>
+                        <ul class="list-unstyled">
                             @foreach ($assessment->questions as $questionIndex => $question)
                                 <li>
                                     <p>{{ $questionIndex + 1 }}. {{ $question['text'] }}</p>
-                                    @if (isset($question['media']) && is_string($question['media']))
+                                    @if (isset($question['media']))
                                         <div>
                                             @if (str_contains($question['media'], '.mp4'))
                                                 <video controls>
@@ -39,18 +39,21 @@
                                                     <source src="{{ Storage::url($question['media']) }}" type="audio/mp3">
                                                     Your browser does not support the audio element.
                                                 </audio>
+                                            @elseif (str_contains($question['media'], ['.jpg', '.jpeg', '.png', '.gif']))
+                                                <img src="{{ Storage::url($question['media']) }}" alt="Question Media" style="max-width: 100%; height: auto;">
                                             @endif
                                         </div>
                                     @endif
-                                    <ul>
+                                    <ul class="list-unstyled">
                                         @foreach ($question['options'] as $optionIndex => $option)
                                             <li>
-                                                <p>{{ chr(65 + $optionIndex) }}. {{ $option['text'] }}
-                                                    @if ($option['correct'])
-                                                        <span class="badge bg-success">Correct</span>
-                                                    @endif
-                                                </p>
-                                                @if (isset($option['media']) && is_string($option['media']))
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" disabled {{ $option['correct'] ? 'checked' : '' }}>
+                                                    <label class="form-check-label">
+                                                        {{ chr(65 + $optionIndex) }}. {{ $option['text'] }}
+                                                    </label>
+                                                </div>
+                                                @if (isset($option['media']))
                                                     <div>
                                                         @if (str_contains($option['media'], '.mp4'))
                                                             <video controls>
@@ -62,6 +65,8 @@
                                                                 <source src="{{ Storage::url($option['media']) }}" type="audio/mp3">
                                                                 Your browser does not support the audio element.
                                                             </audio>
+                                                        @elseif (str_contains($option['media'], ['.jpg', '.jpeg', '.png', '.gif']))
+                                                            <img src="{{ Storage::url($option['media']) }}" alt="Option Media" style="max-width: 100%; height: auto;">
                                                         @endif
                                                     </div>
                                                 @endif

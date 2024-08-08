@@ -10,7 +10,7 @@ class CourseAssessment extends Model
     use HasFactory;
 
     // Allow mass assignment for these fields
-    protected $fillable = ['course_id', 'questions'];
+    protected $fillable = ['course_id', 'name', 'duration', 'questions'];
 
     // Automatically cast the 'questions' attribute to an array
     protected $casts = [

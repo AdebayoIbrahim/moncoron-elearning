@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,9 +19,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone', 'address', 'state', 'address', 'locale',
-        'country', 'dob',
-        'status', 'ref', 'role'
+        'phone',
+        'address',
+        'state',
+        'locale',
+        'country',
+        'dob',
+        'status',
+        'ref',
+        'role'
     ];
 
     /**
@@ -36,17 +41,14 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     public function subscriptions()
     {
@@ -55,31 +57,52 @@ class User extends Authenticatable
 
     public function courses()
     {
-        return $this->hasManyThrough(Course::class, Subscriptions::class, 'student_id', 'id', 'id', 'course_id');
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')->withPivot('role');
     }
-
-    // public function courseLessons()
-    // {
-    //     return $this->belongsToMany(Course_Lessons::class, 'user_course_lessons', 'user_id', 'id')
-    //                 ->withPivot('completed', 'course_id')
-    //                 ->withTimestamps();
-    // }
 
     public function courseLessons()
     {
-        return $this->belongsToMany(Course_Lessons::class, 'user_course_lessons', 'lesson_id')
+        return $this->belongsToMany(CourseLesson::class, 'user_course_lessons', 'user_id', 'lesson_id')
                     ->withPivot('completed')
                     ->withTimestamps();
     }
+
     public function leaderboard()
     {
         return $this->hasOne(Leaderboard::class);
     }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 
+    public function isAdmin()
+    {
+        // Assuming you have a 'role' attribute in your users table
+        // and 'admin' is the value for admin users
+        return $this->role === 'admin';
+    }
 
+    public function assignedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')->withPivot('role');
+    }
+
+    public function teachingCourses()
+    {
+        return $this->assignedCourses()->wherePivot('role', 'teacher');
+    }
+
+    public function lecturingCourses()
+    {
+        return $this->assignedCourses()->wherePivot('role', 'lecturer');
+    }
+
+    public function dawahs()
+    {
+        return $this->belongsToMany(Dawah::class, 'dawahs_users', 'user_id', 'dawah_id')
+                    ->withPivot('is_teacher')
+                    ->withTimestamps();
+    }
 }
-
-
-
-

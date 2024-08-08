@@ -4,39 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Dawah extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'title',
-        'slug',
-        'description',
-        'type',
-        'age_group',
-        'status',
-        'lecturer_id'
-    ];
+    protected $guarded = [];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        // 'type' => DawahType::class,
-        // 'status' => DawahStatus::class,
-        // 'age_group' => DawahAgeGroup::class,
-    ];
+    public function lessons()
+    {
+        return $this->hasMany(DawahLesson::class);
+    }
 
-    protected $searchable = [
-        'title', 'description'
-    ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'dawahs_users', 'dawah_id', 'user_id')
+                    ->withPivot('is_teacher', 'role')
+                    ->withTimestamps();
+    }
 
-    protected $sortable = [
-        'title', 'type', 'status', 'created_at'
-    ];
-
-
+    public function teachers()
+    {
+        return $this->users()->wherePivot('is_teacher', 1);
+    }
 }

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         //
         Schema::create('course_lessons', function (Blueprint $table) {
-            $table->id();
-            $table->id('course_id');
+            $table->bigIncrements('id'); // Primary key, auto_increment
+            $table->unsignedBigInteger('course_id');
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('video')->nullable();
