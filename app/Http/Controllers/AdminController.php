@@ -8,6 +8,7 @@ use App\Models\Dawah;
 use App\Models\DawahPost;
 use App\Models\CourseLesson;
 use App\Models\CourseAssessment;
+use App\Models\UserLessonAssessment; // Add this line
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -559,4 +560,33 @@ class AdminController extends Controller
 
         return redirect()->route('admin.dawah-posts', $request->dawah_id)->with('success', 'Post created successfully.');
     }
+
+
+    public function studentGrades()
+{
+    $routeName = Route::currentRouteName();
+    $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+    // Fetch all students
+    $students = User::where('role', 'student')->get();
+
+    // Fetch courses, lessons, and grades for each student
+    foreach ($students as $student) {
+        $student->courses = Course::whereHas('userCourseLessons', function ($query) use ($student) {
+            $query->where('user_id', $student->id);
+        })->get();
+
+        foreach ($student->courses as $course) {
+            $course->lessons = CourseLesson::where('course_id', $course->id)->get();
+
+            foreach ($course->lessons as $lesson) {
+                $lesson->grade = UserLessonAssessment::where('user_id', $student->id)
+                    ->where('lesson_id', $lesson->id)
+                    ->first();
+            }
+        }
+    }
+
+    return view('admin.student_grades', compact('students', 'routeNamePart'));
+}
 }

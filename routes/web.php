@@ -120,19 +120,70 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
    Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'index'])->name('chat.index');
    Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
    Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/call', [ChatController::class, 'sendCallSignal'])->name('chat.call');
+
+
+
+   Route::get('/admin/courses/{courseId}/assessments', [LessonAssessmentController::class, 'index'])->name('lesson_assessments.index');
+
+    // Creating a new assessment
+    Route::get('/admin/courses/{courseId}/lessons/{lessonId}/assessments/create', [LessonAssessmentController::class, 'create'])->name('assessments.create');
+
+    // Storing the assessment
+    Route::post('/admin/courses/{courseId}/lessons/{lessonId}/assessments/store', [LessonAssessmentController::class, 'store'])->name('assessments.store');
+
+    // Viewing a specific assessment
+    Route::get('/admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
+
+    // Deleting an assessment
+    Route::delete('/admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');
+
+    Route::get('courses/{courseId}/lessons/{lessonId}/assessment', [LessonController::class, 'showAssessment'])->name('lessons.assessment');
+
+    // Submitting the assessment
+    Route::post('courses/{courseId}/lessons/{lessonId}/assessment/submit', [LessonAssessmentController::class, 'submitAssessment'])->name('student.assessments.submit');
+
+    Route::get('courses/{course_id}/lessons/{id}', [LessonController::class, 'show'])->name('lessons.show');
+
+    Route::post('courses/{course_id}/lessons/{id}/upload', [LessonController::class, 'uploadStudentMedia'])->name('lessons.uploadStudentMedia');
+
+    Route::post('courses/{course_id}/lessons/{id}/complete', [LessonController::class, 'completeLesson'])->name('lessons.complete');
+
+    Route::get('/admin/courses/{course_id}/lessons/{lesson_id}/assessments', [LessonAssessmentController::class, 'viewAssessmentsByLesson'])->name('lessons.viewAssessments');
+
+// Route to view assessments by course
+    Route::get('/admin/courses/{course_id}/assessments', [LessonAssessmentController::class, 'viewAssessmentsByCourse'])->name('courses.viewAssessments');
+
+    Route::get('admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
+
+// Route to delete assessment
+    Route::delete('admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');
+
+    Route::get('admin/manage-assessments', [LessonAssessmentController::class, 'manageAssessments'])->name('assessments.manage');
+    Route::post('admin/publish-assessment/{id}', [LessonAssessmentController::class, 'publishAssessment'])->name('assessments.publish');
+    Route::post('admin/unpublish-assessment/{id}', [LessonAssessmentController::class, 'unpublishAssessment'])->name('assessments.unpublish');
+    Route::post('admin/delete-assessment/{id}', [LessonAssessmentController::class, 'deleteAssessment'])->name('assessments.delete');
     
-    // Lesson Assessment routes
-    Route::get('courses/{course_id}/lessons/{lesson_id}/assessment', [LessonController::class, 'showAssessment'])->name('lessons.assessment');
-    Route::post('courses/{course_id}/lessons/{lesson_id}/assessment', [LessonController::class, 'submitAssessment'])->name('lessons.submitAssessment');
-    Route::post('/courses/{course_id}/lessons/{id}/complete', [LessonController::class, 'completeLesson'])->name('lessons.complete');
     
-    Route::prefix('courses/{courseId}')->group(function () {
-        Route::get('lesson_assessments', [LessonAssessmentController::class, 'index'])->name('lesson_assessments.index');
-        Route::get('lesson_assessments/create/{lessonId}', [LessonAssessmentController::class, 'create'])->name('lesson_assessments.create');
-        Route::post('lesson_assessments/store/{lessonId}', [LessonAssessmentController::class, 'store'])->name('lesson_assessments.store');
-        Route::get('lesson_assessments/{lessonId}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
-        Route::delete('lesson_assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');
-    });
+
+    Route::post('/courses/{courseId}/lessons/{lessonId}/assessments/submit', [LessonAssessmentController::class, 'submitAssessment'])->name('student.assessments.submit');
+
+    Route::get('courses/{courseId}/lessons/{lessonId}/assessments/take', [LessonAssessmentController::class, 'showStudentAssessment'])->name('student.assessments.take');
+    Route::post('courses/{courseId}/lessons/{lessonId}/assessments/submit', [LessonAssessmentController::class, 'submitStudentAssessment'])->name('student.assessments.submit');
+    
+
+    Route::get('courses/{courseId}/lessons/{lessonId}/assessments/result', [LessonAssessmentController::class, 'showAssessmentResult'])->name('student.assessments.result');
+
+    Route::get('/courses/{courseId}/lessons/{lessonId}', [LessonController::class, 'show'])
+    ->name('student.lessons.show');
+
+    Route::get('/courses/{courseId}/lessons/{lessonId}/assessments/{id}/edit', [LessonAssessmentController::class, 'edit'])->name('lesson_assessments.edit');
+
+
+    Route::get('/courses/{courseId}/lessons/{lessonId}/chat', [ChatController::class, 'index'])->name('student.chat.index');
+
+    Route::get('/admin/student-grades', [AdminController::class, 'studentGrades'])->name('admin.student_grades');
+
+
 
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
 

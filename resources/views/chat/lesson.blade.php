@@ -1,10 +1,12 @@
 @extends('layouts.adminapp')
+
 @section('content')
 @include('partials.admin_header')
 
 <div class="container">
     <div class="row">
         <div class="col-md-8">
+            <!-- Lesson Content Section -->
             <div class="card">
                 <div class="card-header">Lesson Content</div>
                 <div class="card-body">
@@ -13,6 +15,7 @@
                 </div>
             </div>
             
+            <!-- Chat Section -->
             <div class="card mt-3">
                 <div class="card-header">Chat</div>
                 <div class="card-body">
@@ -43,6 +46,61 @@
                         <input type="text" name="message" placeholder="Type a message" required>
                         <input type="file" name="file">
                         <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Assessment Section -->
+            <div class="card mt-3">
+                <div class="card-header">Lesson Assessment</div>
+                <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('student.assessments.submit', ['courseId' => $course_id, 'lessonId' => $lesson_id]) }}" method="POST">
+                        @csrf
+                        @foreach (json_decode($assessment->questions, true) as $index => $question)
+                            <div class="question mb-4">
+                                <h4>{{ $question['question'] }}</h4>
+
+                                @if(isset($question['media']))
+                                    @foreach ($question['media'] as $media)
+                                        @if(str_contains($media, ['.jpg', '.jpeg', '.png', '.gif']))
+                                            <img src="{{ Storage::url($media) }}" class="img-fluid mb-2" alt="Question Image">
+                                        @elseif(str_contains($media, ['.mp3']))
+                                            <audio controls class="mb-2">
+                                                <source src="{{ Storage::url($media) }}" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        @elseif(str_contains($media, ['.mp4', '.avi']))
+                                            <video controls class="mb-2">
+                                                <source src="{{ Storage::url($media) }}" type="video/mp4">
+                                                Your browser does not support the video element.
+                                            </video>
+                                        @endif
+                                    @endforeach
+                                @endif
+
+                                <div class="form-group">
+                                    @foreach ($question['options'] as $option)
+                                        <div class="form-check">
+                                            <input type="radio" name="answers[{{ $index }}]" value="{{ $option }}" class="form-check-input" required>
+                                            <label class="form-check-label">{{ $option }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                        <button type="submit" class="btn btn-primary">Submit Assessment</button>
                     </form>
                 </div>
             </div>

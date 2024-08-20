@@ -9,7 +9,7 @@ class LessonAssessment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['lesson_id', 'questions'];
+    protected $fillable = ['lesson_id', 'questions', 'time_limit','is_published'];
 
     public function lesson()
     {

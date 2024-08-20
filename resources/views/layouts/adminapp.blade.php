@@ -25,6 +25,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/js/jquery.emojiarea.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/2.3.3/js/emoji-picker.min.js"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
     
 </head>
 <body>

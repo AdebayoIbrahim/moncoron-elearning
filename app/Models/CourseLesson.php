@@ -40,4 +40,8 @@ class CourseLesson extends Model
                     ->withPivot('completed')
                     ->withTimestamps();
     }
+    public function userCourseLessons()
+    {
+        return $this->hasMany(UserCourseLesson::class);
+    }
 }

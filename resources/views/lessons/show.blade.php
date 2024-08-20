@@ -1,6 +1,6 @@
-@extends('layouts.app')
-
+@extends('layouts.adminapp')
 @section('content')
+@include('partials.admin_header')
 <div class="container">
     <h2>{{ $lesson->title }}</h2>
     <p>{{ $lesson->description }}</p>
@@ -20,8 +20,8 @@
                 </div>
             @endforeach
         </div>
-    @else
-        <p>No student media available.</p>
+    @else 
+             <p>No student media available.</p>
     @endif
 
     <!-- Form to upload student media -->

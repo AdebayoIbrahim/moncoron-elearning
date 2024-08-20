@@ -105,4 +105,15 @@ class User extends Authenticatable
                     ->withPivot('is_teacher')
                     ->withTimestamps();
     }
+
+    public function userCourseLessons()
+    {
+        return $this->hasMany(UserCourseLesson::class);
+    }
+
+    public function userLessonAssessments()
+    {
+        return $this->hasMany(UserLessonAssessment::class);
+    }
+    
 }

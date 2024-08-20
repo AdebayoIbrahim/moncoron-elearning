@@ -7,6 +7,7 @@ use App\Events\MessageSent;
 use App\Models\Message;
 use App\Models\CourseLesson;
 use App\Models\UserCourseLesson;
+use App\Models\LessonAssessment;
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use Illuminate\Support\Facades\Auth;
@@ -16,87 +17,110 @@ use Illuminate\Support\Facades\Storage;
 class ChatController extends Controller
 {
     public function index($course_id, $lesson_id)
-    {
-        // Retrieve the lesson content
-        $lesson = CourseLesson::where('course_id', $course_id)->findOrFail($lesson_id);
-        $userCourseLesson = UserCourseLesson::where('course_id', $course_id)
-                                            ->where('lesson_id', $lesson_id)
-                                            ->where('user_id', Auth::id())
-                                            ->first();
+{
+    // Retrieve the lesson content
+    $lesson = CourseLesson::where('course_id', $course_id)->findOrFail($lesson_id);
 
-        // Retrieve the messages
-        $messages = Message::with('user')
-            ->where('course_id', $course_id)
-            ->where('lesson_id', $lesson_id)
-            ->get();
+    // Check if the user has viewed the lesson
+    $userCourseLesson = UserCourseLesson::where('course_id', $course_id)
+        ->where('lesson_id', $lesson_id)
+        ->where('user_id', Auth::id())
+        ->first();
 
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+    // Retrieve the messages
+    $messages = Message::with('user')
+        ->where('course_id', $course_id)
+        ->where('lesson_id', $lesson_id)
+        ->where('user_id', Auth::id()) // Filter for messages by the current user
+        ->get();
 
-        return view('chat.index', compact('lesson', 'userCourseLesson', 'messages', 'routeNamePart', 'course_id', 'lesson_id'));
+    // Check if the user has sent any messages
+    $hasSentMessages = $messages->isNotEmpty();
+
+    // Retrieve the assessment for the lesson
+    $assessment = LessonAssessment::where('lesson_id', $lesson_id)->first();
+
+    // Determine if the assessment should be unlocked
+    $isAssessmentUnlocked = $userCourseLesson && $hasSentMessages && $assessment;
+
+    $routeName = Route::currentRouteName();
+    $routeNamePart = ucfirst(last(explode('.', $routeName)));
+
+    return view('chat.index', compact('lesson', 'userCourseLesson', 'messages', 'assessment', 'isAssessmentUnlocked', 'routeNamePart', 'course_id', 'lesson_id'));
+}
+
+
+public function sendMessage(Request $request, $course_id, $lesson_id)
+{
+    $user = Auth::user();
+
+    // Set a default message if it's empty and audio is present
+    $messageText = $request->input('message');
+    if (!$messageText && $request->has('audio_data')) {
+        $messageText = 'Audio Message';
     }
 
-    public function sendMessage(Request $request, $course_id, $lesson_id)
-    {
-        $user = Auth::user();
+    $messageData = [
+        'message' => $messageText,
+        'course_id' => $course_id,
+        'lesson_id' => $lesson_id
+    ];
 
-        $messageData = [
-            'message' => $request->input('message'),
-            'course_id' => $course_id,
-            'lesson_id' => $lesson_id
-        ];
+    // Handle file uploads
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $filePath = $file->store('uploads', 'public');
 
-        // Handle file uploads
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filePath = $file->store('uploads', 'public');
-
-            $fileType = $file->getMimeType();
-            if (strstr($fileType, 'image/')) {
-                $fileType = 'image';
-            } elseif (strstr($fileType, 'video/')) {
-                $fileType = 'video';
-            } elseif (strstr($fileType, 'audio/')) {
-                $fileType = 'audio';
-            } else {
-                $fileType = 'file';
-            }
-
-            $messageData['file_path'] = $filePath;
-            $messageData['file_type'] = $fileType;
+        $fileType = $file->getMimeType();
+        if (strstr($fileType, 'image/')) {
+            $fileType = 'image';
+        } elseif (strstr($fileType, 'video/')) {
+            $fileType = 'video';
+        } elseif (strstr($fileType, 'audio/')) {
+            $fileType = 'audio';
+        } else {
+            $fileType = 'file';
         }
 
-        // Handle audio data
-        if ($request->has('audio_data')) {
-            $audioData = base64_decode($request->input('audio_data'));
-            $fileName = uniqid() . '.webm';
-            $filePath = 'public/chat_files/' . $fileName;
-            Storage::put($filePath, $audioData);
-            $messageData['file_path'] = str_replace('public/', '', $filePath);
-            $messageData['file_type'] = 'audio';
-        }
-
-        // Handle video data
-        if ($request->has('video_data')) {
-            $videoData = base64_decode($request->input('video_data'));
-            $fileName = uniqid() . '.webm';
-            $filePath = 'public/chat_files/' . $fileName;
-            Storage::put($filePath, $videoData);
-            $messageData['file_path'] = str_replace('public/', '', $filePath);
-            $messageData['file_type'] = 'video';
-        }
-
-        // Create the message
-        $message = $user->messages()->create($messageData);
-
-        // Broadcast the message
-        broadcast(new MessageSent($user, $message))->toOthers();
-
-        // Notify users
-        $this->notifyUsers($course_id, $lesson_id, $message);
-
-        return response()->noContent();
+        $messageData['file_path'] = $filePath;
+        $messageData['file_type'] = $fileType;
     }
+
+    // Handle Base64-encoded audio data
+    if ($request->has('audio_data') && !empty($request->input('audio_data'))) {
+    
+        $audioData = $request->input('audio_data');
+
+      
+        $audioData = preg_replace('#^data:audio/\w+;base64,#i', '', $audioData);
+
+        // Decode the Base64 data
+        $audioBinary = base64_decode($audioData);
+
+
+        $fileName = uniqid() . '.webm';
+        $filePath = 'chat_files/' . $fileName;
+
+        Storage::disk('public')->put($filePath, $audioBinary);
+
+  
+        $messageData['file_path'] = $filePath;
+        $messageData['file_type'] = 'audio';
+    }
+
+    // Create the message
+    $message = $user->messages()->create($messageData);
+
+    // Broadcast the message
+    broadcast(new MessageSent($user, $message))->toOthers();
+
+    // Notify users (if needed)
+    $this->notifyUsers($course_id, $lesson_id, $message);
+
+    return response()->noContent();
+}
+
+
 
     private function notifyUsers($course_id, $lesson_id, $message)
     {

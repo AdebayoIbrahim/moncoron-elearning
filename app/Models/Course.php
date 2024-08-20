@@ -66,6 +66,9 @@ class Course extends Model
     {
         return $this->hasOne(Dawah::class);
     }
-
+    public function userCourseLessons()
+    {
+        return $this->hasManyThrough(UserCourseLesson::class, CourseLesson::class, 'course_id', 'lesson_id');
+    }
 
 }

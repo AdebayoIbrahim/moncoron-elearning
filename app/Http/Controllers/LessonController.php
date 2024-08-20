@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CourseLesson;
 use App\Models\UserCourseLesson;
-use App\Models\LessonAssessment; // Assuming you have an assessment model
-use App\Models\UserLessonAssessment; // Model to track user's assessment submissions
+use App\Models\LessonAssessment;
+use App\Models\UserLessonAssessment;
 use Illuminate\Support\Facades\Storage;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class LessonController extends Controller
 {
@@ -18,7 +18,7 @@ class LessonController extends Controller
         $studentMedia = $this->getStudentMedia($lesson->id);
         $routeNamePart = 'Lesson Details'; // Define this variable here
 
-        // Check if previous lesson is completed
+        // Check if the previous lesson is completed
         $previousLessonCompleted = $this->isPreviousLessonCompleted($course_id, $id);
 
         return view('lessons.show', compact('lesson', 'studentMedia', 'routeNamePart', 'previousLessonCompleted'));
@@ -48,17 +48,6 @@ class LessonController extends Controller
                 $filePath = 'student_media/' . $fileName;
                 Storage::disk('public')->put($filePath, $decodedAudioData);
                 $userCourseLesson->audio_path = $filePath;
-            }
-        }
-
-        if ($request->has('video_data')) {
-            $videoData = $request->input('video_data');
-            $decodedVideoData = $this->decodeBase64($videoData);
-            if ($decodedVideoData) {
-                $fileName = uniqid() . '.webm';
-                $filePath = 'student_media/' . $fileName;
-                Storage::disk('public')->put($filePath, $decodedVideoData);
-                $userCourseLesson->video_path = $filePath;
             }
         }
 
@@ -101,8 +90,7 @@ class LessonController extends Controller
             ->count();
 
         if ($totalLessons == $completedLessons) {
-            // Mark course as completed
-            // Add logic to handle course completion, like notifying the user, awarding a certificate, etc.
+            // Handle course completion, e.g., notify the user, award a certificate, etc.
         }
     }
 
@@ -117,13 +105,14 @@ class LessonController extends Controller
         return null;
     }
 
-    // New methods for assessments
+    // Methods for handling assessments
     public function showAssessment($course_id, $lesson_id)
     {
         $lesson = CourseLesson::findOrFail($lesson_id);
         $assessment = LessonAssessment::where('lesson_id', $lesson_id)->first();
+        $routeNamePart = 'Lesson Assessment'; // Add routeNamePart for view
 
-        return view('lessons.assessment', compact('lesson', 'assessment'));
+        return view('lessons.assessment', compact('lesson', 'assessment', 'routeNamePart'));
     }
 
     public function submitAssessment(Request $request, $course_id, $lesson_id)
@@ -176,5 +165,20 @@ class LessonController extends Controller
         }
 
         return $correctCount;
+    }
+
+    public function completeLesson($course_id, $id)
+    {
+        $userCourseLesson = UserCourseLesson::where('user_id', Auth::id())
+            ->where('course_id', $course_id)
+            ->where('lesson_id', $id)
+            ->firstOrFail();
+
+        $userCourseLesson->completed = true;
+        $userCourseLesson->save();
+
+        $this->checkCourseCompletion($course_id);
+
+        return redirect()->route('lessons.show', ['course_id' => $course_id, 'id' => $id])->with('success', 'Lesson completed successfully!');
     }
 }

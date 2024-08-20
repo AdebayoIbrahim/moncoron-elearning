@@ -9,7 +9,7 @@ class UserLessonAssessment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'course_id', 'lesson_id', 'answers'];
+    protected $fillable = ['user_id', 'course_id', 'lesson_id', 'answers', 'score','time_taken'];
 
     public function user()
     {
