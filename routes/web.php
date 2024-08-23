@@ -11,7 +11,8 @@ use App\Http\Controllers\StudentAssessmentController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\LessonController;
-use App\Http\Controllers\LessonAssessmentController;
+use App\Http\Controllers\LessonAssessmentController;   
+use App\Http\Controllers\CourseAssessmentController; 
 use App\Http\Controllers\DawahController;
 use App\Http\Controllers\DawahPostController;
 use App\Http\Controllers\DawahTeacherController;
@@ -123,7 +124,6 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
 
 
-   Route::get('/admin/courses/{courseId}/assessments', [LessonAssessmentController::class, 'index'])->name('lesson_assessments.index');
 
     // Creating a new assessment
     Route::get('/admin/courses/{courseId}/lessons/{lessonId}/assessments/create', [LessonAssessmentController::class, 'create'])->name('assessments.create');
@@ -151,7 +151,6 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
     Route::get('/admin/courses/{course_id}/lessons/{lesson_id}/assessments', [LessonAssessmentController::class, 'viewAssessmentsByLesson'])->name('lessons.viewAssessments');
 
 // Route to view assessments by course
-    Route::get('/admin/courses/{course_id}/assessments', [LessonAssessmentController::class, 'viewAssessmentsByCourse'])->name('courses.viewAssessments');
 
     Route::get('admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
 
@@ -163,7 +162,8 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
     Route::post('admin/unpublish-assessment/{id}', [LessonAssessmentController::class, 'unpublishAssessment'])->name('assessments.unpublish');
     Route::post('admin/delete-assessment/{id}', [LessonAssessmentController::class, 'deleteAssessment'])->name('assessments.delete');
     
-    
+    Route::post('admin/assessments/delete/{id}', [LessonAssessmentController::class, 'deleteAssessmentWithConfirmation'])->name('assessments.delete');
+
 
     Route::post('/courses/{courseId}/lessons/{lessonId}/assessments/submit', [LessonAssessmentController::class, 'submitAssessment'])->name('student.assessments.submit');
 
@@ -187,14 +187,39 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
 
-    // Student course assessments routes
-    Route::get('/courses/{course}/assessments', [MainController::class, 'assessments'])->name('student.courses.assessments');
-    Route::get('/courses/{course}/assessments/{assessment}', [MainController::class, 'showAssessment'])->name('student.courses.assessments.show');
-    Route::get('/courses/{course}/assessments/{assessment}/attempt', [MainController::class, 'attemptAssessment'])->name('student.courses.assessments.attempt');
-    Route::post('/courses/{course}/assessments/{assessment}/submit', [MainController::class, 'submitAssessment'])->name('student.courses.assessments.submit');
-    Route::get('assessments/{assessment}/result/{submission}', [AdminController::class, 'showResult'])->name('admin.courses.assessments.result');
-    Route::get('assessments/{assessment}/leaderboard', [AdminController::class, 'leaderboard'])->name('admin.courses.assessments.leaderboard');
+   
+    // Student Routes for Course Assessments
+Route::get('/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('student.courses.assessments');
+Route::get('/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'show'])->name('student.courses.assessments.show');
+Route::get('/courses/{course}/assessments/{assessment}/attempt', [CourseAssessmentController::class, 'attempt'])->name('student.courses.assessments.attempt');
+Route::post('/courses/{course}/assessments/{assessment}/submit', [CourseAssessmentController::class, 'submit'])->name('student.courses.assessments.submit');
+
+// Admin Routes for Course Assessment Result
+Route::get('assessments/{assessment}/result/{submission}', [CourseAssessmentController::class, 'showResult'])->name('admin.courses.assessments.result');
+
+// Admin Routes for Managing Assessments
+
     
+Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('course_assessments.index');
+    
+    Route::get('/admin/courses/{course}/assessments/create', [CourseAssessmentController::class, 'create'])->name('course_assessments.create');
+    
+    Route::post('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'store'])->name('course_assessments.store');
+    
+    Route::get('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'show'])->name('course_assessments.show');
+    
+    Route::get('/admin/courses/{course}/assessments/{assessment}/edit', [CourseAssessmentController::class, 'edit'])->name('course_assessments.edit');
+    
+    Route::put('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'update'])->name('course_assessments.update');
+    
+    Route::delete('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'destroy'])->name('course_assessments.delete');
+
+
+
+
+
+
+
     // Admin routes
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/courses', [AdminController::class, 'courses'])->name('admin.courses');
@@ -211,6 +236,8 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
     Route::post('/admin/teachers/register', [AdminController::class, 'registerTeacher'])->name('admin.teachers.register');
     Route::get('/admin/lecturers', [AdminController::class, 'lecturers'])->name('admin.lecturers');
     Route::post('/admin/lecturers/register', [AdminController::class, 'registerLecturer'])->name('admin.lecturers.register');
+    Route::get('admin/courses/{courseId}/assessments/{assessmentId}/delete', [AdminController::class, 'deleteAssessment'])
+    ->name('admin.courses.assessments.delete');
 
     Route::get('/admin/assign-course', [AdminController::class, 'showAssignCourseForm'])->name('admin.assign-course');
     Route::post('/admin/assign-course', [AdminController::class, 'assignCourse'])->name('admin.assign-course.post');
