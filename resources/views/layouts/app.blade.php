@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $routeNamePart ?? 'Moncoran' }} | Moncoran</title>
+    @vite(['resources/js/app.js','resources/css/custom-editor/editor.css', 'resources/js/custom-editor/editor.js'])
     <link rel="icon" href="{{ asset('images/image-21@2x.png') }}" />
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
@@ -15,13 +17,14 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo Paaji 2:wght@400;600&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+
 </head>
 <body>
     <div id="app">
         @yield('content')
     </div>
 
-    <script src="{{ mix('js/app.js') }}"></script>
+    <!-- <script src="{{ mix('js/app.js') }}"></script> -->
     <script src="{{ asset('js/jquery-2.1.3.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>

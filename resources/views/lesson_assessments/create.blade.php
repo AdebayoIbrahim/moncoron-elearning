@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form action="{{ route('assessments.store', ['courseId' => $courseId, 'lessonId' => $lessonId]) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('assessments.store', ['courseId' => $courseId, 'lessonId' => $lessonId]) }}" method="POST">
         @csrf
 
         <!-- Time limit input -->
@@ -32,54 +32,35 @@
             <div class="question">
                 <div class="form-group">
                     <label for="question_0">Question 1</label>
-                    <input type="text" name="questions[0][question]" class="form-control" id="question_0" required>
-                </div>
-
-                <!-- Media for Question -->
-                <div class="form-group">
-                    <label for="question_media_0">Attach Media (optional)</label>
-                    <input type="file" name="questions[0][media][]" class="form-control-file" id="question_media_0" multiple>
+                    
+                    <!-- Custom Editor for the Question -->
+                    <div class="custom-editor" id="custom-editor-0">
+                        <div contenteditable="true" class="editor-content" id="editor-content-0"></div>
+                        <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0">
+                    </div>
                 </div>
 
                 <!-- Options Section -->
                 <div class="form-group">
                     <label for="options">Options</label>
-                    <div class="option">
-                        <label for="option_a_0">A:</label>
-                        <input type="text" name="questions[0][options][A]" class="form-control" id="option_a_0" required>
-                        <input type="file" name="questions[0][option_media][A]" class="form-control-file">
-                    </div>
-                    <div class="option">
-                        <label for="option_b_0">B:</label>
-                        <input type="text" name="questions[0][options][B]" class="form-control" id="option_b_0" required>
-                        <input type="file" name="questions[0][option_media][B]" class="form-control-file">
-                    </div>
-                    <div class="option">
-                        <label for="option_c_0">C:</label>
-                        <input type="text" name="questions[0][options][C]" class="form-control" id="option_c_0" required>
-                        <input type="file" name="questions[0][option_media][C]" class="form-control-file">
-                    </div>
-                    <div class="option">
-                        <label for="option_d_0">D:</label>
-                        <input type="text" name="questions[0][options][D]" class="form-control" id="option_d_0" required>
-                        <input type="file" name="questions[0][option_media][D]" class="form-control-file">
-                    </div>
-                    <div class="option">
-                        <label for="option_e_0">E:</label>
-                        <input type="text" name="questions[0][options][E]" class="form-control" id="option_e_0">
-                        <input type="file" name="questions[0][option_media][E]" class="form-control-file">
-                    </div>
+                    @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
+                        <div class="option">
+                            <label for="option_{{ strtolower($option) }}_0">{{ $option }}:</label>
+                            <div class="custom-editor" id="custom-editor-0-{{ strtolower($option) }}">
+                                <div contenteditable="true" class="editor-content" id="editor-content-0-{{ strtolower($option) }}"></div>
+                                <input type="hidden" name="questions[0][options][{{ $option }}]" id="hidden-editor-content-0-{{ strtolower($option) }}">
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
                 <!-- Correct Option Dropdown -->
                 <div class="form-group">
                     <label for="correct_option_0">Correct Option</label>
                     <select name="questions[0][correct_option]" class="form-control" id="correct_option_0" required>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
+                        @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -101,56 +82,42 @@
 </div>
 
 <script>
-    document.getElementById('add-question').addEventListener('click', function () {
+    function initializeEditor(id) {
+        // Initialize any specific editor logic if necessary
+        console.log('Initializing editor:', id);
+        // For example, you could add specific toolbar actions here
+    }
+
+    function addQuestion(questionCount) {
         var container = document.getElementById('questions-container');
-        var questionCount = container.getElementsByClassName('question').length;
         var newQuestion = document.createElement('div');
         newQuestion.className = 'question mt-4';
         newQuestion.innerHTML = `
             <div class="form-group">
                 <label for="question_${questionCount}">Question ${questionCount + 1}</label>
-                <input type="text" name="questions[${questionCount}][question]" class="form-control" id="question_${questionCount}" required>
-            </div>
-            <div class="form-group">
-                <label for="question_media_${questionCount}">Attach Media (optional)</label>
-                <input type="file" name="questions[${questionCount}][media][]" class="form-control-file" id="question_media_${questionCount}" multiple>
+                <div class="custom-editor" id="custom-editor-${questionCount}">
+                    <div contenteditable="true" class="editor-content" id="editor-content-${questionCount}"></div>
+                    <input type="hidden" name="questions[${questionCount}][question]" id="hidden-editor-content-${questionCount}">
+                </div>
             </div>
             <div class="form-group">
                 <label for="options">Options</label>
-                <div class="option">
-                    <label for="option_a_${questionCount}">A:</label>
-                    <input type="text" name="questions[${questionCount}][options][A]" class="form-control" id="option_a_${questionCount}" required>
-                    <input type="file" name="questions[${questionCount}][option_media][A]" class="form-control-file">
-                </div>
-                <div class="option">
-                    <label for="option_b_${questionCount}">B:</label>
-                    <input type="text" name="questions[${questionCount}][options][B]" class="form-control" id="option_b_${questionCount}" required>
-                    <input type="file" name="questions[${questionCount}][option_media][B]" class="form-control-file">
-                </div>
-                <div class="option">
-                    <label for="option_c_${questionCount}">C:</label>
-                    <input type="text" name="questions[${questionCount}][options][C]" class="form-control" id="option_c_${questionCount}" required>
-                    <input type="file" name="questions[${questionCount}][option_media][C]" class="form-control-file">
-                </div>
-                <div class="option">
-                    <label for="option_d_${questionCount}">D:</label>
-                    <input type="text" name="questions[${questionCount}][options][D]" class="form-control" id="option_d_${questionCount}" required>
-                    <input type="file" name="questions[${questionCount}][option_media][D]" class="form-control-file">
-                </div>
-                <div class="option">
-                    <label for="option_e_${questionCount}">E:</label>
-                    <input type="text" name="questions[${questionCount}][options][E]" class="form-control" id="option_e_${questionCount}">
-                    <input type="file" name="questions[${questionCount}][option_media][E]" class="form-control-file">
-                </div>
+                ${['A', 'B', 'C', 'D', 'E'].map(option => `
+                    <div class="option">
+                        <label for="option_${option.toLowerCase()}_${questionCount}">${option}:</label>
+                        <div class="custom-editor" id="custom-editor-${questionCount}-${option.toLowerCase()}">
+                            <div contenteditable="true" class="editor-content" id="editor-content-${questionCount}-${option.toLowerCase()}"></div>
+                            <input type="hidden" name="questions[${questionCount}][options][${option}]" id="hidden-editor-content-${questionCount}-${option.toLowerCase()}">
+                        </div>
+                    </div>
+                `).join('')}
             </div>
             <div class="form-group">
                 <label for="correct_option_${questionCount}">Correct Option</label>
                 <select name="questions[${questionCount}][correct_option]" class="form-control" id="correct_option_${questionCount}" required>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
+                    ${['A', 'B', 'C', 'D', 'E'].map(option => `
+                        <option value="${option}">${option}</option>
+                    `).join('')}
                 </select>
             </div>
             <div class="form-group">
@@ -160,12 +127,36 @@
             <button type="button" class="btn btn-danger btn-sm remove-question">Remove Question</button>
         `;
         container.appendChild(newQuestion);
+
+        // Initialize editors for the new question and options
+        initializeEditor(`editor-content-${questionCount}`);
+        ['A', 'B', 'C', 'D', 'E'].forEach(option => {
+            initializeEditor(`editor-content-${questionCount}-${option.toLowerCase()}`);
+        });
+    }
+
+    document.getElementById('add-question').addEventListener('click', function () {
+        var questionCount = document.getElementsByClassName('question').length;
+        addQuestion(questionCount);
     });
 
     document.addEventListener('click', function (event) {
         if (event.target.classList.contains('remove-question')) {
             event.target.closest('.question').remove();
         }
+    });
+
+    document.querySelector("form").addEventListener("submit", function () {
+        document.querySelectorAll('.custom-editor').forEach(function(editor) {
+            var editorContent = editor.querySelector('.editor-content').innerHTML;
+            editor.querySelector('input[type="hidden"]').value = editorContent;
+        });
+    });
+
+    // Initialize the first question editor
+    initializeEditor('editor-content-0');
+    ['A', 'B', 'C', 'D', 'E'].forEach(option => {
+        initializeEditor(`editor-content-0-${option.toLowerCase()}`);
     });
 </script>
 @endsection

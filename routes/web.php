@@ -23,6 +23,7 @@ use App\Events\MessageSent;
 use App\Models\User;
 use App\Models\Message;
 use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\EditorController;
 
 
 
@@ -104,6 +105,15 @@ Route::get('/test-broadcast', function () {
     return view('test-broadcast');
 });
 
+
+
+// Display the editor
+Route::get('/editor', [EditorController::class, 'showEditor'])->name('editor.show');
+
+// Handle form submission
+Route::post('/editor/save', [EditorController::class, 'saveContent'])->name('editor.save');
+
+Route::post('/editor/upload', [EditorController::class, 'upload'])->name('editor.upload');
 
 
 
@@ -213,8 +223,6 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     Route::put('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'update'])->name('course_assessments.update');
     
     Route::delete('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'destroy'])->name('course_assessments.delete');
-
-
 
 
 
