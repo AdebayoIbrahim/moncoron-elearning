@@ -3,7 +3,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const boldBtn = document.querySelector("#bold-btn");
     const editor = document.querySelector("#custom-editor");
-
+    const submitBtn = document.querySelector(
+        '[aria-details = "submit-button"]'
+    );
     // Toolbar buttons
     const italicBtn = document.querySelector("#italic-btn");
     const underlineBtn = document.querySelector("#underline-btn");
@@ -95,12 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
         imageUpload.click();
     });
 
-    // Trigger video upload input on icon click
+    // Trigger video upload input on icon click-pass
     videoIcon.addEventListener("click", () => {
         videoUpload.click();
     });
     audioUpload.addEventListener("click", () => {
-        // window.alert("audio");
         audioinput.click();
     });
 
@@ -117,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 case "image":
                     format = document.createElement(`img`);
                     format.setAttribute("src", url);
+                    format.setAttribute("alt", upload?.name);
                     format.classList.add("pop_upload_file");
                     break;
                 case "video":
@@ -150,69 +152,6 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         });
     });
-    // imageUpload.addEventListener("change", (e) => {
-    //     const src = e.target.files[0];
-    //     handleUpload("image", src);
-    // });
-
-    // Image upload
-    // imageUpload.addEventListener("change", function (e) {
-    //     const file = e.target.files[0];
-    //     if (file && file.type.startsWith('image/')) {
-    //         const formData = new FormData();
-    //         formData.append('file', file);
-
-    //         fetch('{{ route('editor.upload') }}', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    //             },
-    //             body: formData
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             const img = document.createElement('img');
-    //             img.src = data.url;
-    //             img.style.maxWidth = "100%";
-    //             editor.appendChild(img);
-    //         })
-    //         .catch(error => {
-    //             console.error('Image upload failed:', error);
-    //         });
-    //     } else {
-    //         alert("Please select a valid image file.");
-    //     }
-    // });
-
-    // Video upload
-    // videoUpload.addEventListener("change", function (e) {
-    //     const file = e.target.files[0];
-    //     if (file && file.type.startsWith('video/')) {
-    //         const formData = new FormData();
-    //         formData.append('file', file);
-
-    //         fetch('{{ route('editor.upload') }}', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    //             },
-    //             body: formData
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             const video = document.createElement('video');
-    //             video.src = data.url;
-    //             video.controls = true;
-    //             video.style.maxWidth = "100%";
-    //             editor.appendChild(video);
-    //         })
-    //         .catch(error => {
-    //             console.error('Video upload failed:', error);
-    //         });
-    //     } else {
-    //         alert("Please select a valid video file.");
-    //     }
-    // });
 
     // Embed Video URL
     videoUrlBtn.addEventListener("click", () => {
@@ -242,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const tr = document.createElement("tr");
                 for (let j = 0; j < cols; j++) {
                     const td = document.createElement("td");
-                    td.style.border = "1px solid #000";
+                    td.style.border = "1px solid #000000";
                     td.style.padding = "5px";
                     tr.appendChild(td);
                 }
@@ -252,24 +191,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    //  const saveContentUrl = "{{ route('editor.save') }}"
+    const savePointurl = "{{ route('editor.save') }}";
 
-    // Autosave every 30 seconds
-    // setInterval(() => {
-    //     const content = editor.innerHTML;
-    //     fetch("/editor/save", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({ content }),
-    //     })
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             console.log("Autosaved:", data);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Autosave error:", error);
-    //         });
-    // }, 30000); // 30000ms = 30 seconds
+    submitBtn.addEventListener("click", () => {
+        console.log("Submit-button");
+    });
 });
+
+// submitform
