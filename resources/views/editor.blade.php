@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <form action="{{ route('editor.save') }}" method="POST">
+    <!-- <form action="{{ route('editor.save') }}" method="POST"> -->
         @csrf
 
         <!-- Editor Container -->
@@ -59,8 +59,8 @@
         <input type="hidden" name="content" id="editor-content">
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary mt-3">Save Content</button>
-    </form>
+        <button type="submit" class="btn btn-primary mt-3"  aria-details = "submit-button">Save Content</button>
+    <!-- </form> -->
 </div>
 
 <!-- Include Editor CSS
@@ -74,9 +74,9 @@
 
 <!-- Script to Handle Form Submission -->
 <script>
-    document.querySelector("form").addEventListener("submit", function (e) {
-        // Set the hidden input's value to the editor's HTML content
-        document.querySelector("#editor-content").value = document.querySelector("#custom-editor").innerHTML;
-    });
+    // document.querySelector("form").addEventListener("submit", function (e) {
+    //     // Set the hidden input's value to the editor's HTML content
+    //     document.querySelector("#editor-content").value = document.querySelector("#custom-editor").innerHTML;
+    // });
 </script>
 @endsection
