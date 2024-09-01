@@ -191,10 +191,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const savePointurl = "{{ route('editor.save') }}";
-
+    const savePointurl = "/editor/save/";
+    const content = document.querySelector("#editor-content").value;
     submitBtn.addEventListener("click", () => {
-        console.log("Submit-button");
+        const formdataoptions = {
+            content,
+            image_path: "",
+            audio_path: "",
+            video_path: "",
+        };
+        const requsetSend = async () => {
+            try {
+                const response = await fetch(savePointurl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    body: JSON.stringify(formdataoptions),
+                });
+            } catch (err) {
+                console.log(err);
+                window.alert("Failed To Save with unknown error");
+            }
+        };
+
+        requsetSend();
     });
 });
 
