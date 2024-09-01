@@ -2,8 +2,8 @@
 
 #editor-container {
     border: 1px solid #ccc;
-    width: 600px; /* Set the width of the editor */
-    height: 400px; /* Set the height of the editor */
+    width: 800px; /* Set the width of the editor */
+    height: 500px; /* Set the height of the editor */
     overflow: hidden;
     position: relative;
     background-color: #f9f9f9;
@@ -75,4 +75,22 @@
 
 #editor-toolbar input[type="file"] {
     display: none; /* Hide the file input */
+}
+
+/* file-pop-up-animate */
+.pop_upload_file {
+    animation: pop 500ms ease-in-out;
+    width: 500px;
+    height: 400px;
+    object-fit: cover;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.5);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }

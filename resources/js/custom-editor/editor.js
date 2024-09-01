@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const boldBtn = document.querySelector("#bold-btn");
     const editor = document.querySelector("#custom-editor");
-    
+
     // Toolbar buttons
     const italicBtn = document.querySelector("#italic-btn");
     const underlineBtn = document.querySelector("#underline-btn");
@@ -23,70 +23,71 @@ document.addEventListener("DOMContentLoaded", function () {
     const videoUpload = document.querySelector("#video-upload");
     const tableBtn = document.querySelector("#table-btn");
     const videoUrlBtn = document.querySelector("#video-url-btn");
-
+    const audioinput = document.getElementById("audio-upload");
+    const audioUpload = document.querySelector("#audio-icon");
     // Basic formatting
     boldBtn.addEventListener("click", () => {
-        document.execCommand('bold');
+        document.execCommand("bold");
         // window.alert("Check-eorked")
         // console.log("boleeee")
     });
 
     italicBtn.addEventListener("click", () => {
-        document.execCommand('italic');
+        document.execCommand("italic");
     });
 
     underlineBtn.addEventListener("click", () => {
-        document.execCommand('underline');
+        document.execCommand("underline");
     });
 
     // Headings
     h1Btn.addEventListener("click", () => {
-        document.execCommand('formatBlock', false, 'H1');
+        document.execCommand("formatBlock", false, "H1");
     });
 
     h2Btn.addEventListener("click", () => {
-        document.execCommand('formatBlock', false, 'H2');
+        document.execCommand("formatBlock", false, "H2");
     });
 
     // Lists
     ulBtn.addEventListener("click", () => {
-        document.execCommand('insertUnorderedList');
+        document.execCommand("insertUnorderedList");
     });
 
     olBtn.addEventListener("click", () => {
-        document.execCommand('insertOrderedList');
+        document.execCommand("insertOrderedList");
     });
 
     // Blockquote
     blockquoteBtn.addEventListener("click", () => {
-        document.execCommand('formatBlock', false, 'BLOCKQUOTE');
+        document.execCommand("formatBlock", false, "BLOCKQUOTE");
     });
 
     // Link
     linkBtn.addEventListener("click", () => {
         const url = prompt("Enter the URL");
         if (url) {
-            document.execCommand('createLink', false, url);
+            document.execCommand("createLink", false, url);
         }
     });
 
     // Undo/Redo
     undoBtn.addEventListener("click", () => {
-        document.execCommand('undo');
+        document.execCommand("undo");
     });
 
     redoBtn.addEventListener("click", () => {
-        document.execCommand('redo');
+        document.execCommand("redo");
     });
 
     // Text Color
     textColorPicker.addEventListener("input", () => {
-        document.execCommand('foreColor', false, textColorPicker.value);
+        document.execCommand("foreColor", false, textColorPicker.value);
     });
 
     // Background Color
     bgColorPicker.addEventListener("input", () => {
-        document.execCommand('hiliteColor', false, bgColorPicker.value);
+        document.execCommand("hiliteColor", false, bgColorPicker.value);
     });
 
     // Trigger image upload input on icon click
@@ -98,26 +99,62 @@ document.addEventListener("DOMContentLoaded", function () {
     videoIcon.addEventListener("click", () => {
         videoUpload.click();
     });
+    audioUpload.addEventListener("click", () => {
+        // window.alert("audio");
+        audioinput.click();
+    });
 
-
+    // hybrid-upload
+    function handleUpload(type, upload) {
+        let format;
+        console.log(`out${type}`);
+        if (upload) {
+            console.log(`in${upload}`);
+            // create-mock-image or audio
+            // blob_url
+            const url = URL.createObjectURL(upload);
+            switch (type) {
+                case "image":
+                    format = document.createElement(`img`);
+                    format.setAttribute("src", url);
+                    format.classList.add("pop_upload_file");
+                    break;
+                case "video":
+                    format = document.createElement(`video`);
+                    format.setAttribute("src", url);
+                    format.setAttribute("controls", true);
+                    format.setAttribute("autoplay", false);
+                    format.classList.add("pop_upload_file");
+                    break;
+                case "audio":
+                    format = document.createElement(`audio`);
+                    format.setAttribute("src", url);
+                    format.setAttribute("controls", true);
+                    break;
+                default:
+                    throw new Error("unknown file type");
+            }
+        }
+        editor.appendChild(format);
+    }
 
     // image-upload
-    imageUpload.addEventListener("change", (e) => {
-        const src = e.target.files[0]
-        console.log(src)
 
-        if(src) {
-            // create-mock-image
-            const img = document.createElement(`img`)
-            const url = URL.createObjectURL(src)
-            img.setAttribute("src", url)
-            img.style.width = `500px`
-            img.style.height = `500px`
+    const updarr = [imageUpload, videoUpload, audioinput];
+    updarr.forEach((upd, index) => {
+        upd.addEventListener("change", (e) => {
+            const src = e.target.files[0];
+            handleUpload(
+                `${index === 0 ? "image" : index === 1 ? "video" : "audio"}`,
+                src
+            );
+        });
+    });
+    // imageUpload.addEventListener("change", (e) => {
+    //     const src = e.target.files[0];
+    //     handleUpload("image", src);
+    // });
 
-            editor.appendChild(img)
-
-        }
-    })
     // Image upload
     // imageUpload.addEventListener("change", function (e) {
     //     const file = e.target.files[0];
@@ -181,12 +218,13 @@ document.addEventListener("DOMContentLoaded", function () {
     videoUrlBtn.addEventListener("click", () => {
         const url = prompt("Enter the video URL");
         if (url) {
-            const video = document.createElement('iframe');
+            const video = document.createElement("iframe");
             video.src = url;
             video.width = "560";
             video.height = "315";
             video.frameBorder = "0";
-            video.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            video.allow =
+                "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             video.allowFullscreen = true;
             editor.appendChild(video);
         }
@@ -197,13 +235,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const rows = prompt("Enter number of rows");
         const cols = prompt("Enter number of columns");
         if (rows && cols) {
-            const table = document.createElement('table');
+            const table = document.createElement("table");
             table.style.width = "100%";
             table.style.borderCollapse = "collapse";
             for (let i = 0; i < rows; i++) {
-                const tr = document.createElement('tr');
+                const tr = document.createElement("tr");
                 for (let j = 0; j < cols; j++) {
-                    const td = document.createElement('td');
+                    const td = document.createElement("td");
                     td.style.border = "1px solid #000";
                     td.style.padding = "5px";
                     tr.appendChild(td);
@@ -214,23 +252,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    //  const saveContentUrl = "{{ route('editor.save') }}"
+
     // Autosave every 30 seconds
-    setInterval(() => {
-        const content = editor.innerHTML;
-        fetch('/editor/save', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ content })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Autosaved:', data);
-        })
-        .catch(error => {
-            console.error('Autosave error:', error);
-        });
-    }, 30000); // 30000ms = 30 seconds
+    // setInterval(() => {
+    //     const content = editor.innerHTML;
+    //     fetch("/editor/save", {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify({ content }),
+    //     })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             console.log("Autosaved:", data);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Autosave error:", error);
+    //         });
+    // }, 30000); // 30000ms = 30 seconds
 });

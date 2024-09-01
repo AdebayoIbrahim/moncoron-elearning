@@ -37,10 +37,13 @@
                 <!-- Icons for Image and Video Uploads -->
                 <button type="button" id="image-icon" title="Insert Image"><i class="fas fa-image"></i></button>
                 <button type="button" id="video-icon" title="Insert Video"><i class="fas fa-video"></i></button>
+                <button type="button" id="audio-icon" title="Insert Audio">
+                <i class="fa-solid fa-music"></i></button>
                 
                 <!-- Hidden file inputs -->
                 <input type="file" id="image-upload" accept="image/*" style="display: none;">
                 <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                <input type="file" id="audio-upload" accept="audio/*" style="display: none;">
 
                 <button type="button" id="table-btn" title="Insert Table"><i class="fas fa-table"></i></button>
                 <button type="button" id="video-url-btn" title="Embed Video URL"><i class="fas fa-link"></i></button>

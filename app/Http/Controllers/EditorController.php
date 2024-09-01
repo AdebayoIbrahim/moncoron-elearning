@@ -23,38 +23,36 @@ class EditorController extends Controller
     /**
      * Handle the form submission to save editor content.
      */
-    public function saveContent(Request $request)
-    {
-        // Validate the input content
-        $request->validate([
-            'content' => 'required|string',
-        ]);
+    
 
-        // Sanitize the content before saving to avoid XSS attacks
-        $cleanContent = Purifier::clean($request->input('content'));
+     public function saveContent(Request $request)
+{
+    // Validate content and media files
+    $request->validate([
+        'content' => 'required|string',
+        'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240', // 10MB Max
+        'video' => 'nullable|file|mimes:mp4,mov,avi|max:20480', // 20MB Max
+        'audio' => 'nullable|file|mimes:mp3,wav|max:10240', // 10MB Max
+    ]);
 
-        // Save the sanitized content to the database
-        EditorContent::create([
-            'content' => $cleanContent,
-        ]);
+    // Sanitize content to prevent XSS
+    $cleanContent = Purifier::clean($request->input('content'));
 
-        return redirect()->back()->with('success', 'Content saved successfully!');
-    }
+    // File paths
+    $imagePath = $request->hasFile('image') ? $request->file('image')->store('media/images', 'public') : null;
+    $videoPath = $request->hasFile('video') ? $request->file('video')->store('media/videos', 'public') : null;
+    $audioPath = $request->hasFile('audio') ? $request->file('audio')->store('media/audio', 'public') : null;
 
-    /**
-     * Handle the file upload from the editor.
-     */
-    public function upload(Request $request)
-    {
-        // Validate the request to ensure the file is an image or video and within size limits
-        $request->validate([
-            'file' => 'required|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240', // 10MB Max
-        ]);
+    // Save to the database
+    EditorContent::create([
+        'content' => $cleanContent,
+        'image_path' => $imagePath,
+        'video_path' => $videoPath,
+        'audio_path' => $audioPath,
+    ]);
 
-        // Store the file in the 'media' directory within the 'public' disk
-        $path = $request->file('file')->store('media', 'public');
+    return redirect()->back()->with('success', 'Content saved successfully!');
+}
 
-        // Return the file URL to be used in the editor
-        return response()->json(['url' => Storage::url($path)]);
-    }
+    
 }
