@@ -191,24 +191,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const savePointurl = "/editor/save/";
+    const savePointurl = "/editor/save";
     const content = document.querySelector("#editor-content").value;
+    const csrftoken = document.querySelector("input[name=_token]")?.value;
     submitBtn.addEventListener("click", () => {
         const formdataoptions = {
-            content,
-            image_path: "",
-            audio_path: "",
-            video_path: "",
+            content: "mock",
+            image: "",
+            audio: "",
+            video: "",
         };
+
+        function formData() {
+            const forms = new FormData();
+            for (const [key, val] of Object.entries(formdataoptions)) {
+                forms.append(key, val);
+            }
+            return forms;
+        }
+
         const requsetSend = async () => {
             try {
                 const response = await fetch(savePointurl, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "X-CSRF-Token": csrftoken,
                     },
-                    body: JSON.stringify(formdataoptions),
+                    body: formData(),
                 });
+                console.log(response);
+                console.log(response);
             } catch (err) {
                 console.log(err);
                 window.alert("Failed To Save with unknown error");

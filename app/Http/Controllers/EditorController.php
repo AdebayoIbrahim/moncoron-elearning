@@ -51,8 +51,10 @@ class EditorController extends Controller
         'audio_path' => $audioPath,
     ]);
 
-    return redirect()->back()->with('success', 'Content saved successfully!');
+    return back()->with('success', 'Content saved successfully!');
 }
 
     
 }
+
+
