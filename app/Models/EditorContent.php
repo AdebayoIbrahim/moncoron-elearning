@@ -9,5 +9,10 @@ class EditorContent extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content'];
+    protected $fillable = [
+        'content',
+        'image_path',
+        'video_path',
+        'audio_path',
+    ];
 }

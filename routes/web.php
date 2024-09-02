@@ -338,3 +338,6 @@ Route::post('register', [AuthController::class, 'register'])->name('register');
 // Chunk upload routes
 Route::post('upload-chunk', [ChunkUploadController::class, 'uploadChunk'])->name('upload.chunk');
 Route::post('finish-upload', [ChunkUploadController::class, 'finishUpload'])->name('upload.finish');
+Route::get('/token', function () {
+    return csrf_token(); 
+});

@@ -27,7 +27,7 @@ class EditorController extends Controller
 
      public function saveContent(Request $request)
 {
-    // Validate content and media files
+    // Validate the incoming request
     $request->validate([
         'content' => 'required|string',
         'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240', // 10MB Max
@@ -35,24 +35,34 @@ class EditorController extends Controller
         'audio' => 'nullable|file|mimes:mp3,wav|max:10240', // 10MB Max
     ]);
 
-    // Sanitize content to prevent XSS
-    $cleanContent = Purifier::clean($request->input('content'));
+    // Sanitize the content
+    $cleanContent = e($request->input('content'));
 
-    // File paths
+    // Handle file uploads
     $imagePath = $request->hasFile('image') ? $request->file('image')->store('media/images', 'public') : null;
     $videoPath = $request->hasFile('video') ? $request->file('video')->store('media/videos', 'public') : null;
     $audioPath = $request->hasFile('audio') ? $request->file('audio')->store('media/audio', 'public') : null;
 
-    // Save to the database
-    EditorContent::create([
-        'content' => $cleanContent,
-        'image_path' => $imagePath,
-        'video_path' => $videoPath,
-        'audio_path' => $audioPath,
-    ]);
 
-    return redirect()->back()->with('success', 'Content saved successfully!');
-}
+    $newimagepath  = Storage::url($imagePath);
+    $newvideopath  = Storage::url($videoPath);
+    $newaudiopath  = Storage::url($audioPath);
 
     
+    // Save the content in the database
+    EditorContent::create([
+        'content' => $cleanContent,
+        'image_path' => $newimagepath,
+        'video_path' => $newvideopath,
+        'audio_path' => $newaudiopath,
+    ]);
+
+
+    // Return a success message
+    return response()->json(['success' => true, 'message' => 'Content saved successfully!']);
 }
+
+
+}
+
+

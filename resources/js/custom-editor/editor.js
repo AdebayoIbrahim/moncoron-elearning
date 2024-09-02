@@ -1,5 +1,5 @@
 // resources/js/custom-editor/editor.js
-
+import { convertBlobtofile } from "../utils";
 document.addEventListener("DOMContentLoaded", function () {
     const boldBtn = document.querySelector("#bold-btn");
     const editor = document.querySelector("#custom-editor");
@@ -191,24 +191,60 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const savePointurl = "/editor/save/";
-    const content = document.querySelector("#editor-content").value;
-    submitBtn.addEventListener("click", () => {
+    const savePointurl = "/editor/save";
+
+    const csrftoken = document.querySelector("input[name=_token]")?.value;
+    submitBtn.addEventListener("click", async () => {
+        //    select-next-pelement-in-editor
+        let valueText;
+
+        if (editor?.getElementsByTagName("p")) {
+            valueText = editor?.getElementsByTagName("p")[0].textContent;
+        } else {
+            valueText = document.querySelector("#editor-content").value;
+        }
+
+        // get-images-audio-or-videofile
+        const imageupd = editor
+            ?.getElementsByTagName("img")[0]
+            .getAttribute("src");
+
+        const videupd = editor
+            ?.getElementsByTagName("video")[0]
+            .getAttribute("src");
+
+        const audioup = editor
+            ?.getElementsByTagName("audio")[0]
+            .getAttribute("src");
+
         const formdataoptions = {
-            content,
-            image_path: "",
-            audio_path: "",
-            video_path: "",
+            content: valueText,
+            image: await convertBlobtofile(imageupd, "image", valueText),
+            audio: await convertBlobtofile(audioup, "audio", valueText),
+            video: await convertBlobtofile(videupd, "video", valueText),
         };
+
+        // loop-through-fields-and-append-key-value-pair
+        function formData() {
+            const forms = new FormData();
+            for (const [key, val] of Object.entries(formdataoptions)) {
+                forms.append(key, val);
+            }
+            return forms;
+        }
+
         const requsetSend = async () => {
             try {
                 const response = await fetch(savePointurl, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "X-CSRF-Token": csrftoken,
+                        Accept: "application/json",
                     },
-                    body: JSON.stringify(formdataoptions),
+                    body: formData(),
                 });
+                console.log(response);
+                console.log(response);
             } catch (err) {
                 console.log(err);
                 window.alert("Failed To Save with unknown error");
