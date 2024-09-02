@@ -51,7 +51,7 @@
 
             <!-- Editable Area -->
             <div id="custom-editor" contenteditable="true" aria-details="content_placeholder">
-                {!! old('content', $existingContent) !!}
+            <p>{!! old('content', $existingContent) !!}</p>
             </div>
         </div>
 

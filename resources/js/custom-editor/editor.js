@@ -196,26 +196,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const csrftoken = document.querySelector("input[name=_token]")?.value;
     submitBtn.addEventListener("click", async () => {
         //    select-next-pelement-in-editor
-        const valueText = editor?.getElementsByTagName("p")[0].textContent;
+        let valueText;
+
+        if (editor?.getElementsByTagName("p")) {
+            valueText = editor?.getElementsByTagName("p")[0].textContent;
+        } else {
+            valueText = document.querySelector("#editor-content").value;
+        }
 
         // get-images-audio-or-videofile
         const imageupd = editor
             ?.getElementsByTagName("img")[0]
             .getAttribute("src");
 
-        // const videupd = editor
-        //     ?.getElementsByTagName("video")[0]
-        //     .getAttribute("src");
+        const videupd = editor
+            ?.getElementsByTagName("video")[0]
+            .getAttribute("src");
 
-        // const audioup = editor
-        //     ?.getElementsByTagName("audio")[0]
-        //     .getAttribute("src");
+        const audioup = editor
+            ?.getElementsByTagName("audio")[0]
+            .getAttribute("src");
 
         const formdataoptions = {
             content: valueText,
             image: await convertBlobtofile(imageupd, "image", valueText),
-            // audio: convertBlobtofile(audioup, "image", valueText),
-            // video: convertBlobtofile(videupd, "image", valueText),
+            audio: await convertBlobtofile(audioup, "audio", valueText),
+            video: await convertBlobtofile(videupd, "video", valueText),
         };
 
         // loop-through-fields-and-append-key-value-pair
@@ -233,6 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     method: "POST",
                     headers: {
                         "X-CSRF-Token": csrftoken,
+                        Accept: "application/json",
                     },
                     body: formData(),
                 });
