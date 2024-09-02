@@ -192,11 +192,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     const savePointurl = "/editor/save";
-    const content = document.querySelector("#editor-content").value;
+
     const csrftoken = document.querySelector("input[name=_token]")?.value;
     submitBtn.addEventListener("click", () => {
+        //    select-next-pelement-in-editor
+        const valueText = editor?.getElementsByTagName("p")[0].textContent;
+
+        // get-images-audio-or-videofile
+        const imageupd = editor?.getElementsByClassName("img")[0].src;
+
+        const videupd = editor?.getElementsByTagName("video")[0].src;
+
+        const audioup = editor?.getElementsByTagName("audio")[0].src;
+
         const formdataoptions = {
-            content: "mock",
+            content: valueText,
             image: "",
             audio: "",
             video: "",
