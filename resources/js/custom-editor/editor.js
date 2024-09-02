@@ -194,26 +194,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const savePointurl = "/editor/save";
 
     const csrftoken = document.querySelector("input[name=_token]")?.value;
-    submitBtn.addEventListener("click", () => {
+    submitBtn.addEventListener("click", async () => {
         //    select-next-pelement-in-editor
         const valueText = editor?.getElementsByTagName("p")[0].textContent;
 
         // get-images-audio-or-videofile
         const imageupd = editor
             ?.getElementsByTagName("img")[0]
-            .getAttribute(src);
+            .getAttribute("src");
 
-        const videupd = editor
-            ?.getElementsByTagName("video")[0]
-            .getAttribute(src);
+        // const videupd = editor
+        //     ?.getElementsByTagName("video")[0]
+        //     .getAttribute("src");
 
-        const audioup = editor
-            ?.getElementsByTagName("audio")[0]
-            .getAttribute(src);
+        // const audioup = editor
+        //     ?.getElementsByTagName("audio")[0]
+        //     .getAttribute("src");
 
         const formdataoptions = {
             content: valueText,
-            image: convertBlobtofile(imageupd, "image", valueText),
+            image: await convertBlobtofile(imageupd, "image", valueText),
             // audio: convertBlobtofile(audioup, "image", valueText),
             // video: convertBlobtofile(videupd, "image", valueText),
         };
