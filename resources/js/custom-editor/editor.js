@@ -1,5 +1,5 @@
 // resources/js/custom-editor/editor.js
-
+import { convertBlobtofile } from "../utils";
 document.addEventListener("DOMContentLoaded", function () {
     const boldBtn = document.querySelector("#bold-btn");
     const editor = document.querySelector("#custom-editor");
@@ -199,19 +199,26 @@ document.addEventListener("DOMContentLoaded", function () {
         const valueText = editor?.getElementsByTagName("p")[0].textContent;
 
         // get-images-audio-or-videofile
-        const imageupd = editor?.getElementsByClassName("img")[0].src;
+        const imageupd = editor
+            ?.getElementsByClassName("img")[0]
+            .getAttribute(src);
 
-        const videupd = editor?.getElementsByTagName("video")[0].src;
+        const videupd = editor
+            ?.getElementsByTagName("video")[0]
+            .getAttribute(src);
 
-        const audioup = editor?.getElementsByTagName("audio")[0].src;
+        const audioup = editor
+            ?.getElementsByTagName("audio")[0]
+            .getAttribute(src);
 
         const formdataoptions = {
             content: valueText,
-            image: "",
-            audio: "",
-            video: "",
+            image: convertBlobtofile(imageupd, "image", valueText),
+            // audio: convertBlobtofile(audioup, "image", valueText),
+            // video: convertBlobtofile(videupd, "image", valueText),
         };
 
+        // loop-through-fields-and-append-key-value-pair
         function formData() {
             const forms = new FormData();
             for (const [key, val] of Object.entries(formdataoptions)) {
