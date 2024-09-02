@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // get-images-audio-or-videofile
         const imageupd = editor
-            ?.getElementsByClassName("img")[0]
+            ?.getElementsByTagName("img")[0]
             .getAttribute(src);
 
         const videupd = editor
