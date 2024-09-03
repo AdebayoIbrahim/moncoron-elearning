@@ -32,25 +32,25 @@
             <div class="question">
                 <div class="form-group">
                     <label for="question_0">Question 1</label>
-
                     <!-- Custom Editor for the Question -->
-                    <div class="custom-editor" id="custom-editor-0">
-                        <div contenteditable="true" class="editor-content" id="editor-content-0"></div>
-                        <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0">
+                    <div class="custom-editor" id="custom-editor-0 ">
+                        <div aria-details="content_container " class="editor-content parent_editor"
+                            id="editor-content-0 ">
+                        </div>
+                        <!-- <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0"> -->
                     </div>
                 </div>
 
                 <!-- Options Section -->
-                <div class="form-group">
+                <div class="form-group mt-4">
                     <label for="options">Options</label>
                     @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
                     <div class="option">
                         <label for="option_{{ strtolower($option) }}_0">{{ $option }}:</label>
                         <div class="custom-editor" id="custom-editor-0-{{ strtolower($option) }}">
-                            <div contenteditable="true" class="editor-content"
-                                id="editor-content-0-{{ strtolower($option) }}"></div>
-                            <input type="hidden" name="questions[0][options][{{ $option }}]"
-                                id="hidden-editor-content-0-{{ strtolower($option) }}">
+                            <div class="editor-content" id="editor-content-0-{{ strtolower($option) }}"></div>
+                            <!-- <input type="hidden" name="questions[0][options][{{ $option }}]"
+                                id="hidden-editor-content-0-{{ strtolower($option) }}"> -->
                         </div>
                     </div>
                     @endforeach
@@ -97,9 +97,6 @@
             <div class="modal-header">
                 <div class="d-flex justify-content-between" style="width: 100%">
                     <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Edit Question</h1>
-
-
-
                     <div class="d-flex gap-3">
                         <button type="button" class="btn btn-success">Done</button>
                         <button type="button" class="btn btn-danger">Close</button>

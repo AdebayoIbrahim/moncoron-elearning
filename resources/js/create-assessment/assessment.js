@@ -3,15 +3,18 @@ const editormodal = new bootstrap.Modal(
     document.querySelector("#editore_modal_overlay")
 );
 
-const editormodalbtns = document.querySelector("#text_modal");
+const editormodalbtns = document.querySelectorAll(".custom-editor");
 
 function initializeEditor(id) {
     // Initialize any specific editor logic if necessary
     console.log("Initializing editor:", id);
     // For example, you could add specific toolbar actions here
 }
-editormodalbtns.addEventListener("click", () => {
-    editormodal.show();
+
+editormodalbtns.forEach((action) => {
+    action.addEventListener("click", () => {
+        editormodal.show();
+    });
 });
 
 function addQuestion(questionCount) {
@@ -73,26 +76,25 @@ function addQuestion(questionCount) {
     });
 }
 
-document.getElementById("add-question").addEventListener("click", function () {
-    var questionCount = document.getElementsByClassName("question").length;
-    addQuestion(questionCount);
-});
+// document.getElementById("add-question").addEventListener("click", function () {
+//     var questionCount = document.getElementsByClassName("question").length;
+//     addQuestion(questionCount);
+// });
 
-document.addEventListener("click", function (event) {
-    if (event.target.classList.contains("remove-question")) {
-        event.target.closest(".question").remove();
-    }
-});
+// document.addEventListener("click", function (event) {
+//     if (event.target.classList.contains("remove-question")) {
+//         event.target.closest(".question").remove();
+//     }
+// });
 
-document.querySelector("form").addEventListener("submit", function () {
-    document.querySelectorAll(".custom-editor").forEach(function (editor) {
-        var editorContent = editor.querySelector(".editor-content").innerHTML;
-        editor.querySelector('input[type="hidden"]').value = editorContent;
-    });
-});
+// document.querySelector("form").addEventListener("submit", function () {
+//     document.querySelectorAll(".custom-editor").forEach(function (editor) {
+//         var editorContent = editor.querySelector(".editor-content").innerHTML;
+//         editor.querySelector('input[type="hidden"]').value = editorContent;
+//     });
+// });
 
-// Initialize the first question editor
-initializeEditor("editor-content-0");
-["A", "B", "C", "D", "E"].forEach((option) => {
-    initializeEditor(`editor-content-0-${option.toLowerCase()}`);
-});
+// initializeEditor("editor-content-0");
+// ["A", "B", "C", "D", "E"].forEach((option) => {
+//     initializeEditor(`editor-content-0-${option.toLowerCase()}`);
+// });
