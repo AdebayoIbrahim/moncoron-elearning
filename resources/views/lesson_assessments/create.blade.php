@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
-@vite(['resources/js/create-assessment/assessment.js','resources/css/custom-editor/editor.css'])
+@vite(['resources/js/create-assessment/assessment.js','resources/css/create-assessment/assessment.css'])
 <div class="container">
     <h2>Create Assessment for Lesson {{ $lessonId }}</h2>
 
@@ -90,16 +90,27 @@
 </div>
 
 <!-- modal_popup -->
-<div class="modal fade" id="editore_modal_overlay" tabindex="-1" aria-labelledby="Editor_modal" aria-hidden="true">
+<div class="modal modal-lg fade" id="editore_modal_overlay" tabindex="-1" aria-labelledby="Editor_modal"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">New Course Enrollment</h1>
+                <div class="d-flex justify-content-between" style="width: 100%">
+                    <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Edit Question</h1>
+
+
+
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-success">Done</button>
+                        <button type="button" class="btn btn-danger">Close</button>
+                    </div>
+
+                </div>
+
             </div>
 
             <div class="modal-body">
                 <div class="container">
-
                     <!-- Editor Container -->
                     <div id="editor-container">
                         <!-- Toolbar -->
@@ -149,13 +160,8 @@
                             </p>
                         </div>
                     </div>
-
                     <!-- Hidden Input to Store Editor Content -->
                     <input type="hidden" name="content" id="editor-content">
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary mt-3" aria-details="submit-button">Save
-                        Content</button>
                     <!-- </form> -->
                 </div>
             </div>
