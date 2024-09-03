@@ -91,6 +91,7 @@
     </div>
 </div>
 
+
 <!-- Course Enrollment -->
 <div class="modal fade" id="EnrollModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
