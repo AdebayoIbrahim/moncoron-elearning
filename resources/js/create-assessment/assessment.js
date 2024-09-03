@@ -5,25 +5,58 @@ const editormodal = new bootstrap.Modal(
 
 const editormodalbtns = document.querySelectorAll(".custom-editor");
 const closeBtn = document.getElementById("close_modal");
+
+const editor = document.querySelector('[aria-details="content_placeholder"]');
+const doneBtn = document.getElementById("editor_done");
+const inputEl = document.querySelector("#editor_content_input");
 function initializeEditor(id) {
     // Initialize any specific editor logic if necessary
     console.log("Initializing editor:", id);
     // For example, you could add specific toolbar actions here
 }
-
+let ParentProviderwrapper;
 editormodalbtns.forEach((action) => {
     action.addEventListener("click", (e) => {
         // get the-cureently-clikced-with-id-and manipulate the dom
-
         const nodesel = e?.currentTarget;
         const parentapp = nodesel.querySelector(".editor-content");
-        console.log(parentapp);
-        // for (const k of e.currentTarget.childNodes) {
+        ParentProviderwrapper = parentapp;
 
+        // for (const k of e.currentTarget.childNodes) {
         // }
         editormodal.show();
     });
 });
+
+// don-button-implemetatio
+// let valueText;
+doneBtn.addEventListener("click", () => {
+    console.log(editor.value);
+    // const inpvalue = inputEl.value;
+    // if (inpvalue) {
+    //     ParentProviderwrapper.appendChild(
+    //         (document.createElement("p").textContent = inpvalue)
+    //     );
+    // }
+    // console.log(inpvalue);
+});
+
+// if (editor?.getElementsByTagName("p")) {
+//     valueText = editor?.getElementsByTagName("p")[0].textContent;
+// } else {
+//     valueText = document.querySelector("#editor-content").value;
+// }
+
+// get-images-audio-or-videofile
+// const imageupd =
+//     editor?.getElementsByTagName("img")[0].getAttribute("src") || null;
+
+// const videupd =
+//     editor?.getElementsByTagName("video")[0].getAttribute("src") || null;
+
+// const audioup =
+//     editor?.getElementsByTagName("audio")[0].getAttribute("src") || null;
+
 closeBtn.onclick = function () {
     CloseModal();
 };

@@ -97,7 +97,7 @@
                 <div class="d-flex justify-content-between" style="width: 100%">
                     <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Edit Question</h1>
                     <div class="d-flex gap-3">
-                        <button type="button" class="btn btn-success">Done</button>
+                        <button type="button" class="btn btn-success" id="editor_done">Done</button>
                         <button type="button" class="btn btn-danger" id="close_modal">Close</button>
                     </div>
 
@@ -152,12 +152,12 @@
 
                         <!-- Editable Area -->
                         <div id="custom-editor" contenteditable="true" aria-details="content_placeholder">
-                            <p>
-                            </p>
+                            <!-- //TODO : a p element from js here -->
                         </div>
                     </div>
                     <!-- Hidden Input to Store Editor Content -->
-                    <input type="hidden" name="content" id="editor-content">
+                    <input type="hidden" name="assessment_content" id="editor_content_input"
+                        aria-details="content_placeholder">
                     <!-- </form> -->
                 </div>
             </div>
