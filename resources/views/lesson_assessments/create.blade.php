@@ -35,7 +35,7 @@
                     <!-- Custom Editor for the Question -->
                     <div class="custom-editor" id="custom-editor-0 ">
                         <div aria-details="content_container " class="editor-content parent_editor"
-                            id="editor-content-0 ">
+                            id="editor-content-0">
                         </div>
                         <!-- <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0"> -->
                     </div>
@@ -73,19 +73,18 @@
                 </div>
 
                 <!-- Remove question button -->
-                <button type="button" class="btn btn-danger btn-sm remove-question">Remove Question</button>
+                <button type="button" class="btn btn-danger btn-sm remove-question mt-3">Remove Question</button>
             </div>
         </div>
 
         <!-- Add question button -->
-        <button type="button" id="add-question" class="btn btn-secondary mt-3">Add Question</button>
-        <button type="submit" class="btn btn-primary mt-3">Create Assessment</button>
-
-
-
+        <div class="d-flex gap-3 ">
+            <button type="button" id="add-question" class="btn btn-secondary mt-3">Add Question</button>
+            <button type="submit" class="btn btn-primary mt-3 ml-10">Create Assessment</button>
+        </div>
     </form>
 
-    <button id="text_modal">Testmodal</button>
+    <button id="text_modal mt-3">Testmodal</button>
 
 </div>
 
@@ -99,7 +98,7 @@
                     <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Edit Question</h1>
                     <div class="d-flex gap-3">
                         <button type="button" class="btn btn-success">Done</button>
-                        <button type="button" class="btn btn-danger">Close</button>
+                        <button type="button" class="btn btn-danger" id="close_modal">Close</button>
                     </div>
 
                 </div>

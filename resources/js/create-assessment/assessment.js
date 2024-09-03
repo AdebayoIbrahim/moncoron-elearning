@@ -4,7 +4,7 @@ const editormodal = new bootstrap.Modal(
 );
 
 const editormodalbtns = document.querySelectorAll(".custom-editor");
-
+const closeBtn = document.getElementById("close_modal");
 function initializeEditor(id) {
     // Initialize any specific editor logic if necessary
     console.log("Initializing editor:", id);
@@ -12,10 +12,25 @@ function initializeEditor(id) {
 }
 
 editormodalbtns.forEach((action) => {
-    action.addEventListener("click", () => {
+    action.addEventListener("click", (e) => {
+        // get the-cureently-clikced-with-id-and manipulate the dom
+
+        const nodesel = e?.currentTarget;
+        const parentapp = nodesel.querySelector(".editor-content");
+        console.log(parentapp);
+        // for (const k of e.currentTarget.childNodes) {
+
+        // }
         editormodal.show();
     });
 });
+closeBtn.onclick = function () {
+    CloseModal();
+};
+
+const CloseModal = () => {
+    editormodal.hide();
+};
 
 function addQuestion(questionCount) {
     var container = document.getElementById("questions-container");
