@@ -198,11 +198,13 @@ document.addEventListener("DOMContentLoaded", function () {
         //    select-next-pelement-in-editor
         let valueText;
 
-        if (editor?.getElementsByTagName("p")) {
+        if (editor.getElementsByTagName("p")) {
             valueText = editor?.getElementsByTagName("p")[0].textContent;
         } else {
             valueText = document.querySelector("#editor-content").value;
         }
+
+        console.log(valueText);
 
         // get-images-audio-or-videofile
         const imageupd = editor
