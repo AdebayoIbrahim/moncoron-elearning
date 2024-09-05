@@ -28,3 +28,8 @@ export const convertBlobtofile = async (payload, filetype, cor) => {
 
     return returnedFile;
 };
+
+//? addevent-listeners-to-updated-divs
+export const Addeventlisteners = () => {
+    const editormodalbtns = document.querySelectorAll(".custom-editor");
+};
