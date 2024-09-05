@@ -8,13 +8,15 @@ const closeBtn = document.getElementById("close_modal");
 
 const editor = document.querySelector('[aria-details="content_placeholder"]');
 const doneBtn = document.getElementById("editor_done");
-const inputEl = document.querySelector("#editor_content_input");
+
 function initializeEditor(id) {
     // Initialize any specific editor logic if necessary
     console.log("Initializing editor:", id);
     // For example, you could add specific toolbar actions here
 }
 let ParentProviderwrapper;
+// open-modal-for-each-input-btn
+//TODO: Check-for-non-empty-fields-when-dispalying popup-first (i.e)=> editing fields
 editormodalbtns.forEach((action) => {
     action.addEventListener("click", (e) => {
         // get the-cureently-clikced-with-id-and manipulate the dom
@@ -31,38 +33,49 @@ editormodalbtns.forEach((action) => {
 // don-button-implemetatio
 // let valueText;
 doneBtn.addEventListener("click", () => {
-    console.log(editor.value);
-    // const inpvalue = inputEl.value;
-    // if (inpvalue) {
-    //     ParentProviderwrapper.appendChild(
-    //         (document.createElement("p").textContent = inpvalue)
-    //     );
-    // }
-    // console.log(inpvalue);
+    const inputVal = editor?.getElementsByTagName("p")[0];
+    const audio = editor?.getElementsByTagName("audio")[0];
+    const video = editor?.getElementsByTagName("video")[0];
+    const image = editor?.getElementsByTagName("img")[0];
+    let media = [];
+
+    if (inputVal) {
+        ParentProviderwrapper.appendChild(inputVal);
+    } else if (!inputVal) {
+        let ptag = document.createElement("p");
+        ptag.textContent = editor.textContent.trim();
+        ParentProviderwrapper.appendChild(ptag);
+    }
+
+    if (audio || video || image) {
+        media.push(audio) || null;
+        media.push(video) || null;
+        media.push(image) || null;
+
+        let newmedia = media.filter((filtered) => {
+            return (
+                typeof filtered !== "undefined" && typeof filtered === "object"
+            );
+        });
+        // append-the-processed-filtered-list
+        newmedia.map((media) => {
+            ParentProviderwrapper.appendChild(media);
+        });
+    }
+
+    // clean-everythingin-node-upon-done
+    for (const nodes of editor.childNodes) {
+        nodes.remove();
+        CloseModal();
+    }
 });
-
-// if (editor?.getElementsByTagName("p")) {
-//     valueText = editor?.getElementsByTagName("p")[0].textContent;
-// } else {
-//     valueText = document.querySelector("#editor-content").value;
-// }
-
-// get-images-audio-or-videofile
-// const imageupd =
-//     editor?.getElementsByTagName("img")[0].getAttribute("src") || null;
-
-// const videupd =
-//     editor?.getElementsByTagName("video")[0].getAttribute("src") || null;
-
-// const audioup =
-//     editor?.getElementsByTagName("audio")[0].getAttribute("src") || null;
-
-closeBtn.onclick = function () {
-    CloseModal();
-};
 
 const CloseModal = () => {
     editormodal.hide();
+};
+
+closeBtn.onclick = function () {
+    CloseModal();
 };
 
 function addQuestion(questionCount) {

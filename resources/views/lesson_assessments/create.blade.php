@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
-@vite(['resources/js/create-assessment/assessment.js','resources/css/create-assessment/assessment.css'])
+@vite(['resources/js/create-assessment/assessment.js','resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js'])
 <div class="container">
     <h2>Create Assessment for Lesson {{ $lessonId }}</h2>
 
@@ -153,11 +153,9 @@
                         <!-- Editable Area -->
                         <div id="custom-editor" contenteditable="true" aria-details="content_placeholder">
                             <!-- //TODO : a p element from js here -->
+                            <p>{!! old('content', $existingContent ?? 'Start Typing') !!}</p>
                         </div>
                     </div>
-                    <!-- Hidden Input to Store Editor Content -->
-                    <input type="hidden" name="assessment_content" id="editor_content_input"
-                        aria-details="content_placeholder">
                     <!-- </form> -->
                 </div>
             </div>
