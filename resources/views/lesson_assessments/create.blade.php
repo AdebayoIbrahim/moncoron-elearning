@@ -18,71 +18,69 @@
     </div>
     @endif
 
-    <form action="{{ route('assessments.store', ['courseId' => $courseId, 'lessonId' => $lessonId]) }}" method="POST">
-        @csrf
+    @csrf
 
-        <!-- Time limit input -->
-        <div class="form-group">
-            <label for="time_limit">Assessment Time Limit (in minutes)</label>
-            <input type="number" name="time_limit" class="form-control" id="time_limit" required>
-        </div>
+    <!-- Time limit input -->
+    <div class="form-group">
+        <label for="time_limit">Assessment Time Limit (in minutes)</label>
+        <input type="number" name="time_limit" class="form-control" id="time_limit" required>
+    </div>
 
-        <!-- Questions Container -->
-        <div id="questions-container">
-            <div class="question">
-                <div class="form-group">
-                    <label for="question_0">Question 1</label>
-                    <!-- Custom Editor for the Question -->
-                    <div class="custom-editor" id="custom-editor-0 ">
-                        <div aria-details="content_container " class="editor-content parent_editor"
-                            id="editor-content-0">
-                        </div>
-                        <!-- <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0"> -->
+    <!-- Questions Container -->
+    <div id="questions-container">
+        <div class="question">
+            <div class="form-group">
+                <label for="question_0">Question 1</label>
+                <!-- Custom Editor for the Question -->
+                <div class="custom-editor" id="custom-editor-0 ">
+                    <div aria-details="content_container " class="editor-content parent_editor" id="editor-content-0">
                     </div>
+                    <!-- <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0"> -->
                 </div>
-
-                <!-- Options Section -->
-                <div class="form-group mt-4">
-                    <label for="options">Options</label>
-                    @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
-                    <div class="option">
-                        <label for="option_{{ strtolower($option) }}_0">{{ $option }}:</label>
-                        <div class="custom-editor" id="custom-editor-0-{{ strtolower($option) }}">
-                            <div class="editor-content" id="editor-content-0-{{ strtolower($option) }}"></div>
-                            <!-- <input type="hidden" name="questions[0][options][{{ $option }}]"
-                                id="hidden-editor-content-0-{{ strtolower($option) }}"> -->
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-
-                <!-- Correct Option Dropdown -->
-                <div class="form-group">
-                    <label for="correct_option_0">Correct Option</label>
-                    <select name="questions[0][correct_option]" class="form-control" id="correct_option_0" required>
-                        @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
-                        <option value="{{ $option }}">{{ $option }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Question Value -->
-                <div class="form-group">
-                    <label for="value_0">Question Value</label>
-                    <input type="number" name="questions[0][value]" class="form-control" id="value_0" required>
-                </div>
-
-                <!-- Remove question button -->
-                <button type="button" class="btn btn-danger btn-sm remove-question mt-3">Remove Question</button>
             </div>
-        </div>
 
-        <!-- Add question button -->
-        <div class="d-flex gap-3 ">
-            <button type="button" id="add-question" class="btn btn-secondary mt-3">Add Question</button>
-            <button type="submit" class="btn btn-primary mt-3 ml-10">Create Assessment</button>
+            <!-- Options Section -->
+            <div class="form-group mt-4">
+                <label for="options">Options</label>
+                @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
+                <div class="option">
+                    <label for="option_{{ strtolower($option) }}_0">{{ $option }}:</label>
+                    <div class="custom-editor" id="custom-editor-0-{{ strtolower($option) }}">
+                        <div class="editor-content" id="editor-content-0-{{ strtolower($option) }}"></div>
+                        <!-- <input type="hidden" name="questions[0][options][{{ $option }}]"
+                                id="hidden-editor-content-0-{{ strtolower($option) }}"> -->
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Correct Option Dropdown -->
+            <div class="form-group">
+                <label for="correct_option_0">Correct Option</label>
+                <select name="questions[0][correct_option]" class="form-control" id="correct_option_0" required>
+                    @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
+                    <option value="{{ $option }}">{{ $option }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Question Value -->
+            <div class="form-group">
+                <label for="value_0">Question Value</label>
+                <input type="number" name="questions[0][value]" class="form-control" id="value_0" required>
+            </div>
+
+            <!-- Remove question button -->
+            <button type="button" class="btn btn-danger btn-sm remove-question mt-3">Remove Question</button>
         </div>
-    </form>
+    </div>
+
+    <!-- Add question button -->
+    <div class="d-flex gap-3 ">
+        <button type="button" id="add-question" class="btn btn-secondary mt-3">Add Question</button>
+        <button class="btn btn-primary mt-3 ml-10" id="create_assessment">Create Assessment</button>
+    </div>
+
 </div>
 
 <!-- modal_popup -->
