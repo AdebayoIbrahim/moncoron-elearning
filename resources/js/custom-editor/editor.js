@@ -108,9 +108,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // hybrid-upload
     function handleUpload(type, upload) {
         let format;
-        console.log(`out${type}`);
+
         if (upload) {
-            console.log(`in${upload}`);
             // create-mock-image or audio
             // blob_url
             const url = URL.createObjectURL(upload);
@@ -216,8 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             valueText = document.querySelector("#editor-content").value;
         }
-
-        console.log(valueText);
 
         // get-images-audio-or-videofile
         const imageupd = editor
