@@ -15,8 +15,8 @@ function initializeEditor(id) {
     // For example, you could add specific toolbar actions here
 }
 let ParentProviderwrapper;
+
 // open-modal-for-each-input-btn
-//TODO: Check-for-non-empty-fields-when-dispalying popup-first (i.e)=> editing fields
 editormodalbtns.forEach((action) => {
     action.addEventListener("click", (e) => {
         // get the-cureently-clikced-with-id-and manipulate the dom
@@ -24,11 +24,26 @@ editormodalbtns.forEach((action) => {
         const parentapp = nodesel.querySelector(".editor-content");
         ParentProviderwrapper = parentapp;
 
-        // for (const k of e.currentTarget.childNodes) {
-        // }
+        // if (ParentProviderwrapper.childNod)
+        const checknode = ParentProviderwrapper.childNodes;
+        if (checknode !== null && typeof checknode === "object") {
+            // spread across the nodes
+            let newnode = [...checknode].filter((nodetypes) => {
+                return nodetypes.nodeType === Node.ELEMENT_NODE;
+            });
+
+            // then-map-through-thecleared-array
+            for (let i = 0; i < newnode.length; i++) {
+                editor?.appendChild(newnode[i]);
+            }
+        }
+
         editormodal.show();
     });
 });
+const CloseModal = () => {
+    editormodal.hide();
+};
 
 // don-button-implemetatio
 // let valueText;
@@ -69,10 +84,6 @@ doneBtn.addEventListener("click", () => {
         CloseModal();
     }
 });
-
-const CloseModal = () => {
-    editormodal.hide();
-};
 
 closeBtn.onclick = function () {
     CloseModal();
