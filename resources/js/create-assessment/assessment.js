@@ -143,8 +143,66 @@ function addQuestion(questionCount) {
     addEvenlistenerstoEditors();
 }
 
-// document.addEventListener("click", function (event) {
-//     if (event.target.classList.contains("remove-question")) {
-//         event.target.closest(".question").remove();
-//     }
-// });
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("remove-question")) {
+        event.target.closest(".question").remove();
+    }
+});
+
+const submitBtn = document.getElementById("create_assessment");
+submitBtn.addEventListener("click", async () => {
+    const csrftoken = document.querySelector("input[name=_token]")?.value;
+
+    const timelimit = document.querySelector("#time_limit").value;
+
+    const formOptions = {
+        general_time_limit: timelimit,
+        questions: [
+            {
+                question_text: "Hello",
+                points: 10,
+                media: {
+                    image_path: null,
+                    audio_path: null,
+                    video_path: null,
+                },
+                options: [
+                    {
+                        option_text: "Ab",
+                        media: {
+                            image_path: null,
+                            audio_path: null,
+                            video_path: null,
+                        },
+                        is_correct: true,
+                    },
+                    {
+                        option_text: "bd",
+                        media: {
+                            image_path: null,
+                            audio_path: null,
+                            video_path: null,
+                        },
+                        is_correct: false,
+                    },
+                ],
+            },
+        ],
+    };
+    let courseId = 8;
+    let lessonId = 8;
+
+    const fetchreq = await fetch(
+        `/createlessonassessment/store?courseId=${courseId}&lessonId=${lessonId}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrftoken,
+                Accept: "application/json",
+            },
+            body: JSON.stringify(formOptions),
+        }
+    );
+    console.log(fetchreq);
+});
