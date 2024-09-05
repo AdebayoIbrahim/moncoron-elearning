@@ -193,8 +193,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const savePointurl = "/editor/save";
 
+    editor.addEventListener("keydown", function (event) {
+        const pTags = editor.querySelectorAll("p");
+
+        if (
+            pTags.length === 1 &&
+            pTags[0].textContent.trim() === "" &&
+            (event.key === "Backspace" || event.key === "Delete")
+        ) {
+            // Prevent deleting the last empty <p> tag
+            event.preventDefault();
+        }
+    });
+
     const csrftoken = document.querySelector("input[name=_token]")?.value;
-    submitBtn.addEventListener("click", async () => {
+    submitBtn?.addEventListener("click", async () => {
         //    select-next-pelement-in-editor
         let valueText;
 
@@ -245,7 +258,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                     body: formData(),
                 });
-                console.log(response);
                 console.log(response);
             } catch (err) {
                 console.log(err);
