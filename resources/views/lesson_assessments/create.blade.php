@@ -83,9 +83,6 @@
             <button type="submit" class="btn btn-primary mt-3 ml-10">Create Assessment</button>
         </div>
     </form>
-
-    <button id="text_modal mt-3">Testmodal</button>
-
 </div>
 
 <!-- modal_popup -->
