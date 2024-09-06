@@ -150,17 +150,112 @@ document.addEventListener("click", function (event) {
 });
 
 const submitBtn = document.getElementById("create_assessment");
+
+function optionValue(payload) {
+    switch (payload) {
+        case "A":
+            return 0;
+        case "B":
+            return 1;
+        case "C":
+            return 2;
+
+        case "D":
+            return 3;
+        case "E":
+            return 4;
+
+        default:
+            return 0;
+    }
+}
+
+// call-function-
+// console.log(optionValue("p"));
 submitBtn.addEventListener("click", async () => {
     const csrftoken = document.querySelector("input[name=_token]")?.value;
-
     const timelimit = document.querySelector("#time_limit").value;
+
+    // Initialize an array to hold questions data
+    const questionsData = [];
+
+    // Get all question elements
+    const questionsSet = document.querySelectorAll(".question");
+
+    questionsSet.forEach((quest) => {
+        // Extract question details
+        const questionText =
+            quest.querySelector('[aria-details="content_container"] p')
+                ?.textContent || "";
+        const audioPath =
+            quest.querySelector('[aria-details="content_container"] audio')
+                ?.src || "";
+        const videoPath =
+            quest.querySelector('[aria-details="content_container"] video')
+                ?.src || "";
+        const imagePath =
+            quest.querySelector('[aria-details="content_container"] img')
+                ?.src || "";
+
+        const points = quest.querySelector(".question_value")?.value;
+
+        const correctOption = quest.querySelector(".correct_option").value;
+        const correctIndex = optionValue(correctOption);
+
+        const optionsData = [];
+
+        const optionsLayer = quest.querySelectorAll(".options_group");
+
+        optionsLayer.forEach((opt) => {
+            const optionsLoop = opt.querySelectorAll(".editor-content");
+
+            optionsLoop.forEach((opt, optindex) => {
+                const optionText = opt.querySelector("p")?.textContent || "";
+                const optionAudio = opt.querySelector("audio")?.src || "";
+                const optionVideo = opt.querySelector("video")?.src || "";
+                const optionImage = opt.querySelector("img")?.src || "";
+                const is_correct = optindex === correctIndex;
+                optionsData.push({
+                    option_text: optionText,
+                    media: {
+                        image_path: optionImage,
+                        audio_path: optionAudio,
+                        video_path: optionVideo,
+                    },
+                    is_correct,
+                });
+            });
+        });
+
+        // Add  question and options data to questionsData
+        questionsData.push({
+            question_text: questionText,
+            points,
+            media: {
+                image_path: imagePath,
+                audio_path: audioPath,
+                video_path: videoPath,
+            },
+            options: optionsData,
+        });
+    });
+
+    const payload = {
+        general_time_limit: timelimit,
+        questions: questionsData,
+    };
+
+    console.log(typeof payload.questions);
+    console.log(Array.isArray(payload.questions));
+
+    // console.log("Form Data:", payload);
 
     const formOptions = {
         general_time_limit: timelimit,
         questions: [
             {
                 question_text: "Hello",
-                points: 10,
+                // points: 10,
                 media: {
                     image_path: null,
                     audio_path: null,
@@ -189,20 +284,19 @@ submitBtn.addEventListener("click", async () => {
             },
         ],
     };
-    let courseId = 8;
-    let lessonId = 8;
+    // let courseId = 8;
+    // let lessonId = 8;
 
-    const fetchreq = await fetch(
-        `/createlessonassessment/store?courseId=${courseId}&lessonId=${lessonId}`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrftoken,
-                Accept: "application/json",
-            },
-            body: JSON.stringify(formOptions),
-        }
-    );
-    console.log(fetchreq);
+    // const fetchreq = await fetch(
+    //     `/createlessonassessment/store?courseId=${courseId}&lessonId=${lessonId}`,
+    //     {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "X-CSRF-Token": csrftoken,
+    //             Accept: "application/json",
+    //         },
+    //         body: JSON.stringify(formOptions),
+    //     }
+    // );
 });
