@@ -68,7 +68,7 @@
             <!-- Question Value -->
             <div class="form-group">
                 <label for="value_0">Question Value</label>
-                <input type="number" name="questions[0][value]" class="form-control question_value" id="value_0 "
+                <input type="number" name="questions[0][value]" class="form-control question_value" id="value_0"
                     required>
             </div>
 

@@ -1,4 +1,5 @@
 import * as bootstrap from "bootstrap";
+import { convertBlobtofile, optionValue } from "../utils";
 const editormodal = new bootstrap.Modal(
     document.querySelector("#editore_modal_overlay")
 );
@@ -105,7 +106,7 @@ function addQuestion(questionCount) {
                 <div aria-details="content_container" class="editor-content" id="editor-content-${questionCount}"></div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group options_group">
             <label for="options">Options</label>
             ${["A", "B", "C", "D", "E"]
                 .map(
@@ -123,7 +124,7 @@ function addQuestion(questionCount) {
 
         <div class="form-group">
             <label for="correct_option_${questionCount}">Correct Option</label>
-            <select name="questions[${questionCount}][correct_option]" class="form-control" id="correct_option_${questionCount}" required>
+            <select name="questions[${questionCount}][correct_option]" class="form-control correct_option" id="correct_option_${questionCount}" required>
                 ${["A", "B", "C", "D", "E"]
                     .map(
                         (option) => `
@@ -135,7 +136,7 @@ function addQuestion(questionCount) {
         </div>
         <div class="form-group">
             <label for="value_${questionCount}">Question Value</label>
-            <input type="number" name="questions[${questionCount}][value]" class="form-control" id="value_${questionCount}" required>
+            <input type="number" name="questions[${questionCount}][value]" class="form-control question_value" id="value_${questionCount}" required>
         </div>
         <button type="button" class="btn btn-danger btn-sm remove-question">Remove Question</button>
     `;
@@ -151,25 +152,6 @@ document.addEventListener("click", function (event) {
 
 const submitBtn = document.getElementById("create_assessment");
 
-function optionValue(payload) {
-    switch (payload) {
-        case "A":
-            return 0;
-        case "B":
-            return 1;
-        case "C":
-            return 2;
-
-        case "D":
-            return 3;
-        case "E":
-            return 4;
-
-        default:
-            return 0;
-    }
-}
-
 // call-function-
 // console.log(optionValue("p"));
 submitBtn.addEventListener("click", async () => {
@@ -182,7 +164,7 @@ submitBtn.addEventListener("click", async () => {
     // Get all question elements
     const questionsSet = document.querySelectorAll(".question");
 
-    questionsSet.forEach((quest) => {
+    questionsSet.forEach(async (quest) => {
         // Extract question details
         const questionText =
             quest.querySelector('[aria-details="content_container"] p')
@@ -209,7 +191,7 @@ submitBtn.addEventListener("click", async () => {
         optionsLayer.forEach((opt) => {
             const optionsLoop = opt.querySelectorAll(".editor-content");
 
-            optionsLoop.forEach((opt, optindex) => {
+            optionsLoop.forEach(async (opt, optindex) => {
                 const optionText = opt.querySelector("p")?.textContent || "";
                 const optionAudio = opt.querySelector("audio")?.src || "";
                 const optionVideo = opt.querySelector("video")?.src || "";
@@ -218,9 +200,21 @@ submitBtn.addEventListener("click", async () => {
                 optionsData.push({
                     option_text: optionText,
                     media: {
-                        image_path: optionImage,
-                        audio_path: optionAudio,
-                        video_path: optionVideo,
+                        image_path: await convertBlobtofile(
+                            optionImage,
+                            "image",
+                            optionText
+                        ),
+                        audio_path: await convertBlobtofile(
+                            optionAudio,
+                            "audio",
+                            optionText
+                        ),
+                        video_path: await convertBlobtofile(
+                            optionVideo,
+                            "video",
+                            optionText
+                        ),
                     },
                     is_correct,
                 });
@@ -232,9 +226,9 @@ submitBtn.addEventListener("click", async () => {
             question_text: questionText,
             points,
             media: {
-                image_path: imagePath,
-                audio_path: audioPath,
-                video_path: videoPath,
+                image_path: await convertBlobtofile(imagePath, "image"),
+                audio_path: await convertBlobtofile(audioPath, "audio"),
+                video_path: await convertBlobtofile(videoPath, "video"),
             },
             options: optionsData,
         });
@@ -245,45 +239,11 @@ submitBtn.addEventListener("click", async () => {
         questions: questionsData,
     };
 
-    console.log(typeof payload.questions);
-    console.log(Array.isArray(payload.questions));
+    console.log(payload);
 
     // console.log("Form Data:", payload);
 
-    const formOptions = {
-        general_time_limit: timelimit,
-        questions: [
-            {
-                question_text: "Hello",
-                // points: 10,
-                media: {
-                    image_path: null,
-                    audio_path: null,
-                    video_path: null,
-                },
-                options: [
-                    {
-                        option_text: "Ab",
-                        media: {
-                            image_path: null,
-                            audio_path: null,
-                            video_path: null,
-                        },
-                        is_correct: true,
-                    },
-                    {
-                        option_text: "bd",
-                        media: {
-                            image_path: null,
-                            audio_path: null,
-                            video_path: null,
-                        },
-                        is_correct: false,
-                    },
-                ],
-            },
-        ],
-    };
+    const formOptions = {};
     // let courseId = 8;
     // let lessonId = 8;
 
