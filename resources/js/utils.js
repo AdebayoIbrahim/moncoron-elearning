@@ -21,14 +21,12 @@ export const convertBlobtofile = async (payload, filetype, cor) => {
             break;
 
         default:
-            throw new Error(`Invalid File Type `);
+            throw new Error(`Invalid File Type Format`);
     }
 
     const returnedFile = new File([blobfile], `${filename}`, {
         type: blobfile.type,
     });
-    console.log(blobfile);
-    console.log(returnedFile);
 
     return returnedFile;
 };
@@ -53,6 +51,4 @@ export function optionValue(payload) {
 }
 
 //? addevent-listeners-to-updated-divs
-export const Addeventlisteners = () => {
-    const editormodalbtns = document.querySelectorAll(".custom-editor");
-};
+// Event-deligation

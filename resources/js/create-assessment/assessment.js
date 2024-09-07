@@ -158,14 +158,14 @@ submitBtn.addEventListener("click", async () => {
     const csrftoken = document.querySelector("input[name=_token]")?.value;
     const timelimit = document.querySelector("#time_limit").value;
 
-    // Initialize an array to hold questions data
     const questionsData = [];
+    let questionId = 1;
+    let optionid = 1;
 
     // Get all question elements
     const questionsSet = document.querySelectorAll(".question");
 
-    questionsSet.forEach(async (quest) => {
-        // Extract question details
+    for (const quest of questionsSet) {
         const questionText =
             quest.querySelector('[aria-details="content_container"] p')
                 ?.textContent || "";
@@ -188,16 +188,20 @@ submitBtn.addEventListener("click", async () => {
 
         const optionsLayer = quest.querySelectorAll(".options_group");
 
-        optionsLayer.forEach((opt) => {
+        for (const opt of optionsLayer) {
             const optionsLoop = opt.querySelectorAll(".editor-content");
 
-            optionsLoop.forEach(async (opt, optindex) => {
-                const optionText = opt.querySelector("p")?.textContent || "";
-                const optionAudio = opt.querySelector("audio")?.src || "";
-                const optionVideo = opt.querySelector("video")?.src || "";
-                const optionImage = opt.querySelector("img")?.src || "";
+            for (const optItem of optionsLoop) {
+                const optionText =
+                    optItem.querySelector("p")?.textContent || "";
+                const optionAudio = optItem.querySelector("audio")?.src || "";
+                const optionVideo = optItem.querySelector("video")?.src || "";
+                const optionImage = optItem.querySelector("img")?.src || "";
+                const optindex = Array.from(optionsLoop).indexOf(optItem);
                 const is_correct = optindex === correctIndex;
+
                 optionsData.push({
+                    id: optionid++,
                     option_text: optionText,
                     media: {
                         image_path: await convertBlobtofile(
@@ -218,11 +222,11 @@ submitBtn.addEventListener("click", async () => {
                     },
                     is_correct,
                 });
-            });
-        });
+            }
+        }
 
-        // Add  question and options data to questionsData
         questionsData.push({
+            id: questionId++,
             question_text: questionText,
             points,
             media: {
@@ -232,31 +236,31 @@ submitBtn.addEventListener("click", async () => {
             },
             options: optionsData,
         });
-    });
+    }
 
     const payload = {
         general_time_limit: timelimit,
         questions: questionsData,
     };
 
-    console.log(payload);
+    console.log("Form Data:", payload);
 
-    // console.log("Form Data:", payload);
+    let courseId = 8;
+    let lessonId = 8;
 
-    const formOptions = {};
-    // let courseId = 8;
-    // let lessonId = 8;
+    const fetchreq = await fetch(
+        `/createlessonassessment/store?courseId=${courseId}&lessonId=${lessonId}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrftoken,
+                Accept: "application/json",
+            },
+            body: JSON.stringify(payload),
+        }
+    );
 
-    // const fetchreq = await fetch(
-    //     `/createlessonassessment/store?courseId=${courseId}&lessonId=${lessonId}`,
-    //     {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "X-CSRF-Token": csrftoken,
-    //             Accept: "application/json",
-    //         },
-    //         body: JSON.stringify(formOptions),
-    //     }
-    // );
+    const result = await fetchreq.json();
+    console.log("Response:", result);
 });
