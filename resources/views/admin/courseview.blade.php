@@ -1,69 +1,75 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
+@vite(['resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js','resources/js/utils.js'])
 <div class="container-fluid">
     <div class="row">
         @include('partials.admin_sidebar')
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 p-4">
             <div class="card">
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>{{ session('error') }}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                </div>
                 @endif
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>{{ session('success') }}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                </div>
                 @endif
                 <div class="card-header">
                     <h2 class="text-bold">
-                    {{$course->name}} <a class="btn btn-primary pull-right" href="/admin/courses"><i class="fa fa-arrow-left"></i> Go Back</a>
+                        {{$course->name}} <a class="btn btn-primary pull-right" href="/admin/courses"><i
+                                class="fa fa-arrow-left"></i> Go Back</a>
                     </h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-4">{{$course->description}}</div>
                     <hr />
-                    <h2 class="text-bold">Lessons <button class="btn btn-primary" id="addLesson"><i class="fa fa-plus"></i> Add Lesson</button></h2>
+                    <h2 class=" text-bold ">Lessons <button class="btn btn-primary mr-20" id="addLesson"><i
+                                class="fa fa-plus"></i> Add Lesson</button></h2>
                     <div class="accordion" id="accordionExample">
-                @if($lessons->isEmpty())
-                    <h2 class="text-danger text-bold">No lessons are available for this course yet!!!</h2>
-                @else
-                    @foreach($lessons as $lesson)
+                        @if($lessons->isEmpty())
+                        <h2 class="text-danger text  pt-5 ">No lessons are available for this course yet!!!</h2>
+                        @else
+                        @foreach($lessons as $lesson)
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                            <button class="accordion-button text-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$lesson->id}}" aria-expanded="false" aria-controls="collapse{{$lesson->id}}">
-                                Lesson {{ $loop->index + 1 }}
-                            </button>
+                                <button class="accordion-button text-bold" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{$lesson->id}}" aria-expanded="false"
+                                    aria-controls="collapse{{$lesson->id}}">
+                                    Lesson {{ $loop->index + 1 }}
+                                </button>
                             </h2>
-                            <div id="collapse{{$lesson->id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div id="collapse{{$lesson->id}}" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <strong>{{$lesson->name}}</strong>
                                     <br />
                                     {{$lesson->description}}
                                     @if($lesson->video != '')
-                                        <div class="video">
-                                            <video controls="" width="440" height="250">
-                                                <source src="{{ asset('storage/' . $lesson->video) }}" type="video/mp4">
-                                            </video>
-                                        </div>
-                                    @else                                        
+                                    <div class="video">
+                                        <video controls="" width="440" height="250">
+                                            <source src="{{ asset('storage/' . $lesson->video) }}" type="video/mp4">
+                                        </video>
+                                    </div>
+                                    @else
                                     @endif
                                     @if($lesson->audio != '')
-                                        <div class="audio">
-                                            <audio controls="">
-                                                <source src="{{ asset('storage/' . $lesson->audio) }}" type="audio/mp3">
-                                            </audio>
-                                        </div>
-                                    @else                                        
+                                    <div class="audio">
+                                        <audio controls="">
+                                            <source src="{{ asset('storage/' . $lesson->audio) }}" type="audio/mp3">
+                                        </audio>
+                                    </div>
+                                    @else
                                     @endif
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                @endif
+                        @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
@@ -71,57 +77,78 @@
     </div>
 </div>
 
-<!-- Add New Lesson Modal -->
-<div class="modal fade" id="addLessonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5 text-bold text-primary" id="exampleModalLabel">Add New Course</h1>
-        <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form action="{{ route('admin.courses.lesson') }}" method="post" enctype="multipart/form-data">
-      @csrf
-      <div class="modal-body">
-            <div class="row">
-                <div class="col-md-6 hidden">
-                    <div class="form-group mb-4">
-                        <label class="label text-bold">Course ID</label>
-                        <input type="text" class="form-control" name="course_id" required placeholder="Enter Course Name" value="{{ $course->id}}">
+<!-- modal_popup -->
+<div class="modal modal-lg fade" id="editore_modal_overlay_lesson" tabindex="-1" aria-labelledby="Editor_modal_lessons"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex justify-content-between" style="width: 100%">
+                    <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Add Lessons</h1>
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-success" id="editor_done">Done</button>
+                        <button type="button" class="btn btn-danger" id="close_modal_lesson">Close</button>
                     </div>
+
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label class="label text-bold">Lesson Name</label>
-                        <input type="text" class="form-control" name="name" required placeholder="Enter Course Name">
+
+            </div>
+
+            <div class="modal-body">
+                <div class="container">
+                    <!-- Editor Container -->
+                    <div id="editor-container">
+                        <!-- Toolbar -->
+                        <div id="editor-toolbar">
+                            <button type="button" id="bold-btn" title="Bold"><i class="fas fa-bold"></i></button>
+                            <button type="button" id="italic-btn" title="Italic"><i class="fas fa-italic"></i></button>
+                            <button type="button" id="underline-btn" title="Underline"><i
+                                    class="fas fa-underline"></i></button>
+                            <button type="button" id="h1-btn" title="Heading 1"><i class="fas fa-heading"></i>
+                                1</button>
+                            <button type="button" id="h2-btn" title="Heading 2"><i class="fas fa-heading"></i>
+                                2</button>
+                            <button type="button" id="ul-btn" title="Unordered List"><i
+                                    class="fas fa-list-ul"></i></button>
+                            <button type="button" id="ol-btn" title="Ordered List"><i
+                                    class="fas fa-list-ol"></i></button>
+                            <button type="button" id="blockquote-btn" title="Blockquote"><i
+                                    class="fas fa-quote-right"></i></button>
+                            <button type="button" id="link-btn" title="Insert Link"><i class="fas fa-link"></i></button>
+                            <button type="button" id="undo-btn" title="Undo"><i class="fas fa-undo"></i></button>
+                            <button type="button" id="redo-btn" title="Redo"><i class="fas fa-redo"></i></button>
+                            <input type="color" id="text-color-picker" title="Text Color">
+                            <input type="color" id="bg-color-picker" title="Background Color">
+
+                            <!-- Icons for Image and Video Uploads -->
+                            <button type="button" id="image-icon" title="Insert Image"><i
+                                    class="fas fa-image"></i></button>
+                            <button type="button" id="video-icon" title="Insert Video"><i
+                                    class="fas fa-video"></i></button>
+                            <button type="button" id="audio-icon" title="Insert Audio">
+                                <i class="fa-solid fa-music"></i></button>
+
+                            <!-- Hidden file inputs -->
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                            <input type="file" id="audio-upload" accept="audio/*" style="display: none;">
+
+                            <button type="button" id="table-btn" title="Insert Table"><i
+                                    class="fas fa-table"></i></button>
+                            <button type="button" id="video-url-btn" title="Embed Video URL"><i
+                                    class="fas fa-link"></i></button>
+                        </div>
+
+                        <!-- Editable Area -->
+                        <div id="custom-editor" contenteditable="true" aria-details="content_placeholder">
+                            <!-- //TODO : a p element from js here -->
+                            <p>{!! old('content', $existingContent ?? 'Start Typing') !!}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label class="label text-bold">Lesson Text</label>
-                        <textarea name="description" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label class="label text-bold">Lesson Video</label>
-                        <input type="file" class="form-control" name="video" accept=".mp4,.avi,.mkv">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label class="label text-bold">Lesson Audio</label>
-                        <input type="file" class="form-control" name="audio" accept=".mp3,.wav">
-                    </div>
+                    <!-- </form> -->
                 </div>
             </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
-      </div>
-      </form>
+        </div>
     </div>
-  </div>
 </div>
-<!-- End Modal Add New Lesson -->
 @endsection

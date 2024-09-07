@@ -255,19 +255,29 @@ class AdminController extends Controller
         return redirect()->route('admin.assign-course')->with('success', 'Course unassigned successfully.');
     }
 
-    public function fetchCourse($id)
+public function fetchCourse($id)
 {
-    // Find the course by its ID
-    $course = Course::find($id);
+      // Find the course by its ID
+      $course = Course::find($id);
+    //   check-if-lesson-exist
+        $lessons = $course->lessons;
+        $routeName = "CourseView";
 
-    // Check if the course exists
-    if (!$course) {
-        return response()->json(['error' => 'Course not found'], 404);
-    }
 
-    // Return the course as a JSON response
-    return response()->json($course);
+      // Check if the course exists
+      if (!$course) {
+          return response()->json(['error' => 'Course not found'], 404);
+      };
+
+      
+  
+      // Return the course data as a JSON response
+      // return response()->json($course);
+  
+      // Return the Blade view and pass the course data to it
+    return view('admin.courseview', ['course' => $course,'lessons' => $lessons,'routeNamePart' => $routeName]);
 }
+
 
 public function assessments($courseId)
 {
