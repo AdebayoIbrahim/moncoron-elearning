@@ -1,3 +1,5 @@
+import * as bootstrap from "bootstrap";
+
 // conver-blob-files-to-required-format-for-postrequet
 export const convertBlobtofile = async (payload, filetype, cor) => {
     // check-for-fileispresent
@@ -52,3 +54,19 @@ export function optionValue(payload) {
 
 //? addevent-listeners-to-updated-divs
 // Event-deligation
+
+const editorAdd = new bootstrap.Modal(
+    document.querySelector("#editore_modal_overlay_lesson")
+);
+
+const btnShow = document.querySelector("#addLesson");
+
+btnShow.addEventListener("click", () => {
+    editorAdd.show();
+});
+
+const closeLesson = document.querySelector("#close_modal_lesson");
+
+closeLesson.addEventListener("click", () => {
+    editorAdd.hide();
+});
