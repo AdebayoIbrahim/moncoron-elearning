@@ -1,4 +1,5 @@
 import * as bootstrap from "bootstrap";
+import { convertBlobtofile, optionValue } from "../utils";
 const editormodal = new bootstrap.Modal(
     document.querySelector("#editore_modal_overlay")
 );
@@ -105,7 +106,7 @@ function addQuestion(questionCount) {
                 <div aria-details="content_container" class="editor-content" id="editor-content-${questionCount}"></div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group options_group">
             <label for="options">Options</label>
             ${["A", "B", "C", "D", "E"]
                 .map(
@@ -123,7 +124,7 @@ function addQuestion(questionCount) {
 
         <div class="form-group">
             <label for="correct_option_${questionCount}">Correct Option</label>
-            <select name="questions[${questionCount}][correct_option]" class="form-control" id="correct_option_${questionCount}" required>
+            <select name="questions[${questionCount}][correct_option]" class="form-control correct_option" id="correct_option_${questionCount}" required>
                 ${["A", "B", "C", "D", "E"]
                     .map(
                         (option) => `
@@ -135,7 +136,7 @@ function addQuestion(questionCount) {
         </div>
         <div class="form-group">
             <label for="value_${questionCount}">Question Value</label>
-            <input type="number" name="questions[${questionCount}][value]" class="form-control" id="value_${questionCount}" required>
+            <input type="number" name="questions[${questionCount}][value]" class="form-control question_value" id="value_${questionCount}" required>
         </div>
         <button type="button" class="btn btn-danger btn-sm remove-question">Remove Question</button>
     `;
@@ -150,45 +151,100 @@ document.addEventListener("click", function (event) {
 });
 
 const submitBtn = document.getElementById("create_assessment");
+
+// call-function-
+// console.log(optionValue("p"));
 submitBtn.addEventListener("click", async () => {
     const csrftoken = document.querySelector("input[name=_token]")?.value;
-
     const timelimit = document.querySelector("#time_limit").value;
 
-    const formOptions = {
-        general_time_limit: timelimit,
-        questions: [
-            {
-                question_text: "Hello",
-                points: 10,
-                media: {
-                    image_path: null,
-                    audio_path: null,
-                    video_path: null,
-                },
-                options: [
-                    {
-                        option_text: "Ab",
-                        media: {
-                            image_path: null,
-                            audio_path: null,
-                            video_path: null,
-                        },
-                        is_correct: true,
+    const questionsData = [];
+    let questionId = 1;
+    let optionid = 1;
+
+    // Get all question elements
+    const questionsSet = document.querySelectorAll(".question");
+
+    for (const quest of questionsSet) {
+        const questionText =
+            quest.querySelector('[aria-details="content_container"] p')
+                ?.textContent || "";
+        const audioPath =
+            quest.querySelector('[aria-details="content_container"] audio')
+                ?.src || "";
+        const videoPath =
+            quest.querySelector('[aria-details="content_container"] video')
+                ?.src || "";
+        const imagePath =
+            quest.querySelector('[aria-details="content_container"] img')
+                ?.src || "";
+
+        const points = quest.querySelector(".question_value")?.value;
+
+        const correctOption = quest.querySelector(".correct_option").value;
+        const correctIndex = optionValue(correctOption);
+
+        const optionsData = [];
+
+        const optionsLayer = quest.querySelectorAll(".options_group");
+
+        for (const opt of optionsLayer) {
+            const optionsLoop = opt.querySelectorAll(".editor-content");
+
+            for (const optItem of optionsLoop) {
+                const optionText =
+                    optItem.querySelector("p")?.textContent || "";
+                const optionAudio = optItem.querySelector("audio")?.src || "";
+                const optionVideo = optItem.querySelector("video")?.src || "";
+                const optionImage = optItem.querySelector("img")?.src || "";
+                const optindex = Array.from(optionsLoop).indexOf(optItem);
+                const is_correct = optindex === correctIndex;
+
+                optionsData.push({
+                    id: optionid++,
+                    option_text: optionText,
+                    media: {
+                        image_path: await convertBlobtofile(
+                            optionImage,
+                            "image",
+                            optionText
+                        ),
+                        audio_path: await convertBlobtofile(
+                            optionAudio,
+                            "audio",
+                            optionText
+                        ),
+                        video_path: await convertBlobtofile(
+                            optionVideo,
+                            "video",
+                            optionText
+                        ),
                     },
-                    {
-                        option_text: "bd",
-                        media: {
-                            image_path: null,
-                            audio_path: null,
-                            video_path: null,
-                        },
-                        is_correct: false,
-                    },
-                ],
+                    is_correct,
+                });
+            }
+        }
+
+        questionsData.push({
+            id: questionId++,
+            question_text: questionText,
+            points,
+            media: {
+                image_path: await convertBlobtofile(imagePath, "image"),
+                audio_path: await convertBlobtofile(audioPath, "audio"),
+                video_path: await convertBlobtofile(videoPath, "video"),
             },
-        ],
+            options: optionsData,
+        });
+    }
+
+    const payload = {
+        general_time_limit: timelimit,
+        questions: questionsData,
     };
+
+    console.log("Form Data:", payload);
+
     let courseId = 8;
     let lessonId = 8;
 
@@ -201,8 +257,10 @@ submitBtn.addEventListener("click", async () => {
                 "X-CSRF-Token": csrftoken,
                 Accept: "application/json",
             },
-            body: JSON.stringify(formOptions),
+            body: JSON.stringify(payload),
         }
     );
-    console.log(fetchreq);
+
+    const result = await fetchreq.json();
+    console.log("Response:", result);
 });

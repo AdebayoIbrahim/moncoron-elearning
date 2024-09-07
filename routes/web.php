@@ -18,7 +18,7 @@ use App\Http\Controllers\DawahPostController;
 use App\Http\Controllers\DawahTeacherController;
 use App\Http\Controllers\LeaderBoardController;
 use App\Http\Controllers\VideoCallController;
-use App\Http\Controllers\LessonAssessmentsController;
+use App\Http\Controllers\LessonsAssessmentsNew;
 use App\Events\StartVideoChat;
 use App\Events\MessageSent;
 use App\Models\User;
@@ -200,7 +200,7 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
     // route-for-creatig-lessons-assements
 
-Route::post('/createlessonassessment/store', [LessonAssessmentsController::class, 'store'])->name('lessonassessments.store');
+Route::post('/createlessonassessment/store', [LessonsAssessmentsNew::class, 'store'])->name('lessonassessments.store');
 
 
 

@@ -1,5 +1,9 @@
 // conver-blob-files-to-required-format-for-postrequet
 export const convertBlobtofile = async (payload, filetype, cor) => {
+    // check-for-fileispresent
+    if (payload === "" || payload === null || payload === undefined) {
+        return null;
+    }
     const blobrequest = await fetch(payload);
     const blobfile = await blobrequest.blob();
 
@@ -17,19 +21,34 @@ export const convertBlobtofile = async (payload, filetype, cor) => {
             break;
 
         default:
-            throw new Error(`Invalid File Type `);
+            throw new Error(`Invalid File Type Format`);
     }
 
     const returnedFile = new File([blobfile], `${filename}`, {
         type: blobfile.type,
     });
-    console.log(blobfile);
-    console.log(returnedFile);
 
     return returnedFile;
 };
 
+export function optionValue(payload) {
+    switch (payload) {
+        case "A":
+            return 0;
+        case "B":
+            return 1;
+        case "C":
+            return 2;
+
+        case "D":
+            return 3;
+        case "E":
+            return 4;
+
+        default:
+            return 0;
+    }
+}
+
 //? addevent-listeners-to-updated-divs
-export const Addeventlisteners = () => {
-    const editormodalbtns = document.querySelectorAll(".custom-editor");
-};
+// Event-deligation

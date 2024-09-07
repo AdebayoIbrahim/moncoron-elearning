@@ -33,14 +33,14 @@
                 <label for="question_0">Question 1</label>
                 <!-- Custom Editor for the Question -->
                 <div class="custom-editor" id="custom-editor-0 ">
-                    <div aria-details="content_container " class="editor-content parent_editor" id="editor-content-0">
+                    <div aria-details="content_container" class="editor-content parent_editor" id="editor-content-0">
                     </div>
                     <!-- <input type="hidden" name="questions[0][question]" id="hidden-editor-content-0"> -->
                 </div>
             </div>
 
             <!-- Options Section -->
-            <div class="form-group mt-4">
+            <div class="form-group mt-4 options_group">
                 <label for="options">Options</label>
                 @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
                 <div class="option">
@@ -57,9 +57,10 @@
             <!-- Correct Option Dropdown -->
             <div class="form-group">
                 <label for="correct_option_0">Correct Option</label>
-                <select name="questions[0][correct_option]" class="form-control" id="correct_option_0" required>
+                <select name="questions[0][correct_option]" class="form-control correct_option" id="correct_option_0 "
+                    required>
                     @foreach(['A', 'B', 'C', 'D', 'E'] as $option)
-                    <option value="{{ $option }}">{{ $option }}</option>
+                    <option value="{{ $option }}" class="correct_option">{{ $option }}</option>
                     @endforeach
                 </select>
             </div>
@@ -67,7 +68,8 @@
             <!-- Question Value -->
             <div class="form-group">
                 <label for="value_0">Question Value</label>
-                <input type="number" name="questions[0][value]" class="form-control" id="value_0" required>
+                <input type="number" name="questions[0][value]" class="form-control question_value" id="value_0"
+                    required>
             </div>
 
             <!-- Remove question button -->
