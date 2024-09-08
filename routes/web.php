@@ -239,6 +239,8 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/courses', [AdminController::class, 'courses'])->name('admin.courses');
     Route::post('/admin/courses/register', [AdminController::class, 'registerCourse'])->name('admin.courses.register');
+    // add-lessons-to-specific-course
+    Route::post('/admin/course/{courseid}/lessons',[AdminController::class, 'addcourseLessons'])->name('admin.courses.lessons.create');
     Route::get('/admin/courses/{id}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
     Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
     Route::get('/admin/courses/view/{id}', [AdminController::class, 'viewCourse'])->name('admin.courseview');

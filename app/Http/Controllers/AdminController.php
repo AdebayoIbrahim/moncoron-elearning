@@ -83,6 +83,43 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'New Course created successfully.');
     }
 
+    public function addcourseLessons(Request $request, $courseid) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'video' => 'nullable|url',
+            'audio' => 'nullable|url',
+            'image' => 'nullable|file|image|max:2048', // Validate image upload
+            'status' => 'nullable|string'
+        ]);
+    
+        // Check if the course exists before proceeding
+        $course = Course::find($courseid);
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404); // Return 404 if the course doesn't exist
+        }
+    
+        // Handle file upload for image
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('lessons/images', 'public'); // Store image in 'public' disk
+        }
+    
+        // Create new lesson and link it to the course
+        $lesson = new CourseLesson();
+        $lesson->course_id = $courseid;
+        $lesson->name = $request->name;
+        $lesson->description = $request->description;
+        $lesson->video = $request->video;
+        $lesson->audio = $request->audio;
+        $lesson->status = $request->status;
+        $lesson->image = $imagePath; // Store image path
+        $lesson->save();
+    
+        return response()->json($lesson, 201);
+    }
+
     public function manageAssessments($courseId)
     {
         $course = Course::findOrFail($courseId);
