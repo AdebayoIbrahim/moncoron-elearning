@@ -2,7 +2,9 @@
 @section('content')
 @include('partials.admin_header')
 @vite(['resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js','resources/js/utils.js'])
+@csrf
 <div class="container-fluid">
+
     <div class="row">
         @include('partials.admin_sidebar')
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 p-4">
@@ -35,39 +37,7 @@
                         <h2 class="text-danger text  pt-5 ">No lessons are available for this course yet!!!</h2>
                         @else
                         @foreach($lessons as $lesson)
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button text-bold" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse{{$lesson->id}}" aria-expanded="false"
-                                    aria-controls="collapse{{$lesson->id}}">
-                                    Lesson {{ $loop->index + 1 }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{$lesson->id}}" class="accordion-collapse collapse"
-                                data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <strong>{{$lesson->name}}</strong>
-                                    <br />
-                                    {{$lesson->description}}
-                                    @if($lesson->video != '')
-                                    <div class="video">
-                                        <video controls="" width="440" height="250">
-                                            <source src="{{ asset('storage/' . $lesson->video) }}" type="video/mp4">
-                                        </video>
-                                    </div>
-                                    @else
-                                    @endif
-                                    @if($lesson->audio != '')
-                                    <div class="audio">
-                                        <audio controls="">
-                                            <source src="{{ asset('storage/' . $lesson->audio) }}" type="audio/mp3">
-                                        </audio>
-                                    </div>
-                                    @else
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                        echo($lesson->id)
                         @endforeach
                         @endif
                     </div>
@@ -86,7 +56,7 @@
                 <div class="d-flex justify-content-between" style="width: 100%">
                     <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Add Lessons</h1>
                     <div class="d-flex gap-3">
-                        <button type="button" class="btn btn-success" id="editor_done">Done</button>
+                        <button type="button" class="btn btn-success" id="all_lesson_done">Done</button>
                         <button type="button" class="btn btn-danger" id="close_modal_lesson">Close</button>
                     </div>
 
@@ -97,6 +67,10 @@
             <div class="modal-body">
                 <div class="container">
                     <!-- Editor Container -->
+                    <div class="lessonname pt-1 pb-2">
+                        <input class="form-control" id="lesson_name" type="text" placeholder="Input Lesson Name"
+                            aria-label="input lesson name" />
+                    </div>
                     <div id="editor-container">
                         <!-- Toolbar -->
                         <div id="editor-toolbar">

@@ -18,7 +18,8 @@ class CourseLesson extends Model
         'description',
         'video',
         'audio',
-        'status'
+        'status',
+        'image'
     ];
     
 
@@ -27,12 +28,6 @@ class CourseLesson extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    // public function users()
-    // {
-    //     return $this->belongsToMany(User::class, 'user_course_lessons', 'id', 'user_id')
-    //                 ->withPivot('completed', 'course_id')
-    //                 ->withTimestamps();
-    // }
 
     public function users()
     {
