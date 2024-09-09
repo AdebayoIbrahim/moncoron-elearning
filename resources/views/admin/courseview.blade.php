@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
-@vite(['resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js','resources/js/utils.js'])
+@vite(['resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js','resources/js/courseview/course.js'])
 @csrf
 <div class="container-fluid">
 
@@ -30,31 +30,58 @@
                 <div class="card-body">
                     <div class="mb-4">{{$course->description}}</div>
                     <hr />
-                    <h2 class=" text-bold ">Lessons <button class="btn btn-primary mr-20" id="addLesson"><i
-                                class="fa fa-plus"></i> Add Lesson</button></h2>
-                    <div class="accordion" id="accordionExample">
-                        @if($lessons->isEmpty())
-                        <h2 class="text-danger text  pt-5 ">No lessons are available for this course yet!!!</h2>
-                        @else
-                        @foreach($lessons as $lesson)
-                        echo($lesson->id)
-                        @endforeach
-                        @endif
+                    <div class="d-flex justify-content-between">
+                        <h2 class=" text-bold ">Lessons </h2>
+                        <button class="btn btn-primary mr-20" id="addLesson"><i class="fa fa-plus"></i>
+                            Add Lesson
+                        </button>
                     </div>
+
+                    @if($lessons->isEmpty())
+                    <h2 class="text-danger text  pt-5 ">No lessons are available for this course yet!!!</h2>
+                    @else
+                    <div class="lesson_layer">
+                        <div class="d-flex  align-center flex-wrap pt-3 gap-3">
+                            @foreach($lessons as $lesson)
+                            <div class="container_lesson_body">
+                                <div class=" container_content">
+                                    <div style="font-weight: 450;font-size: 1.2rem; color :rgba(5, 30, 45, 1) ">
+                                        1.{{$loop->index + 1}} LESSON
+                                    </div>
+                                    <!-- lesson-name -->
+                                    <h3 class="container_text">{{$lesson->name}}</h3>
+                                    <!-- comments-if-avvailable -->
+                                    <div class="d-flex align-items-center gap-5">
+                                        <p class="container_text mt-2">
+                                            {{$lesson->comment ?? 0}} Comment
+                                        </p>
+                                        <i class="fa-solid fa-circle-play styled-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="btn_side">
+                            <button type="button">NEXT</button>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
-        </main>
     </div>
+    </main>
+</div>
 </div>
 
 <!-- modal_popup -->
-<div class="modal modal-lg fade" id="editore_modal_overlay_lesson" tabindex="-1" aria-labelledby="Editor_modal_lessons"
+<div class=" modal modal-lg fade" id="editore_modal_overlay_lesson" tabindex="-1" aria-labelledby="Editor_modal_lessons"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="d-flex justify-content-between" style="width: 100%">
-                    <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">Add Lessons</h1>
+                    <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">
+                        Add Lessons</h1>
                     <div class="d-flex gap-3">
                         <button type="button" class="btn btn-success" id="all_lesson_done">Done</button>
                         <button type="button" class="btn btn-danger" id="close_modal_lesson">Close</button>
@@ -116,7 +143,8 @@
                         <!-- Editable Area -->
                         <div id="custom-editor" contenteditable="true" aria-details="content_placeholder">
                             <!-- //TODO : a p element from js here -->
-                            <p>{!! old('content', $existingContent ?? 'Start Typing') !!}</p>
+                            <p>{!! old('content', $existingContent ?? 'Lesson Description
+                                Goes Here') !!}</p>
                         </div>
                     </div>
                     <!-- </form> -->

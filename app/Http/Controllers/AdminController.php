@@ -87,9 +87,9 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video' => 'nullable|url',
-            'audio' => 'nullable|url',
-            'image' => 'nullable|file|image|max:2048', // Validate image upload
+            'video' => 'nullable|file|mimes:mp4,mov,avi|max:20480',
+            'audio' => 'nullable|file|mimes:mp3,wav|max:10240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240', // 
             'status' => 'nullable|string'
         ]);
     
@@ -100,21 +100,19 @@ class AdminController extends Controller
         }
     
         // Handle file upload for image
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagePath = $image->store('lessons/images', 'public'); // Store image in 'public' disk
-        }
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('lessons/images','public') : null;
+        $videoPath = $request->hasFile('video') ? $request->file('video')->store("lessons/video",'public') : null;
+        $audioPath = $request->hasFile('audio') ? $request->file('audio')->store("lessons/audio",'public') : null;
     
         // Create new lesson and link it to the course
         $lesson = new CourseLesson();
         $lesson->course_id = $courseid;
         $lesson->name = $request->name;
         $lesson->description = $request->description;
-        $lesson->video = $request->video;
-        $lesson->audio = $request->audio;
+        $lesson->video = $videoPath;
+        $lesson->audio = $audioPath;
         $lesson->status = $request->status;
-        $lesson->image = $imagePath; // Store image path
+        $lesson->image = $imagePath; 
         $lesson->save();
     
         return response()->json($lesson, 201);
