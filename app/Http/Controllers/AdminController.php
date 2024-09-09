@@ -302,7 +302,7 @@ public function fetchCourse($id)
       // Find the course by its ID
       $course = Course::find($id);
     //   check-if-lesson-exist
-        $lessons = $course->lessons;
+      
         $routeName = "CourseView";
 
 
@@ -311,7 +311,7 @@ public function fetchCourse($id)
           return response()->json(['error' => 'Course not found'], 404);
       };
 
-      
+      $lessons = $course->lessons;
   
       // Return the course data as a JSON response
       // return response()->json($course);
