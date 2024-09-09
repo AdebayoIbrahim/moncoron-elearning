@@ -121,6 +121,7 @@ div.container_lesson_body {
     font-family: poppins;
     cursor: pointer;
     border: 2px solid transparent;
+    transition: all 400ms ease-in-out;
 }
 
 .container_content {

@@ -104,6 +104,12 @@ class AdminController extends Controller
         $videoPath = $request->hasFile('video') ? $request->file('video')->store("lessons/video",'public') : null;
         $audioPath = $request->hasFile('audio') ? $request->file('audio')->store("lessons/audio",'public') : null;
     
+
+        // add-lesson-numer-filed-to-auto-increment-manually
+        // this-after-validation
+        $lastsession = CourseLesson::where('course_id',$courseid)->orderBy('lesson_number','desc')->first();
+        $nextlessonnumber = $lastsession ? $lastsession->lesson_number + 1 : 1;
+
         // Create new lesson and link it to the course
         $lesson = new CourseLesson();
         $lesson->course_id = $courseid;
@@ -113,6 +119,7 @@ class AdminController extends Controller
         $lesson->audio = $audioPath;
         $lesson->status = $request->status;
         $lesson->image = $imagePath; 
+        $lesson->lesson_number = $nextlessonnumber;
         $lesson->save();
     
         return response()->json($lesson, 201);
