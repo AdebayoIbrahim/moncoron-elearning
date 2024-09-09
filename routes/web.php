@@ -25,7 +25,7 @@ use App\Models\User;
 use App\Models\Message;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\EditorController;
-
+use Illuminate\Support\Facades\Route;
 
 
 // CKEditor upload route
@@ -242,6 +242,8 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     // add-lessons-to-specific-course
     Route::post('/admin/course/{courseid}/lessons',[AdminController::class, 'addcourseLessons'])->name('admin.courses.lessons.create');
     Route::get('/admin/courses/{id}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
+    // fetchcourse-details`
+    Route::get('/admin/courses/{courseid}/lesson/{lessonid}',[AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
     Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
     Route::get('/admin/courses/view/{id}', [AdminController::class, 'viewCourse'])->name('admin.courseview');
     Route::get('/admin/courses/delete/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
@@ -349,4 +351,8 @@ Route::post('upload-chunk', [ChunkUploadController::class, 'uploadChunk'])->name
 Route::post('finish-upload', [ChunkUploadController::class, 'finishUpload'])->name('upload.finish');
 Route::get('/token', function () {
     return csrf_token(); 
+});
+// getphp-ifo-testing-ini
+Route::get('/info', function () {
+    return phpinfo(); 
 });

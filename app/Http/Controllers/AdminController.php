@@ -87,8 +87,8 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video' => 'nullable|file|mimes:mp4,mov,avi|max:20480',
-            'audio' => 'nullable|file|mimes:mp3,wav|max:10240',
+            'video' => 'nullable|file|mimes:mp4,mov,avi|max:70480',
+            'audio' => 'nullable|file|mimes:mp3,wav|max:30240',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240', // 
             'status' => 'nullable|string'
         ]);
@@ -318,6 +318,26 @@ public function fetchCourse($id)
   
       // Return the Blade view and pass the course data to it
     return view('admin.courseview', ['course' => $course,'lessons' => $lessons,'routeNamePart' => $routeName]);
+}
+
+// viewlessons-controller
+public function fetchLesson($courseid, $lessonid) {
+    $course = Course::find($courseid);
+
+    // validate-course-id
+    if(!$course) {
+        return response()->json(['error' => 'Course not Found',404]);
+    }
+
+    // lesson-validate-the-id
+    $lesson = CourseLesson::where('course_id',$courseid)->where('lesson_number', $lessonid)->first();
+
+    if(!$lesson) {
+        return response()->json(['error' => 'Lesson not found'],404);
+    }
+
+    // continue-f-all-is-well
+    return view('admin.lessonview',['course' => $course,'lesson' => $lesson, 'routeNamePart' => 'LessonView']);
 }
 
 

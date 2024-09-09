@@ -48,6 +48,9 @@
                                     <div style="font-weight: 450;font-size: 1.2rem; color :rgba(5, 30, 45, 1) ">
                                         1.{{$loop->index + 1}} LESSON
                                     </div>
+                                    <div class="target_holder" style = "display:none">
+                                        {{$lesson->lesson_number}}
+                                    </div>
                                     <!-- lesson-name -->
                                     <h3 class="container_text">{{$lesson->name}}</h3>
                                     <!-- comments-if-avvailable -->
@@ -62,7 +65,7 @@
                             @endforeach
                         </div>
                         <div class="btn_side">
-                            <button type="button">NEXT</button>
+                            <button  id = "next_btn_lesson" type="button">NEXT</button>
                         </div>
                     </div>
                     @endif

@@ -68,6 +68,7 @@ async function handleClick() {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     "X-CSRF-Token": csrftoken,
+                    Accept: "application/json",
                 },
             }
         );
@@ -82,9 +83,7 @@ async function handleClick() {
     }
 }
 
-// add-events-to-divs-for currenlty-clicked
 const divs = document.querySelectorAll(".container_lesson_body");
-
 // Loop through each div and add a click event listener
 divs.forEach((div) => {
     div.addEventListener("click", (event) => {
@@ -92,4 +91,27 @@ divs.forEach((div) => {
         divs.forEach((div) => (div.style.border = ""));
         clickedDiv.style.border = "2px solid #5a48c8";
     });
+});
+const nextbtn = document.querySelector("#next_btn_lesson");
+nextbtn.addEventListener("click", () => {
+    const refreshdivs = document.querySelectorAll(".container_lesson_body");
+    const selectedDiv = Array.from(refreshdivs).find((div) => {
+        return div.style.border === "2px solid rgb(90, 72, 200)";
+    });
+    if (!selectedDiv) {
+        window.alert("No Lesson Selected");
+    } else {
+        // another-approach
+        let lessonid = selectedDiv
+            ?.querySelector(".target_holder")
+            .innerHTML.trim();
+
+        if (lessonid.trim() !== "") {
+            // append-location-to-theurl
+            window.open(
+                window.location.href.concat(`/lesson/${Number(lessonid)}`),
+                "_self"
+            );
+        }
+    }
 });
