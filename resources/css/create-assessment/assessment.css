@@ -109,3 +109,77 @@
     min-height: 60px;
     /* padding: 0.5rem; */
 }
+
+/* course-vie-styles*/
+
+div.container_lesson_body {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0.3rem rgb(0 0 0 /0.3);
+    padding-block: 1.3rem;
+    border-radius: 0.5rem;
+    padding-inline: 1.4rem;
+    font-family: poppins;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 400ms ease-in-out;
+}
+
+.container_content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    width: 200px;
+    /* max-width: 350px; */
+}
+.container_text {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 1rem;
+}
+.styled-icon {
+    color: #5a48c8;
+    font-size: 1.3rem;
+}
+.btn_side {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn_side > button {
+    background: rgba(65, 45, 187, 1);
+    border: 1px solid rgba(65, 45, 187, 1);
+    border-radius: 0.2rem;
+    padding-block: 0.5rem;
+    padding-inline: 3rem;
+    color: white;
+}
+
+/* lessonview-styles */
+.Chat_ui {
+    padding-top: 1rem;
+}
+.media_container > img,
+video,
+audio {
+    width: 100%;
+    height: 60vh;
+}
+
+.lesson_view_tool {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    padding-right: 4rem;
+}
+.lesson_headr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    margin-left: auto;
+}
+.tool_add {
+    margin-left: auto;
+}

@@ -87,9 +87,9 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video' => 'nullable|url',
-            'audio' => 'nullable|url',
-            'image' => 'nullable|file|image|max:2048', // Validate image upload
+            'video' => 'nullable|file|mimes:mp4,mov,avi|max:70480',
+            'audio' => 'nullable|file|mimes:mp3,wav|max:30240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240', // 
             'status' => 'nullable|string'
         ]);
     
@@ -100,21 +100,26 @@ class AdminController extends Controller
         }
     
         // Handle file upload for image
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagePath = $image->store('lessons/images', 'public'); // Store image in 'public' disk
-        }
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('lessons/images','public') : null;
+        $videoPath = $request->hasFile('video') ? $request->file('video')->store("lessons/video",'public') : null;
+        $audioPath = $request->hasFile('audio') ? $request->file('audio')->store("lessons/audio",'public') : null;
     
+
+        // add-lesson-numer-filed-to-auto-increment-manually
+        // this-after-validation
+        $lastsession = CourseLesson::where('course_id',$courseid)->orderBy('lesson_number','desc')->first();
+        $nextlessonnumber = $lastsession ? $lastsession->lesson_number + 1 : 1;
+
         // Create new lesson and link it to the course
         $lesson = new CourseLesson();
         $lesson->course_id = $courseid;
         $lesson->name = $request->name;
         $lesson->description = $request->description;
-        $lesson->video = $request->video;
-        $lesson->audio = $request->audio;
+        $lesson->video = $videoPath;
+        $lesson->audio = $audioPath;
         $lesson->status = $request->status;
-        $lesson->image = $imagePath; // Store image path
+        $lesson->image = $imagePath; 
+        $lesson->lesson_number = $nextlessonnumber;
         $lesson->save();
     
         return response()->json($lesson, 201);
@@ -297,7 +302,7 @@ public function fetchCourse($id)
       // Find the course by its ID
       $course = Course::find($id);
     //   check-if-lesson-exist
-        $lessons = $course->lessons;
+      
         $routeName = "CourseView";
 
 
@@ -306,13 +311,33 @@ public function fetchCourse($id)
           return response()->json(['error' => 'Course not found'], 404);
       };
 
-      
+      $lessons = $course->lessons;
   
       // Return the course data as a JSON response
       // return response()->json($course);
   
       // Return the Blade view and pass the course data to it
     return view('admin.courseview', ['course' => $course,'lessons' => $lessons,'routeNamePart' => $routeName]);
+}
+
+// viewlessons-controller
+public function fetchLesson($courseid, $lessonid) {
+    $course = Course::find($courseid);
+
+    // validate-course-id
+    if(!$course) {
+        return response()->json(['error' => 'Course not Found',404]);
+    }
+
+    // lesson-validate-the-id
+    $lesson = CourseLesson::where('course_id',$courseid)->where('lesson_number', $lessonid)->first();
+
+    if(!$lesson) {
+        return response()->json(['error' => 'Lesson not found'],404);
+    }
+
+    // continue-f-all-is-well
+    return view('admin.lessonview',['course' => $course,'lesson' => $lesson, 'routeNamePart' => 'LessonView']);
 }
 
 

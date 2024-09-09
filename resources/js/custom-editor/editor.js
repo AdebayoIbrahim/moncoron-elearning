@@ -206,64 +206,68 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     const csrftoken = document.querySelector("input[name=_token]")?.value;
-    submitBtn?.addEventListener("click", async () => {
-        //    select-next-pelement-in-editor
-        let valueText;
+    submitBtn?.addEventListener(
+        "click",
+        async () => {
+            //    select-next-pelement-in-editor
+            let valueText;
 
-        if (editor.getElementsByTagName("p")) {
-            valueText = editor?.getElementsByTagName("p")[0].textContent;
-        } else {
-            valueText = document.querySelector("#editor-content").value;
-        }
-
-        // get-images-audio-or-videofile
-        const imageupd = editor
-            ?.getElementsByTagName("img")[0]
-            .getAttribute("src");
-
-        const videupd = editor
-            ?.getElementsByTagName("video")[0]
-            .getAttribute("src");
-
-        const audioup = editor
-            ?.getElementsByTagName("audio")[0]
-            .getAttribute("src");
-
-        const formdataoptions = {
-            content: valueText,
-            image: await convertBlobtofile(imageupd, "image", valueText),
-            audio: await convertBlobtofile(audioup, "audio", valueText),
-            video: await convertBlobtofile(videupd, "video", valueText),
-        };
-
-        // loop-through-fields-and-append-key-value-pair
-        function formData() {
-            const forms = new FormData();
-            for (const [key, val] of Object.entries(formdataoptions)) {
-                forms.append(key, val);
+            if (editor.getElementsByTagName("p")) {
+                valueText = editor?.getElementsByTagName("p")[0].textContent;
+            } else {
+                valueText = document.querySelector("#editor-content").value;
             }
-            return forms;
-        }
 
-        const requsetSend = async () => {
-            try {
-                const response = await fetch(savePointurl, {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-Token": csrftoken,
-                        Accept: "application/json",
-                    },
-                    body: formData(),
-                });
-                console.log(response);
-            } catch (err) {
-                console.log(err);
-                window.alert("Failed To Save with unknown error");
+            // get-images-audio-or-videofile
+            const imageupd = editor
+                ?.getElementsByTagName("img")[0]
+                .getAttribute("src");
+
+            const videupd = editor
+                ?.getElementsByTagName("video")[0]
+                .getAttribute("src");
+
+            const audioup = editor
+                ?.getElementsByTagName("audio")[0]
+                .getAttribute("src");
+
+            const formdataoptions = {
+                content: valueText,
+                image: await convertBlobtofile(imageupd, "image", valueText),
+                audio: await convertBlobtofile(audioup, "audio", valueText),
+                video: await convertBlobtofile(videupd, "video", valueText),
+            };
+
+            // loop-through-fields-and-append-key-value-pair
+            function formData() {
+                const forms = new FormData();
+                for (const [key, val] of Object.entries(formdataoptions)) {
+                    forms.append(key, val);
+                }
+                return forms;
             }
-        };
 
-        requsetSend();
-    });
+            const requsetSend = async () => {
+                try {
+                    const response = await fetch(savePointurl, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-Token": csrftoken,
+                            Accept: "application/json",
+                        },
+                        body: formData(),
+                    });
+                    console.log(response);
+                } catch (err) {
+                    console.log(err);
+                    window.alert("Failed To Save with unknown error");
+                }
+            };
+
+            requsetSend();
+        },
+        false
+    );
 });
 
 // submitform
