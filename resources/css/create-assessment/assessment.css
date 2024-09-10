@@ -138,6 +138,7 @@ div.container_lesson_body {
 .styled-icon {
     color: #5a48c8;
     font-size: 1.3rem;
+    margin-bottom: 5px;
 }
 .btn_side {
     padding-top: 2rem;
@@ -182,4 +183,73 @@ audio {
 }
 .tool_add {
     margin-left: auto;
+}
+
+/* chats
+ */
+
+/* Basic chat message container styles */
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Style for individual messages */
+.message {
+    /* padding: 10px 15px 15px 10px;
+     */
+    padding: 8px 8px 4px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    position: relative;
+}
+
+/* Style for messages sent by the current user */
+.my-message {
+    background-color: #dcf8c6;
+    align-self: flex-start;
+    text-align: right;
+    margin-left: auto;
+    /* if-my-messageappend padding-right */
+    /* padding-right: 4em; */
+    display: flex;
+    gap: 1rem;
+}
+
+/* Style for messages received from others */
+.other-message {
+    background-color: #fff;
+
+    align-self: flex-end;
+    text-align: left;
+}
+
+/* Message sender's initials */
+/* .message::after {
+    content: "123";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding-top: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+} */
+
+.bottom_text_cont {
+    font-size: 0.8rem;
+    align-self: flex-end;
+    margin-top: 0.8rem;
+}
+/* Ensures messages are visually separated */
+.message-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\ChunkUploadController;
 use App\Http\Controllers\CKEditorController;
 use App\Http\Controllers\StudentAssessmentController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ChatmessagesController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LessonAssessmentController;   
@@ -244,6 +245,16 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     Route::get('/admin/courses/{id}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
     // fetchcourse-details`
     Route::get('/admin/courses/{courseid}/lesson/{lessonid}',[AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
+
+    // Dynamic-new-chat-routes
+    // Fetch messages for a specific lesson in a specific course
+    Route::get('/admin/courses/{courseId}/lesson/{lessonId}/messages', [ChatmessagesController::class, 'fetchMessages'])->name('chat.fetch');
+
+
+    // Send a message to a specific lesson in a specific course
+    Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])   ->name('chat.send');
+
+
     Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
     Route::get('/admin/courses/view/{id}', [AdminController::class, 'viewCourse'])->name('admin.courseview');
     Route::get('/admin/courses/delete/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
@@ -305,6 +316,13 @@ Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teac
 
 Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
+
+
+
+
+
+
+//ends
 // Routes for Dawah posts and teachers
 
 

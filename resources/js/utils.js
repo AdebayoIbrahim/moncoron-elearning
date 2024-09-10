@@ -62,3 +62,10 @@ export const formData = (payloadobject) => {
     }
     return forms;
 };
+
+// conert-is-to-time
+export const formatTime = (isoString) => {
+    const date = new Date(isoString);
+    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+    return date.toLocaleTimeString("en-GB", options);
+};

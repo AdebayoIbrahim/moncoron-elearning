@@ -104,7 +104,7 @@ nextbtn.addEventListener("click", () => {
         // another-approach
         let lessonid = selectedDiv
             ?.querySelector(".target_holder")
-            .innerHTML.trim();
+            .textContent.trim();
 
         if (lessonid.trim() !== "") {
             // append-location-to-theurl
