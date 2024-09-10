@@ -2,7 +2,7 @@
 @section('content')
     @include('partials.admin_header')
     @csrf
-    @vite(['resources/css/create-assessment/assessment.css'])
+    @vite(['resources/css/create-assessment/assessment.css','resources/js/courseview/lessonview.js'])
     <div class="container-fluid">
         <div class="row mt-2">
             {{-- @include('partials.admin_sidebar') --}}
@@ -35,61 +35,42 @@
                                 @endif
 
                                 @if($lesson->audio)
-                                    <audio controls class="w-100 mb-3">
+                                <h4>Audio</h4>
+                                    <audio controls class="w-100 mb-3" style="height: 50px">
                                         <source src="{{ asset('storage/' . $lesson->audio) }}" type="audio/mpeg">
                                         Your browser does not support the audio element.
                                     </audio>
                                 @endif
 
                                 @if($lesson->image)
-                                    <img src="{{ asset('storage/' . $lesson->image) }}" alt="Lesson Image" class="img-fluid">
+                                <h4>Image</h4>
+                                    <img src="{{ asset('storage/' . $lesson->image) }}" alt="Lesson Image" class="img-fluid" style="object-fit: cover;widht: clac(100%-30px);height: 100%">
                                 @endif
                             </div>
                         </div>
                     </div>
                         <!-- Left side: Chat UI -->
-                    <div class="col-md-5">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Chat</h5>
-                            </div>
-                            <div class="card-body" id="chat-box" style="height: 450px; overflow-y: scroll;">
-                                <!-- Chat messages will be displayed here -->
-                            </div>
-                            <div class="card-footer">
-                                <form id="chat-form">
+                        <div class="col-md-5">
+                            <input type="hidden" id="curruserid" value="{{ auth()->user()->id }}">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Chat</h5>
+                                </div>
+                                <div class="card-body" id="chat-box" style="height: 450px; overflow-y: auto; padding: 15px;width:100%">
+                                    <!-- Chat messages will be displayed here -->
+                                </div>
+                                <div class="card-footer">
                                     <div class="input-group">
                                         <input type="text" id="chat-input" class="form-control" placeholder="Type a message..." />
-                                        <button type="submit" class="btn btn-primary">Send</button>
+                                        <button type="button" class="btn btn-primary" id="send-message">Send</button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        
                 </div>
             
         </div>
-    </div>
-
-    <script>
-        // JS for handling chat functionality (basic example)
-        document.getElementById('chat-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const chatInput = document.getElementById('chat-input');
-            const chatBox = document.getElementById('chat-box');
-
-            if (chatInput.value.trim() !== '') {
-                // Append new message to chat box
-                const newMessage = document.createElement('p');
-                newMessage.innerText = chatInput.value;
-                chatBox.appendChild(newMessage);
-
-                // Clear chat input field
-                chatInput.value = '';
-
-                // Scroll to bottom of chat box
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        });
-    </script>
+        
+    </div> 
 @endsection

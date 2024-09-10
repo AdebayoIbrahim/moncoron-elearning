@@ -39,4 +39,9 @@ class CourseLesson extends Model
     {
         return $this->hasMany(UserCourseLesson::class);
     }
+
+    public function chatMessages()
+    {
+        return $this->hasMany(ChatMessage::class, 'lesson_id');
+    }
 }
