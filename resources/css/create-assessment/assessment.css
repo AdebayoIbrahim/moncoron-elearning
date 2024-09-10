@@ -200,7 +200,6 @@ audio {
     /* padding: 10px 15px 15px 10px;
      */
     padding: 8px 8px 4px;
-    border-radius: 10px;
     margin-bottom: 10px;
     max-width: 80%;
     position: relative;
@@ -208,48 +207,35 @@ audio {
 
 /* Style for messages sent by the current user */
 .my-message {
-    background-color: #dcf8c6;
+    background-color: #7679ee;
     align-self: flex-start;
     text-align: right;
     margin-left: auto;
-    /* if-my-messageappend padding-right */
-    /* padding-right: 4em; */
+    color: #fff;
+    /* if-my-messageappend border-radius */
     display: flex;
     gap: 1rem;
+    border-radius: 10px 10px 0 10px;
 }
 
 /* Style for messages received from others */
 .other-message {
-    background-color: #fff;
-
+    background-color: #dfdfee;
+    color: rgb(36, 34, 34);
+    border-radius: 10px 10px 10px 0px;
     align-self: flex-end;
     text-align: left;
-}
-
-/* Message sender's initials */
-/* .message::after {
-    content: "123";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    padding-top: 10px;
-    border-radius: 50%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-} */
+    gap: 1rem;
+}
 
 .bottom_text_cont {
     font-size: 0.8rem;
     align-self: flex-end;
     margin-top: 0.8rem;
 }
-/* Ensures messages are visually separated */
 .message-container {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }

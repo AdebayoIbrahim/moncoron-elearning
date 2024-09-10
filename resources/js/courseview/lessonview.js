@@ -51,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
         chatMessages.innerHTML = "";
         const currentUserId = document.querySelector("#curruserid").value;
 
+        // for-recepient-ui-test// let currentUserId = 1;
+
         messages.forEach((message) => {
             const messageElement = document.createElement("div");
             messageElement.classList.add("message-container");
