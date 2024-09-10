@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class ChatMessage extends Model
 {
     protected $table = "chat_messages";
-    protected $fillable = ['user_id', 'lesson_id', 'course_id', 'message'];
+    protected $fillable = ['user_id', 'lesson_number', 'course_id', 'message'];
 
     public function user()
     {
@@ -15,7 +15,7 @@ class ChatMessage extends Model
 
     public function lesson()
     {
-        return $this->belongsTo(CourseLesson::class, 'lesson_id');
+        return $this->belongsTo(CourseLesson::class, 'lesson_number');
     }
 
     public function course()

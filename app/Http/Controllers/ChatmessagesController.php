@@ -4,20 +4,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ChatMessage;
 use App\Models\CourseLesson;
-use Illuminate\Http\JsonResponse;
 
 class ChatmessagesController extends Controller
 {
     public function fetchMessages($courseId, $lessonId)
     {
         // Ensure the lesson exists and belongs to the given course
-        $lesson = CourseLesson::where('lesson_number', $lessonId)
-                              ->where('course_id', $courseId)
-                              ->firstOrFail();
+        $lesson = CourseLesson::where('lesson_number', $lessonId)->where('course_id', $courseId) ->firstOrFail();
         
         
         // Fetch messages associated with the lesson
-        $messages = $lesson->chatMessages()->with('user')->get();
+        $messages = ChatMessage::where('course_id', $courseId) ->where('lesson_number', $lesson->lesson_number)->with('user')->get();
 
         return response()->json($messages);
     }
@@ -29,13 +26,13 @@ class ChatmessagesController extends Controller
         ]);
 
         // Ensure the lesson exists and belongs to the given course
-        $lesson = CourseLesson::where('lesson_number', $lessonId)
-                              ->where('course_id', $courseId)
-                              ->firstOrFail();
+        $lesson = CourseLesson::where('lesson_number', $lessonId)->where('course_id', $courseId)->firstOrFail();
 
         // Create and save a new chat message
-        $message = $lesson->chatMessages()->create([
+        $message = ChatMessage::create([
             'user_id' => auth()->id(),
+            'course_id' => $courseId,
+            'lesson_number' => $lesson->lesson_number, 
             'message' => $request->message,
         ]);
 
