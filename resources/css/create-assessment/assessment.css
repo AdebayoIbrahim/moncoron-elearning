@@ -251,5 +251,5 @@ audio {
 .message-container {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 15px;
+    margin-bottom: 2px;
 }

@@ -252,7 +252,7 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
 
 
     // Send a message to a specific lesson in a specific course
-    Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])   ->name('chat.send');
+    Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
 
 
     Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');

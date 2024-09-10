@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
             .then((response) => response.json())
             .then((messages) => {
                 renderMessages(messages);
+            })
+            .catch(function () {
+                window.alert("Error Getting Messages Reload");
             });
     }
 
@@ -26,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (message.trim() === "") return;
 
         const csrftoken = document.querySelector("input[name=_token]")?.value;
-        fetch(`/admin/courses/${courseId}/lesson/${lessonId}/messages`, {
+        fetch(`/admin/courses/${courseId}/lesson/${lessonId}/message`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -36,8 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then((response) => response.json())
             .then((data) => {
-                chatInput.value = ""; // Clear the input field
-                fetchMessages(); // Refresh the messages
+                chatInput.value = "";
+                fetchMessages();
+            })
+            .catch((err) => {
+                window.alert(`Error: Failed to Send Message`);
             });
     });
 
@@ -57,6 +63,10 @@ document.addEventListener("DOMContentLoaded", function () {
             subcontent.classList.add("bottom_text_cont");
             if (message.user_id == currentUserId) {
                 messageContent.classList.add("my-message");
+                subcontent.innerHTML = `${formatTime(
+                    message?.created_at
+                )}<span style = "margin-left: 3px"><i class="fa fa-check" aria-hidden="true"></i>
+                </span>`;
             } else {
                 messageContent.classList.add("other-message");
                 const initials = message.user.name;
