@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const fileCorellation =
         document.getElementById("file_correlation")?.innerText || lessonId;
 
-    function fetchMessages() {
+    // fetching-messages-fro-db
+    async function fetchMessages() {
         fetch(`/admin/courses/${courseId}/lesson/${lessonId}/messages`)
             .then((response) => response.json())
             .then((messages) => {
@@ -29,9 +30,13 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    // text-only-send-button
     sendButton.addEventListener("click", function () {
         const message = chatInput.value;
-        if (message.trim() === "") return;
+        if (message.trim() === "") {
+            alert("No Input to send");
+            return;
+        }
 
         fetch(`/admin/courses/${courseId}/lesson/${lessonId}/message`, {
             method: "POST",
@@ -51,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
+    // rendering-messages-conditionaly
     function renderMessages(messages) {
         chatMessages.innerHTML = "";
         const currentUserId = document.querySelector("#curruserid").value;
@@ -96,39 +102,62 @@ document.addEventListener("DOMContentLoaded", function () {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    // fetch-automatically-whenpageis-loaded
     fetchMessages();
     // setInterval(fetchMessages, 5000); // Poll every 5 seconds
 
     // functions-to-trigger-user-audio/mic
+    // mixins-variable-utility-purpose
     let audioRecorder;
     let audioChunks = [];
     let stop = false;
+    const audiosignal = document.querySelector(".audio-signal");
+    const cancelrecord = document.querySelector("#cancel_record");
+    const stopbtn = document.querySelector("#stop_record");
+    const record_text = document.getElementById("record_text");
+    const record_wave = document.getElementById("record_wave");
+    // audioelement placeholder
+    let audioEl;
+    const recordSendbutton = document.querySelector("#send_audio_record");
 
-    document.getElementById("audio_btn_record").onclick = async () => {
-        const audiosignal = document.querySelector(".audio-signal");
-        const cancelrecord = document.querySelector("#cancel_record");
-        const stopbtn = document.querySelector("#stop_record");
-        const record_text = document.getElementById("record_text");
-        const record_wave = document.getElementById("record_wave");
+    // disable-sendbtn
+    recordSendbutton.disabled = true;
+    // cancle-trigeers-cancel-all
+    cancelrecord.onclick = function () {
+        cancelRecording();
+    };
+    // utlity-cancel-record func
+    function cancelRecording() {
+        audioRecorder.stop();
+        stop = false;
+        audiosignal.style.display = "none";
+        // clean_ups_after_canceled
+        if (audiosignal.classList.contains("after_rec_style")) {
+            audiosignal.classList.remove("after_rec_style");
+            audiosignal.removeChild(audioEl);
+            record_text.style.display = "block";
+            record_wave.style.display = "block";
+            document.getElementById("audio_data").value = "";
+        }
+    }
 
-        // audioelement placeholder
-        let audioEl;
+    // stope_record
+    stopbtn.onclick = function () {
+        stopButtonrecording();
+    };
 
-        // cancle-trigeers-cancel-all
-        cancelrecord.onclick = function () {
+    // utility-stop-record-func
+    function stopButtonrecording() {
+        if (audioRecorder && audioRecorder.state === "recording") {
+            stop = true;
+            console.log("trigger");
             audioRecorder.stop();
-            stop = false;
-            audiosignal.style.display = "none";
-            // clean_ups
-            if (audiosignal.classList.contains("after_rec_style")) {
-                audiosignal.classList.remove("after_rec_style");
-                audiosignal.removeChild(audioEl);
-                record_text.style.display = "block";
-                record_wave.style.display = "block";
-                document.getElementById("audio_data").value = "";
-            }
-        };
+            recordSendbutton.disabled = false;
+        }
+    }
 
+    // audio-button_clicked_for-audios-only-tostart-audio
+    document.getElementById("audio_btn_record").onclick = async () => {
         if (audioRecorder && audioRecorder.state === "recording") {
             audioRecorder.stop();
         } else {
@@ -137,13 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const stream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
             });
-            // stope_record
 
-            stopbtn.onclick = function () {
-                stop = true;
-                console.log("trigger");
-                audioRecorder.stop();
-            };
             audioRecorder = new MediaRecorder(stream);
             // then-push-toaudio-chunks-as-aprts
             audioRecorder.ondataavailable = (e) => {
@@ -173,31 +196,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log(audioEl);
                     audiosignal.classList.add("after_rec_style");
                     audiosignal.prepend(audioEl);
-                    // usefile-reader-toread-blob
-                    // const reader = new FileReader();
-                    // reader.onloadend = () => {
-                    //     document.getElementById("audio_data").value =
-                    //         reader.result.split(",")[1];
-                    // };
-                    // reader.readAsDataURL(blobfile);
                 }
             };
 
             audioRecorder.start();
-            // audioBtn.innerHTML = `<i class="fas fa-stop b" style = "color:red"></i>`;
         }
     };
 
     // get_record_button_func
-    const recordSendbutton = document.querySelector("#send_audio_record");
 
+    // function_to_send_audio_content
     recordSendbutton.addEventListener("click", async () => {
+        // perform-stop_func_first_to_follow_theprocess
+
+        // stopButtonrecording();
         // query-for-hidden-audio-input
         const recordFile = document
             ?.querySelector(".audo_rec_file")
             ?.getAttribute("src");
         console.log(recordFile);
 
+        // structured_objrct_forms
         const formobj = {
             audio: await convertBlobtofile(
                 recordFile,
@@ -205,10 +224,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 fileCorellation
             ),
         };
-        console.log(formobj);
+
+        // type-conditional_call_onlyif thereis a recorded file
         if (recordFile && recordFile.src !== "") {
             try {
-                const request = axios.post(
+                await axios.post(
                     `/admin/courses/${courseId}/lesson/${lessonId}/message`,
                     { ...formobj },
                     {
@@ -220,15 +240,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                     }
                 );
-
-                const response = await request?.data;
-
-                if (response) {
-                    fetchMessages();
-                }
+                chatInput.value = "";
+                cancelRecording();
+                // then-refetch-messages
+                await fetchMessages();
             } catch (err) {
                 console.log(`Erro${err}`);
             }
+        } else {
+            window.alert("No input to send");
         }
     });
 });
