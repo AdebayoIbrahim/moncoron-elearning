@@ -31,9 +31,9 @@ class ChatmessagesController extends Controller
         $lesson = CourseLesson::where('lesson_number', $lessonId)->where('course_id', $courseId)->firstOrFail();
         $audiopath = $request->hasFile('audio') ? $request->file('audio')->store("lessons/audichats","public") : null;
 
-        
-
-
+        if(!$audiopath && !$request->message) {
+            return response()->json(['Bothh Fields Can"t be empty'],500);
+        }
         // Create and save a new chat message
         $message = ChatMessage::create([
             'user_id' => auth()->id(),
