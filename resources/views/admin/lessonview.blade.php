@@ -9,7 +9,7 @@
          
                 <div class="lesson_view_tool">
                    <div class="lesson_headr">
-                       <h3 class="text-center">{{$lesson->name}}</h3>
+                       <h3 class="text-center" id = "file_correlation">{{$lesson->name}}</h3>
                        {{-- lesson-desc --}}
                        <p>{{$lesson->description}}</p>
                    </div>
@@ -54,15 +54,48 @@
                             <input type="hidden" id="curruserid" value="{{ auth()->user()->id }}">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Chat</h5>
+                                    <h5>Group Chat</h5>
                                 </div>
-                                <div class="card-body" id="chat-box" style="height: 450px; overflow-y: auto; padding: 15px;width:100%">
+                                <div class="card-body" id="chat-box" style="height: 450px; overflow-y: auto;
+                                overflew-x:hidden; padding: 15px;width:100%">
                                     <!-- Chat messages will be displayed here -->
                                 </div>
                                 <div class="card-footer">
                                     <div class="input-group">
-                                        <input type="text" id="chat-input" class="form-control" placeholder="Type a message..." />
-                                        <button type="button" class="btn btn-primary" id="send-message">Send</button>
+                                        <div class="form_datas"><input type="text" id="chat-input" class="form-control" placeholder="Type a message..." />
+                                        <div class="d-flex gap-0">
+                                        <button class="btn btn-primay no_styling_btn">
+                                            <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                        </button>
+                                        <button class="btn btn-primay no_styling_btn" id = "audio_btn_record">
+                                            <i class="fa-solid fa-microphone"></i>
+                                        </button>
+                                        </div>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" id="send-message"><i class="fa fa-paper-plane send-paper" aria-hidden="true"></i></button>
+                                        {{-- audio-signal-flow --}}
+                                        <div class="audio-signal">
+                                            <input type="hidden" id="audio_data" name="audio_data" />
+                                            <h4 id = "record_text">Recording Message</h4>
+                                            <div class="img_record_wrapper" id = "record_wave">
+                                                <img src="{{asset ('images/Recording.gif') }}" alt="audio-wave" style="width: 85px; height: 85px">
+                                            </div>
+
+                                            {{-- last_flex_action_btn --}}
+                                            <div class="d-flex justify-content-between" style="width: 70%; ">
+
+                                                <button class="btn btn-primay no_styling_btn record_btns" id = "cancel_record">
+                                                    <i class="fas fa-times"style = "color: #ffff"></i>
+                                                </button>
+                                                <button class="btn btn-primay no_styling_btn record_btns" id = "stop_record">
+
+                                                    <i class="fas fa-stop b" style = "color:red"></i>
+                                                </button>
+                                                <button class="btn btn-primay no_styling_btn record_btns" id = "send_audio_record">
+                                                    <i class="fa fa-paper-plane" aria-hidden="true" style = "color: #ffff !important"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
