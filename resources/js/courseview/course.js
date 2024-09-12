@@ -1,7 +1,10 @@
 import * as bootstrap from "bootstrap";
 import { convertBlobtofile } from "../utils";
 import axios from "axios";
-
+const urlString = window.location.href;
+const regexcourse = /\/courses\/(\d+)/;
+const matchcourse = urlString.match(regexcourse);
+const courseId = matchcourse ? matchcourse[1] : null;
 // Codes-for-course-view-BeUnloadEvent.php
 const editorAdd = new bootstrap.Modal(
     document.querySelector("#editore_modal_overlay_lesson")
@@ -27,6 +30,7 @@ const donelessonBtn = document.querySelector(
 donelessonBtn.addEventListener("click", handleClick);
 const editor = document.querySelector('[aria-details="content_placeholder"]');
 // Function to handle the click event
+
 async function handleClick() {
     const lessonName = document.querySelector("#lesson_name");
     const inputVal = editor?.getElementsByTagName("p")[0];
@@ -61,7 +65,7 @@ async function handleClick() {
     };
     try {
         const response = await axios.post(
-            `/admin/course/8/lessons`,
+            `/admin/course/${courseId}/lessons`,
             { ...formoptions },
             {
                 method: "POST",

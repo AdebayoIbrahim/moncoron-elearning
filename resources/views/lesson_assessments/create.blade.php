@@ -3,7 +3,7 @@
 @include('partials.admin_header')
 @vite(['resources/js/create-assessment/assessment.js','resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js'])
 <div class="container">
-    <h2>Create Assessment for Lesson {{ $lessonId }}</h2>
+    <h2 class="mt-2 pt-2">Create Assessment for Lesson {{ $lessonId }}</h2>
 
     <!-- Success and Error Messages -->
     @if(session('success'))

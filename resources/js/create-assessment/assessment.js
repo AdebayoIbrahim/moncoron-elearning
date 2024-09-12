@@ -1,8 +1,19 @@
 import * as bootstrap from "bootstrap";
+import axios from "axios";
 import { convertBlobtofile, optionValue } from "../utils";
 const editormodal = new bootstrap.Modal(
     document.querySelector("#editore_modal_overlay")
 );
+
+// get_lesson_idand_corse_id
+const urlString = window.location.href;
+const regex = /\/lesson\/(\d+)\/create-assessments/;
+const match = urlString.match(regex);
+const lessonId = match ? match[1] : null;
+
+const regexcourse = /\/courses\/(\d+)\/lesson/;
+const matchcourse = urlString.match(regexcourse);
+const courseId = matchcourse ? matchcourse[1] : null;
 
 const closeBtn = document.getElementById("close_modal");
 const editor = document.querySelector('[aria-details="content_placeholder"]');
@@ -244,23 +255,22 @@ submitBtn.addEventListener("click", async () => {
     };
 
     console.log("Form Data:", payload);
-
-    let courseId = 8;
-    let lessonId = 8;
-
-    const fetchreq = await fetch(
-        `/createlessonassessment/store?courseId=${courseId}&lessonId=${lessonId}`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrftoken,
-                Accept: "application/json",
-            },
-            body: JSON.stringify(payload),
-        }
-    );
-
-    const result = await fetchreq.json();
-    console.log("Response:", result);
+    //    send-post-requst-to-db
+    try {
+        const response = await axios.post(
+            `/admin/courses/${courseId}/lesson/${lessonId}/create-assessment`,
+            { ...payload },
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "X-CSRF-Token": csrftoken,
+                    Accept: "application/json",
+                },
+            }
+        );
+        // const data = await response.data;
+        response && window.alert("Submission Successfull");
+    } catch (err) {
+        window.alert("Error Check Console for details", err.status);
+    }
 });
