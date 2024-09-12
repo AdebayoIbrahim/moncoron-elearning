@@ -138,10 +138,10 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
 
     // Creating a new assessment
-    Route::get('/admin/courses/{courseId}/lessons/{lessonId}/assessments/create', [LessonAssessmentController::class, 'create'])->name('assessments.create');
+    Route::get('/admin/courses/{courseId}/lesson/{lessonId}/create-assessments', [LessonAssessmentController::class, 'create'])->name('assessments.create');
 
     // Storing the assessment
-    Route::post('/admin/courses/{courseId}/lessons/{lessonId}/assessments/store', [LessonAssessmentController::class, 'store'])->name('assessments.store');
+    Route::post('/admin/courses/{courseid}/lesson/{lessonid}/create-assessment',[AdminController::class,'Addlessonassessment'])->name('assessment.create.add');
 
     // Viewing a specific assessment
     Route::get('/admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
@@ -198,13 +198,6 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
 
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-
-    // route-for-creatig-lessons-assements
-
-Route::post('/createlessonassessment/store', [LessonsAssessmentsNew::class, 'store'])->name('lessonassessments.store');
-
-
-
    
     // Student Routes for Course Assessments
 Route::get('/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('student.courses.assessments');

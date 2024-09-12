@@ -31,9 +31,10 @@ class LessonAssessmentController extends Controller
 
     public function create($courseId, $lessonId)
     {
-        $lesson = CourseLesson::findOrFail($lessonId);
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $lesson = CourseLesson::where("lesson_number",$lessonId)->where("course_id",$courseId)->firstOrFail();
+        // $routeName = Route::currentRouteName();
+        // $routeNamePart = ucfirst(last(explode('.', $routeName)));
+        $routeNamePart = "AssessmentCreate";
 
         return view('lesson_assessments.create', compact('courseId', 'lessonId', 'routeNamePart'));
     }

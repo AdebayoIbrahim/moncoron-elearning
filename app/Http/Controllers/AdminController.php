@@ -10,6 +10,7 @@ use App\Models\CourseLesson;
 use App\Models\CourseAssessment;
 use App\Models\UserLessonAssessment;
 use App\Models\User;
+use App\Models\Lessonassessment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -124,6 +125,65 @@ class AdminController extends Controller
     
         return response()->json($lesson, 201);
     }
+
+    // add_lesson_assessments
+    public function Addlessonassessment(Request $request,$courseid, $lessonid) 
+    {
+        $validated  = $request->validate([
+            'questions' => 'required|array',
+            'general_time_limit' =>  'required|integer'
+        ]);
+
+        // validate-course-idandlessonid-if-exist
+        $lesson = CourseLesson::where('course_id',$courseid)->where("lesson_number",$lessonid)->first();
+        
+        if(!$lesson) {
+            return response()->json(['Course or Lesson not Found'],404);
+        };
+
+        $questionsData = $validated['questions'];
+        array_unshift($questionsData, ['general_time_limit' => $validated['general_time_limit']]);
+        
+        foreach ($questionsData as &$question) {
+            if (!isset($question['options']) || !is_array($question['options'])) {
+                continue; // Skip to the next question if options are missing or not an array
+            }
+        
+            foreach ($question['options'] as &$option) {
+                $option['media']['image_path'] = $this->handleFileUpload($request->file('option_images')[$option['id']] ?? null, 'images');
+                $option['media']['audio_path'] = $this->handleFileUpload($request->file('option_audio')[$option['id']] ?? null, 'audio');
+                $option['media']['video_path'] = $this->handleFileUpload($request->file('option_video')[$option['id']] ?? null, 'video');
+            }
+        
+            $question['media']['image_path'] = $this->handleFileUpload($request->file('question_images')[$question['id']] ?? null, 'images');
+            $question['media']['audio_path'] = $this->handleFileUpload($request->file('question_audio')[$question['id']] ?? null, 'audio');
+            $question['media']['video_path'] = $this->handleFileUpload($request->file('question_video')[$question['id']] ?? null, 'video');
+        }
+        
+
+        $questionsJson = json_encode($questionsData);
+
+        // Create a new LessonAssessmentNew record
+        $assessment = Lessonassessment::create([
+            'course_id' => $courseid,
+            'lesson_id' => $lesson->lesson_number,
+            'questions' => $questionsJson,
+        ]);
+
+        return response()->json($assessment, 201);
+    }
+      // handle-file-uploadfor-lessonassessment
+      protected function handleFileUpload($file, $type)
+      {
+          if ($file) {
+              $path = $file->store('lessonsassessments/uploads/' . $type, 'public');
+              return $path;
+          }
+          return null;
+      }
+  
+  
+       
 
     public function manageAssessments($courseId)
     {

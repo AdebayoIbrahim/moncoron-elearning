@@ -251,4 +251,14 @@ document.addEventListener("DOMContentLoaded", function () {
             window.alert("No input to send");
         }
     });
+
+    // add-assessment-button
+    const addassessmentBtn = document.querySelector("#add_assessment_btn");
+    addassessmentBtn.onclick = function () {
+        //TODO:verify-auth0status-before-navigation
+        window.open(
+            window.location.href.concat("/create-assessments"),
+            "_self"
+        );
+    };
 });

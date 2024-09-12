@@ -15,7 +15,7 @@
                    </div>
                    
                    <div class="tool_add">
-                    <button type="button" class="btn btn-primary btn-md">Add Assessment</button>
+                    <button type="button" class="btn btn-primary btn-md" id = "add_assessment_btn">Add Assessment</button>
                    </div>
                 </div>
                 <div class="row Chat_ui">
