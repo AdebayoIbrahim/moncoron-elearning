@@ -144,7 +144,7 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
     Route::post('/admin/courses/{courseid}/lesson/{lessonid}/create-assessment',[AdminController::class,'Addlessonassessment'])->name('assessment.create.add');
 
     // Viewing a specific assessment
-    Route::get('/admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
+    Route::get('/admin/courses/{courseid}/lesson/{lessonid}/assessment', [AdminController::class, 'PreviewAssessment'])->name('lesson_assessment.view');
 
     // Deleting an assessment
     Route::delete('/admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');

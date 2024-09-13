@@ -14,7 +14,7 @@ class ChatmessagesController extends Controller
         
         
         // Fetch messages associated with the lesson
-        $messages = ChatMessage::where('course_id', $courseId) ->where('lesson_number', $lesson->lesson_number)->with('user')->get();
+        $messages = ChatMessage::where('course_id', $courseId)->where('lesson_number', $lesson->lesson_number)->with('user')->get();
 
         
         return response()->json($messages);

@@ -269,7 +269,20 @@ submitBtn.addEventListener("click", async () => {
             }
         );
         // const data = await response.data;
-        response && window.alert("Submission Successfull");
+        if (response) {
+            window.alert("Submission Successfull");
+            let view = "create-assessments";
+            setTimeout(() => {
+                if (window.location.href.includes(view)) {
+                    window.open(
+                        window.location.href.replace(view, "assessment"),
+                        "_self"
+                    );
+                } else {
+                    throw new Error(`Unknown Error`);
+                }
+            }, 2000);
+        }
     } catch (err) {
         window.alert("Error Check Console for details", err.status);
     }
