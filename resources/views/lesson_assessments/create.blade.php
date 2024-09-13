@@ -27,7 +27,7 @@
     </div>
 
     <!-- Questions Container -->
-    <div id="questions-container">
+    <div id="questions-container pb-sm-3">
         <div class="question">
             <div class="form-group">
                 <label for="question_0">Question 1</label>
