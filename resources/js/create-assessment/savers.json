@@ -1,5 +1,5 @@
 {
-    "Time_limit": 30,
+    "general_time_limit": 30,
     "questions": [
         {
             "id": 1,

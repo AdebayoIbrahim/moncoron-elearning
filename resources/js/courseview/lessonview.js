@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         headers: {
                             Accept: "application/json",
                             "X-CSRF-TOKEN": csrftoken,
-                            "Content-Type": "multipart/form-data",
+                            // "Content-Type": "multipart/form-data",
                         },
                     }
                 );

@@ -44,7 +44,7 @@
 
                                 @if($lesson->image)
                                 <h4>Image</h4>
-                                    <img src="{{ asset('storage/' . $lesson->image) }}" alt="Lesson Image" class="img-fluid" style="object-fit: cover;widht: clac(100%-30px);height: 100%">
+                                    <img src="{{ asset('storage/' . $lesson->image) }}" alt="Lesson Image" class="img-fluid" style="object-fit: cover;widht: clac(100%-30px);height: 450px; border-radius: 0.4rem">
                                 @endif
                             </div>
                         </div>

@@ -149,7 +149,7 @@ function addQuestion(questionCount) {
             <label for="value_${questionCount}">Question Value</label>
             <input type="number" name="questions[${questionCount}][value]" class="form-control question_value" id="value_${questionCount}" required>
         </div>
-        <button type="button" class="btn btn-danger btn-sm remove-question">Remove Question</button>
+        <button type="button" class="btn btn-danger btn-sm remove-question mt-3">Remove Question</button>
     `;
     container.appendChild(newQuestion);
     addEvenlistenerstoEditors();
@@ -164,8 +164,7 @@ document.addEventListener("click", function (event) {
 const submitBtn = document.getElementById("create_assessment");
 
 // call-function-
-// console.log(optionValue("p"));
-submitBtn.addEventListener("click", async () => {
+submitBtn?.addEventListener("click", async () => {
     const csrftoken = document.querySelector("input[name=_token]")?.value;
     const timelimit = document.querySelector("#time_limit").value;
 
@@ -181,14 +180,17 @@ submitBtn.addEventListener("click", async () => {
             quest.querySelector('[aria-details="content_container"] p')
                 ?.textContent || "";
         const audioPath =
-            quest.querySelector('[aria-details="content_container"] audio')
-                ?.src || "";
+            quest
+                .querySelector('[aria-details="content_container"] audio')
+                ?.getAttribute("src") || "";
         const videoPath =
-            quest.querySelector('[aria-details="content_container"] video')
-                ?.src || "";
+            quest
+                .querySelector('[aria-details="content_container"] video')
+                ?.getAttribute("src") || "";
         const imagePath =
-            quest.querySelector('[aria-details="content_container"] img')
-                ?.src || "";
+            quest
+                .querySelector('[aria-details="content_container"] img')
+                ?.getAttribute("src") || "";
 
         const points = quest.querySelector(".question_value")?.value;
 
@@ -205,9 +207,12 @@ submitBtn.addEventListener("click", async () => {
             for (const optItem of optionsLoop) {
                 const optionText =
                     optItem.querySelector("p")?.textContent || "";
-                const optionAudio = optItem.querySelector("audio")?.src || "";
-                const optionVideo = optItem.querySelector("video")?.src || "";
-                const optionImage = optItem.querySelector("img")?.src || "";
+                const optionAudio =
+                    optItem.querySelector("audio")?.getAttribute("src") || "";
+                const optionVideo =
+                    optItem.querySelector("video")?.getAttribute("src") || "";
+                const optionImage =
+                    optItem.querySelector("img")?.getAttribute("src") || "";
                 const optindex = Array.from(optionsLoop).indexOf(optItem);
                 const is_correct = optindex === correctIndex;
 
@@ -254,22 +259,66 @@ submitBtn.addEventListener("click", async () => {
         questions: questionsData,
     };
 
-    console.log("Form Data:", payload);
     //    send-post-requst-to-db
+
+    // switch-type-algorithm
+    const contentbtn = submitBtn.textContent;
+    //ends here
+    let response;
     try {
-        const response = await axios.post(
-            `/admin/courses/${courseId}/lesson/${lessonId}/create-assessment`,
-            { ...payload },
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    "X-CSRF-Token": csrftoken,
-                    Accept: "application/json",
-                },
+        if (contentbtn === "Create Assessment") {
+            response = await axios.post(
+                `/admin/courses/${courseId}/lesson/${lessonId}/create-assessment`,
+                { ...payload },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "X-CSRF-Token": csrftoken,
+                        Accept: "application/json",
+                    },
+                }
+            );
+            // const data = await response.data;
+            if (response) {
+                window.alert("Submission Successfull");
+                let view = "create-assessments";
+                setTimeout(() => {
+                    if (window.location.href.includes(view)) {
+                        window.open(
+                            window.location.href.replace(view, "assessment"),
+                            "_self"
+                        );
+                    } else {
+                        throw new Error(`Unknown Error`);
+                    }
+                }, 1000);
             }
-        );
-        // const data = await response.data;
-        response && window.alert("Submission Successfull");
+        } else if (contentbtn === "Save Changes") {
+            // change-the-strinreges
+            const regex = /\/lesson\/(\d+)\/assessment/;
+            const match = urlString.match(regex);
+            const lessonId = match ? match[1] : null;
+
+            //TODO:THIS IS ACTUALLY A PUT REQUEST IN POST METHOD...
+            //TODO:FIXED PUT REQUEST ISSUES INLARAVEL, THE CONTROLLER ACTUALL
+            //TODO:UPDATE USING UPDATE FUNCTION
+            response = await axios.post(
+                `/admin/courses/${courseId}/lesson/${lessonId}/assessmentupdate`,
+                { ...payload },
+                {
+                    headers: {
+                        "X-CSRF-Token": csrftoken,
+                        "Content-Type": "multipart/form-data",
+                        Accept: "application/json",
+                    },
+                }
+            );
+
+            if (response) {
+                window.alert("Changes saved successfully");
+                window.location.reload();
+            }
+        }
     } catch (err) {
         window.alert("Error Check Console for details", err.status);
     }
