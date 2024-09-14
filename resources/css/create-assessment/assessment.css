@@ -328,3 +328,15 @@ div.form_datas > #chat-input {
     padding-top: 1rem;
     text-align: center;
 }
+.correct_option_ticked {
+    background: rgb(6, 168, 6);
+    color: white;
+}
+
+/* file-pop-up-animate */
+.pop_upload_file {
+    animation: pop 500ms ease-in-out;
+    width: 300px;
+    height: 250px;
+    object-fit: cover;
+}

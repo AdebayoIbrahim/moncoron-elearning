@@ -84,56 +84,58 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'New Course created successfully.');
     }
     public function Addlessonassessment(Request $request, $courseid, $lessonid)
-    {
-        // Validate input
-        $validated = $request->validate([
-            'questions' => 'required|array',
-            'general_time_limit' => 'required|integer'
-        ]);
-    
-        // Validate if course and lesson exist
-        $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
-        
-        if (!$lesson) {
-            return response()->json(['Course or Lesson not Found'], 404);
-        }
-    
-        // Get and prepare questions data
-        $questionsData = $validated['questions'];
-        // Add the general_time_limit to the questions data
-        $formattedData = [
-            'general_time_limit' => $validated['general_time_limit'],
-            'questions' => []
-        ];
-    
-        foreach ($questionsData as &$question) {
-            // Process options
-            if (isset($question['options']) && is_array($question['options'])) {
-                foreach ($question['options'] as &$option) {
-                    $option['media']['image_path'] = $this->handleFileUpload($request->file('option_images')[$option['id']] ?? null, 'images');
-                    $option['media']['audio_path'] = $this->handleFileUpload($request->file('option_audio')[$option['id']] ?? null, 'audio');
-                    $option['media']['video_path'] = $this->handleFileUpload($request->file('option_video')[$option['id']] ?? null, 'video');
-                }
-            }
-    
-            // Process question media
-            $question['media']['image_path'] = $this->handleFileUpload($request->file('question_images')[$question['id']] ?? null, 'images');
-            $question['media']['audio_path'] = $this->handleFileUpload($request->file('question_audio')[$question['id']] ?? null, 'audio');
-            $question['media']['video_path'] = $this->handleFileUpload($request->file('question_video')[$question['id']] ?? null, 'video');
-            $formattedData['questions'][] = $question;
-        }
-    
-        // Convert formatted data to JSON
-        $questionsJson = json_encode($formattedData);
-        // Create a new LessonAssessment record
-        $assessment = Lessonassessment::create([
-            'course_id' => $courseid,
-            'lesson_id' => $lessonid,
-            'questions' => $questionsJson,
-        ]);
-    
-        return response()->json($assessment, 201);
+{
+    // Validate input
+    $validated = $request->validate([
+        'questions' => 'required|array',
+        'general_time_limit' => 'required|integer'
+    ]);
+
+    // Validate if course and lesson exist
+    $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
+
+    if (!$lesson) {
+        return response()->json(['Course or Lesson not Found'], 404);
     }
+
+    // Get and prepare questions data
+    $questionsData = $validated['questions'];
+    // Add the general_time_limit to the questions data
+    $formattedData = [
+        'general_time_limit' => $validated['general_time_limit'],
+        'questions' => []
+    ];
+
+    foreach ($questionsData as &$question) {
+        // Process options
+        if (isset($question['options']) && is_array($question['options'])) {
+            foreach ($question['options'] as &$option) {
+                // Handle media upload for options
+                $option['media']['image_path'] = $this->handleFileUpload($option['media']['image_path'] ?? null, 'images');
+                $option['media']['audio_path'] = $this->handleFileUpload($option['media']['audio_path'] ?? null, 'audio');
+                $option['media']['video_path'] = $this->handleFileUpload($option['media']['video_path'] ?? null, 'video');
+            }
+        }
+
+        // Handle media upload for questions
+        $question['media']['image_path'] = $this->handleFileUpload($question['media']['image_path'] ?? null, 'images');
+        $question['media']['audio_path'] = $this->handleFileUpload($question['media']['audio_path'] ?? null, 'audio');
+        $question['media']['video_path'] = $this->handleFileUpload($question['media']['video_path'] ?? null, 'video');
+        $formattedData['questions'][] = $question;
+    }
+
+    // Convert formatted data to JSON
+    $questionsJson = json_encode($formattedData);
+    // Create a new LessonAssessment record
+    $assessment = Lessonassessment::create([
+        'course_id' => $courseid,
+        'lesson_id' => $lessonid,
+        'questions' => $questionsJson,
+    ]);
+
+    return response()->json($assessment, 200);
+}
+
     
 
     // show_crestesd_asessment
@@ -168,6 +170,63 @@ class AdminController extends Controller
           }
           return null;
       }
+
+      public function UpdateLessonAssessment(Request $request, $courseid, $lessonid)
+      {
+          // Validate input
+          $validated = $request->validate([
+              'questions' => 'required|array',
+              'general_time_limit' => 'required|integer'
+          ]);
+          // Validate if course and lesson exist
+          $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
+          
+          if (!$lesson) {
+              return response()->json(['Course or Lesson not Found'], 404);
+          }
+      
+          // Validate if the assessment exists
+          $assessment = Lessonassessment::where('course_id', $courseid)->where('lesson_id', $lessonid)->first();
+      
+        //   disable-assessment-id-check-since-an assessmentbelongstoa lesson  ->where('id', $assessmentId)
+        
+          if (!$assessment) {
+              return response()->json(['Assessment not Found'], 404);
+          }
+      
+          // Get and prepare questions data
+          $questionsData = $validated['questions'];
+          
+          // Add the general_time_limit to the questions data
+          $formattedData = [
+              'general_time_limit' => $validated['general_time_limit'],
+              'questions' => []
+          ];
+          foreach ($questionsData as &$question) {
+              // Process options
+              if (isset($question['options']) && is_array($question['options'])) {
+                  foreach ($question['options'] as &$option) {
+                      $option['media']['image_path'] = $this->handleFileUpload($request->file('option_images')[$option['id']] ?? null, 'images');
+                      $option['media']['audio_path'] = $this->handleFileUpload($request->file('option_audio')[$option['id']] ?? null, 'audio');
+                      $option['media']['video_path'] = $this->handleFileUpload($request->file('option_video')[$option['id']] ?? null, 'video');
+                  }
+              }
+              // Process question media
+              $question['media']['image_path'] = $this->handleFileUpload($request->file('question_images')[$question['id']] ?? null, 'images');
+              $question['media']['audio_path'] = $this->handleFileUpload($request->file('question_audio')[$question['id']] ?? null, 'audio');
+              $question['media']['video_path'] = $this->handleFileUpload($request->file('question_video')[$question['id']] ?? null, 'video');
+              $formattedData['questions'][] = $question;
+          }
+          $questionsJson = json_encode($formattedData);
+          $assessment->update([
+              'questions' => $questionsJson,
+          ]);
+      
+          return response()->json($assessment, 201);
+      }
+      
+
+    // outdated-assessments  controllers-below
 
     public function manageAssessments($courseId)
     {
@@ -214,39 +273,9 @@ class AdminController extends Controller
         return redirect()->route('admin.course_assessments.index', $courseId)->with('success', 'Assessment created successfully.');
     }
 
-    public function editAssessment($courseId, $assessmentId)
-    {
-        $course = Course::findOrFail($courseId);
-        $assessment = CourseAssessment::findOrFail($assessmentId);
-        $assessment->questions = json_decode($assessment->questions, true);
-        $routeNamePart = ucfirst(last(explode('.', Route::currentRouteName())));
+   
 
-        return view('admin.course_assessments.edit', compact('course', 'assessment', 'routeNamePart'));
-    }
-
-    public function updateAssessment(Request $request, $courseId, $assessmentId)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'questions' => 'required|array',
-            'questions.*.text' => 'required|string',
-            'questions.*.options' => 'required|array',
-            'questions.*.options.*.text' => 'required|string',
-            'questions.*.correct' => 'required|string',
-        ]);
-
-        $assessment = CourseAssessment::findOrFail($assessmentId);
-        $assessment->update([
-            'name' => $validatedData['name'],
-            'start_time' => $validatedData['start_time'],
-            'end_time' => $validatedData['end_time'],
-            'questions' => json_encode($validatedData['questions']),
-        ]);
-
-        return redirect()->route('admin.course_assessments.index', $courseId)->with('success', 'Assessment updated successfully.');
-    }
+  
 
     public function deleteAssessment(Request $request, $id)
     {
