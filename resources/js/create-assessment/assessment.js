@@ -34,7 +34,6 @@ function addEvenlistenerstoEditors() {
             // get the-cureently-clikced-with-id-and manipulate the dom
             const nodesel = e?.currentTarget;
             const parentapp = nodesel.querySelector(".editor-content");
-            console.log(parentapp);
             ParentProviderwrapper = parentapp;
 
             // if (ParentProviderwrapper.childNod)
@@ -165,11 +164,9 @@ document.addEventListener("click", function (event) {
 const submitBtn = document.getElementById("create_assessment");
 
 // call-function-
-// console.log(optionValue("p"));
 submitBtn?.addEventListener("click", async () => {
     const csrftoken = document.querySelector("input[name=_token]")?.value;
     const timelimit = document.querySelector("#time_limit").value;
-    // console.log(Number(timelimit));
 
     const questionsData = [];
     let questionId = 1;
@@ -183,14 +180,17 @@ submitBtn?.addEventListener("click", async () => {
             quest.querySelector('[aria-details="content_container"] p')
                 ?.textContent || "";
         const audioPath =
-            quest.querySelector('[aria-details="content_container"] audio')
-                ?.src || "";
+            quest
+                .querySelector('[aria-details="content_container"] audio')
+                ?.getAttribute("src") || "";
         const videoPath =
-            quest.querySelector('[aria-details="content_container"] video')
-                ?.src || "";
+            quest
+                .querySelector('[aria-details="content_container"] video')
+                ?.getAttribute("src") || "";
         const imagePath =
-            quest.querySelector('[aria-details="content_container"] img')[0]
-                ?.src || "";
+            quest
+                .querySelector('[aria-details="content_container"] img')
+                ?.getAttribute("src") || "";
 
         const points = quest.querySelector(".question_value")?.value;
 
@@ -207,9 +207,12 @@ submitBtn?.addEventListener("click", async () => {
             for (const optItem of optionsLoop) {
                 const optionText =
                     optItem.querySelector("p")?.textContent || "";
-                const optionAudio = optItem.querySelector("audio")?.src || "";
-                const optionVideo = optItem.querySelector("video")?.src || "";
-                const optionImage = optItem.querySelector("img")?.src || "";
+                const optionAudio =
+                    optItem.querySelector("audio")?.getAttribute("src") || "";
+                const optionVideo =
+                    optItem.querySelector("video")?.getAttribute("src") || "";
+                const optionImage =
+                    optItem.querySelector("img")?.getAttribute("src") || "";
                 const optindex = Array.from(optionsLoop).indexOf(optItem);
                 const is_correct = optindex === correctIndex;
 
@@ -256,12 +259,11 @@ submitBtn?.addEventListener("click", async () => {
         questions: questionsData,
     };
 
-    console.log("Form Data:", payload);
     //    send-post-requst-to-db
 
     // switch-type-algorithm
     const contentbtn = submitBtn.textContent;
-
+    //ends here
     let response;
     try {
         if (contentbtn === "Create Assessment") {
@@ -297,13 +299,16 @@ submitBtn?.addEventListener("click", async () => {
             const match = urlString.match(regex);
             const lessonId = match ? match[1] : null;
 
-            response = await axios.put(
+            //TODO:THIS IS ACTUALLY A PUT REQUEST IN POST METHOD...
+            //TODO:FIXED PUT REQUEST ISSUES INLARAVEL, THE CONTROLLER ACTUALL
+            //TODO:UPDATE USING UPDATE FUNCTION
+            response = await axios.post(
                 `/admin/courses/${courseId}/lesson/${lessonId}/assessmentupdate`,
-                payload,
+                { ...payload },
                 {
                     headers: {
-                        // "Content-Type": "multipart/form-data",
                         "X-CSRF-Token": csrftoken,
+                        "Content-Type": "multipart/form-data",
                         Accept: "application/json",
                     },
                 }

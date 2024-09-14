@@ -44,11 +44,11 @@
                             <img src="{{ asset('storage/' . $question['media']['image_path']) }}" alt="Question Image" class="pop_upload_file">
                             @endif
                             @if(!empty($question['media']['audio_path']))
-                            <audio controls style="height: 50px" src="{{ $question['media']['audio_path'] }}">
+                            <audio controls style="height: 50px" src="{{ asset('storage/' . $question['media']['audio_path']) }}">
                             </audio>
                             @endif
                             @if(!empty($question['media']['video_path']))
-                            <video controls class="pop_upload_file" src="{{ $question['media']['video_path'] }}">
+                            <video controls class="pop_upload_file" src="{{ asset('storage/' . $question['media']['video_path']) }}">
                             </video>
                             @endif
                             @endif
@@ -79,18 +79,14 @@
                                 <!-- Media -->
                                 @if(!empty($option['media']))
                                 @if(!empty($option['media']['image_path']))
-                                <img src="{{ $option['media']['image_path'] }}" alt="Question Image">
+                                <img src="{{ asset('storage/' . $option['media']['image_path']) }}" alt="Question Image">
                                 @endif
                                 @if(!empty($option['media']['audio_path']))
-                                <audio controls style="height: 50px">
-                                    <source src="{{ $option['media']['audio_path'] }}" type="audio/mpeg">
-                                    Your browser does not support the audio element.
+                                <audio controls style="height: 50px" src="{{ asset('storage/' . $option['media']['audio_path']) }}">
                                 </audio>
                                 @endif
                                 @if(!empty($option['media']['video_path']))
-                                <video controls>
-                                    <source src="{{ $option['media']['video_path'] }}" type="video/mp4">
-                                    Your browser does not support the video tag.
+                                <video controls src="{{ asset('storage/' .$option['media']['video_path']) }}">
                                 </video>
                                 @endif
                                 @endif

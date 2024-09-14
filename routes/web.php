@@ -12,8 +12,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ChatmessagesController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\LessonController;
-use App\Http\Controllers\LessonAssessmentController;   
-use App\Http\Controllers\CourseAssessmentController; 
+use App\Http\Controllers\LessonAssessmentController;
+use App\Http\Controllers\CourseAssessmentController;
 use App\Http\Controllers\DawahController;
 use App\Http\Controllers\DawahPostController;
 use App\Http\Controllers\DawahTeacherController;
@@ -83,56 +83,56 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/courses/{courseId}/lessons/{lessonId}/delete', [ChatController::class, 'deleteMessage'])->name('chat.delete');
 
 
-   
-// Route to show chat interface
-Route::get('courses/{course_id}/lessons/{lesson_id}/chat', [ChatController::class, 'index'])->name('chat.index');
 
-// Route to send a chat message
-Route::post('courses/{course_id}/lessons/{lesson_id}/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    // Route to show chat interface
+    Route::get('courses/{course_id}/lessons/{lesson_id}/chat', [ChatController::class, 'index'])->name('chat.index');
 
-// Route to send call signals (if needed)
-Route::post('courses/{course_id}/lessons/{lesson_id}/chat/sendCallSignal', [ChatController::class, 'sendCallSignal'])->name('chat.sendCallSignal');
+    // Route to send a chat message
+    Route::post('courses/{course_id}/lessons/{lesson_id}/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 
-
-
-
-Route::get('/send-broadcast', function () {
-    $user = User::find(2); // Assuming a user with ID 1 exists
-    $message = new Message(['content' => 'Hello World']);
-    broadcast(new MessageSent($user, $message));
-    return 'Broadcast sent';
-});
-
-Route::get('/test-broadcast', function () {
-    return view('test-broadcast');
-});
+    // Route to send call signals (if needed)
+    Route::post('courses/{course_id}/lessons/{lesson_id}/chat/sendCallSignal', [ChatController::class, 'sendCallSignal'])->name('chat.sendCallSignal');
 
 
 
-// Display the editor
-Route::get('/editor', [EditorController::class, 'showEditor'])->name('editor.show');
 
-// Handle form submission
-Route::post('/editor/save', [EditorController::class, 'saveContent'])->name('editor.save');
+    Route::get('/send-broadcast', function () {
+        $user = User::find(2); // Assuming a user with ID 1 exists
+        $message = new Message(['content' => 'Hello World']);
+        broadcast(new MessageSent($user, $message));
+        return 'Broadcast sent';
+    });
 
-Route::post('/editor/upload', [EditorController::class, 'upload'])->name('editor.upload');
+    Route::get('/test-broadcast', function () {
+        return view('test-broadcast');
+    });
+
+
+
+    // Display the editor
+    Route::get('/editor', [EditorController::class, 'showEditor'])->name('editor.show');
+
+    // Handle form submission
+    Route::post('/editor/save', [EditorController::class, 'saveContent'])->name('editor.save');
+
+    Route::post('/editor/upload', [EditorController::class, 'upload'])->name('editor.upload');
 
 
 
     // Video chat routes
 
-Route::get('/video-chat', [VideoChatController::class, 'index'])->name('video-chat.index');
-Route::post('/video-chat/call', [VideoChatController::class, 'callUser'])->name('video-chat.call');
-Route::post('/video-chat/accept', [VideoChatController::class, 'acceptCall'])->name('video-chat.accept');
-Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->name('video-chat.signal');
+    Route::get('/video-chat', [VideoChatController::class, 'index'])->name('video-chat.index');
+    Route::post('/video-chat/call', [VideoChatController::class, 'callUser'])->name('video-chat.call');
+    Route::post('/video-chat/accept', [VideoChatController::class, 'acceptCall'])->name('video-chat.accept');
+    Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->name('video-chat.signal');
 
 
     // Lesson routes
     //Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'lessonChat'])->name('chat.lesson');
-   // Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendLessonMessage'])->name('chat.lesson.send');
-   Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'index'])->name('chat.index');
-   Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-   Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/call', [ChatController::class, 'sendCallSignal'])->name('chat.call');
+    // Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendLessonMessage'])->name('chat.lesson.send');
+    Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/call', [ChatController::class, 'sendCallSignal'])->name('chat.call');
 
 
 
@@ -141,13 +141,16 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
     Route::get('/admin/courses/{courseId}/lesson/{lessonId}/create-assessments', [LessonAssessmentController::class, 'create'])->name('assessments.create');
 
     // Storing the assessment
-    Route::post('/admin/courses/{courseid}/lesson/{lessonid}/create-assessment',[AdminController::class,'Addlessonassessment'])->name('assessment.create.add');
+    Route::post('/admin/courses/{courseid}/lesson/{lessonid}/create-assessment', [AdminController::class, 'Addlessonassessment'])->name('assessment.create.add');
 
     // Viewing a specific assessment updated
     Route::get('/admin/courses/{courseid}/lesson/{lessonid}/assessment', [AdminController::class, 'PreviewAssessment'])->name('lesson_assessment.view');
 
-    // updatibg-lesson-assessments
-    Route::put('admin/courses/{courseid}/lesson/{lessonid}/assessmentupdate',[AdminController::class, 'UpdateLessonAssessment'])->name('lesson_asessment.update');
+    // updatibg-lesson-assessments-this-is-now
+    //TODO:THIS IS ACTUALLY A PUT REQUEST IN POST METHOD...
+    //TODO:FIXED PUT REQUEST ISSUES INLARAVEL, THE CONTROLLER ACTUALL
+    //TODO:UPDATE USING UPDATE FUNCTION 
+    Route::post('admin/courses/{courseid}/lesson/{lessonid}/assessmentupdate', [AdminController::class, 'UpdateLessonAssessment'])->name('lesson_asessment.update');
 
     // Deleting an assessment
     Route::delete('/admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');
@@ -165,18 +168,18 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
     Route::get('/admin/courses/{course_id}/lessons/{lesson_id}/assessments', [LessonAssessmentController::class, 'viewAssessmentsByLesson'])->name('lessons.viewAssessments');
 
-// Route to view assessments by course
+    // Route to view assessments by course
 
     Route::get('admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'show'])->name('lesson_assessments.show');
 
-// Route to delete assessment
+    // Route to delete assessment
     Route::delete('admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');
 
     Route::get('admin/manage-assessments', [LessonAssessmentController::class, 'manageAssessments'])->name('assessments.manage');
     Route::post('admin/publish-assessment/{id}', [LessonAssessmentController::class, 'publishAssessment'])->name('assessments.publish');
     Route::post('admin/unpublish-assessment/{id}', [LessonAssessmentController::class, 'unpublishAssessment'])->name('assessments.unpublish');
     Route::post('admin/delete-assessment/{id}', [LessonAssessmentController::class, 'deleteAssessment'])->name('assessments.delete');
-    
+
     Route::post('admin/assessments/delete/{id}', [LessonAssessmentController::class, 'deleteAssessmentWithConfirmation'])->name('assessments.delete');
 
 
@@ -184,12 +187,12 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/take', [LessonAssessmentController::class, 'showStudentAssessment'])->name('student.assessments.take');
     Route::post('courses/{courseId}/lessons/{lessonId}/assessments/submit', [LessonAssessmentController::class, 'submitStudentAssessment'])->name('student.assessments.submit');
-    
+
 
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/result', [LessonAssessmentController::class, 'showAssessmentResult'])->name('student.assessments.result');
 
     Route::get('/courses/{courseId}/lessons/{lessonId}', [LessonController::class, 'show'])
-    ->name('student.lessons.show');
+        ->name('student.lessons.show');
 
     Route::get('/courses/{courseId}/lessons/{lessonId}/assessments/{id}/edit', [LessonAssessmentController::class, 'edit'])->name('lesson_assessments.edit');
 
@@ -201,31 +204,31 @@ Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->n
 
 
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-   
+
     // Student Routes for Course Assessments
-Route::get('/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('student.courses.assessments');
-Route::get('/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'show'])->name('student.courses.assessments.show');
-Route::get('/courses/{course}/assessments/{assessment}/attempt', [CourseAssessmentController::class, 'attempt'])->name('student.courses.assessments.attempt');
-Route::post('/courses/{course}/assessments/{assessment}/submit', [CourseAssessmentController::class, 'submit'])->name('student.courses.assessments.submit');
+    Route::get('/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('student.courses.assessments');
+    Route::get('/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'show'])->name('student.courses.assessments.show');
+    Route::get('/courses/{course}/assessments/{assessment}/attempt', [CourseAssessmentController::class, 'attempt'])->name('student.courses.assessments.attempt');
+    Route::post('/courses/{course}/assessments/{assessment}/submit', [CourseAssessmentController::class, 'submit'])->name('student.courses.assessments.submit');
 
-// Admin Routes for Course Assessment Result
-Route::get('assessments/{assessment}/result/{submission}', [CourseAssessmentController::class, 'showResult'])->name('admin.courses.assessments.result');
+    // Admin Routes for Course Assessment Result
+    Route::get('assessments/{assessment}/result/{submission}', [CourseAssessmentController::class, 'showResult'])->name('admin.courses.assessments.result');
 
-// Admin Routes for Managing Assessments
+    // Admin Routes for Managing Assessments
 
-    
-Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('course_assessments.index');
-    
+
+    Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('course_assessments.index');
+
     Route::get('/admin/courses/{course}/assessments/create', [CourseAssessmentController::class, 'create'])->name('course_assessments.create');
-    
+
     Route::post('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'store'])->name('course_assessments.store');
-    
+
     Route::get('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'show'])->name('course_assessments.show');
-    
+
     Route::get('/admin/courses/{course}/assessments/{assessment}/edit', [CourseAssessmentController::class, 'edit'])->name('course_assessments.edit');
-    
+
     Route::put('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'update'])->name('course_assessments.update');
-    
+
     Route::delete('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'destroy'])->name('course_assessments.delete');
 
 
@@ -237,10 +240,10 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     Route::get('/admin/courses', [AdminController::class, 'courses'])->name('admin.courses');
     Route::post('/admin/courses/register', [AdminController::class, 'registerCourse'])->name('admin.courses.register');
     // add-lessons-to-specific-course
-    Route::post('/admin/course/{courseid}/lessons',[AdminController::class, 'addcourseLessons'])->name('admin.courses.lessons.create');
+    Route::post('/admin/course/{courseid}/lessons', [AdminController::class, 'addcourseLessons'])->name('admin.courses.lessons.create');
     Route::get('/admin/courses/{id}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
     // fetchcourse-details`
-    Route::get('/admin/courses/{courseid}/lesson/{lessonid}',[AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
+    Route::get('/admin/courses/{courseid}/lesson/{lessonid}', [AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
 
     // Dynamic-new-chat-routes
     // Fetch messages for a specific lesson in a specific course
@@ -263,7 +266,7 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     Route::get('/admin/lecturers', [AdminController::class, 'lecturers'])->name('admin.lecturers');
     Route::post('/admin/lecturers/register', [AdminController::class, 'registerLecturer'])->name('admin.lecturers.register');
     Route::get('admin/courses/{courseId}/assessments/{assessmentId}/delete', [AdminController::class, 'deleteAssessment'])
-    ->name('admin.courses.assessments.delete');
+        ->name('admin.courses.assessments.delete');
 
     Route::get('/admin/assign-course', [AdminController::class, 'showAssignCourseForm'])->name('admin.assign-course');
     Route::post('/admin/assign-course', [AdminController::class, 'assignCourse'])->name('admin.assign-course.post');
@@ -286,47 +289,47 @@ Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::c
     Route::get('/admin/dawah/{dawahId}/edit', [DawahController::class, 'edit'])->name('admin.dawah.edit');
     Route::put('/admin/dawah/{dawahId}', [DawahController::class, 'update'])->name('admin.dawah.update');
     Route::delete('/admin/dawah/{dawahId}', [DawahController::class, 'destroy'])->name('admin.dawah.destroy');
-    
+
     Route::get('/admin/dawah/{dawahId}/assign-teacher', [DawahController::class, 'assignTeacherForm'])->name('admin.dawah.assign-teacher-form');
     Route::post('/admin/dawah/{dawahId}/assign-teacher', [DawahController::class, 'assignTeacher'])->name('admin.dawah.assign-teacher');
-    
+
     Route::get('/admin/dawah/{dawahId}/lessons', [DawahController::class, 'viewLessons'])->name('admin.dawah.view-lessons');
     Route::get('/admin/dawah/{dawahId}/create-lesson', [DawahController::class, 'createLessonForm'])->name('admin.dawah.create-lesson');
     Route::post('/admin/dawah/{dawahId}/lessons', [DawahController::class, 'storeLesson'])->name('admin.dawah.store-lesson');
     Route::get('/admin/dawah/{dawahId}/edit-lesson/{lessonId}', [DawahController::class, 'editLessonForm'])->name('admin.dawah.edit-lesson');
     Route::put('/admin/dawah/{dawahId}/lessons/{lessonId}', [DawahController::class, 'updateLesson'])->name('admin.dawah.update-lesson');
     Route::delete('/admin/dawah/{dawahId}/lessons/{lessonId}', [DawahController::class, 'deleteLesson'])->name('admin.dawah.delete-lesson');
-    
+
     Route::get('/admin/dawah-posts', [DawahPostController::class, 'index'])->name('admin.dawah-posts.index');
-Route::get('/admin/dawah-posts/create', [DawahPostController::class, 'create'])->name('admin.dawah-posts.create');
-Route::post('/admin/dawah-posts/store', [DawahPostController::class, 'store'])->name('admin.dawah-posts.store');
-Route::get('/admin/dawah-posts/{id}', [DawahPostController::class, 'show'])->name('admin.dawah-posts.show');
-Route::get('/admin/dawah-posts/{id}/edit', [DawahPostController::class, 'edit'])->name('admin.dawah-posts.edit');
-Route::put('/admin/dawah-posts/{id}', [DawahPostController::class, 'update'])->name('admin.dawah-posts.update');
-Route::delete('/admin/dawah-posts/{id}', [DawahPostController::class, 'destroy'])->name('admin.dawah-posts.destroy');
-Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'teachers'])->name('admin.dawah-posts.teachers');
-Route::get('/admin/dawah-posts/teacher-profile/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
+    Route::get('/admin/dawah-posts/create', [DawahPostController::class, 'create'])->name('admin.dawah-posts.create');
+    Route::post('/admin/dawah-posts/store', [DawahPostController::class, 'store'])->name('admin.dawah-posts.store');
+    Route::get('/admin/dawah-posts/{id}', [DawahPostController::class, 'show'])->name('admin.dawah-posts.show');
+    Route::get('/admin/dawah-posts/{id}/edit', [DawahPostController::class, 'edit'])->name('admin.dawah-posts.edit');
+    Route::put('/admin/dawah-posts/{id}', [DawahPostController::class, 'update'])->name('admin.dawah-posts.update');
+    Route::delete('/admin/dawah-posts/{id}', [DawahPostController::class, 'destroy'])->name('admin.dawah-posts.destroy');
+    Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'teachers'])->name('admin.dawah-posts.teachers');
+    Route::get('/admin/dawah-posts/teacher-profile/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
 
-Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'listTeachers'])->name('admin.dawah-posts.teachers');
-Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
+    Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'listTeachers'])->name('admin.dawah-posts.teachers');
+    Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
 
-Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
-
-
+    Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
 
 
 
 
-//ends
-// Routes for Dawah posts and teachers
+
+
+    //ends
+    // Routes for Dawah posts and teachers
 
 
 
-    
+
 
     // Admin and Teacher course assessments routes
-         Route::prefix('admin/courses/{course}')->group(function () {
+    Route::prefix('admin/courses/{course}')->group(function () {
         Route::get('assessments', [AdminController::class, 'assessments'])->name('admin.courses.assessments');
         Route::get('assessments/create', [AdminController::class, 'createAssessment'])->name('admin.courses.assessments.create');
         Route::post('assessments', [AdminController::class, 'storeAssessment'])->name('admin.courses.assessments.store');
@@ -335,7 +338,7 @@ Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name(
         Route::put('assessments/{assessment}', [AdminController::class, 'updateAssessment'])->name('admin.courses.assessments.update');
         Route::delete('assessments/{assessment}', [AdminController::class, 'deleteAssessment'])->name('admin.courses.assessments.destroy');
     });
-    
+
     // Teacher routes
     Route::get('/teacher/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
     Route::prefix('teacher/courses/{course}')->group(function () {
@@ -347,7 +350,7 @@ Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name(
         Route::put('assessments/{assessment}', [AdminController::class, 'updateAssessment'])->name('teacher.courses.assessments.update');
         Route::delete('assessments/{assessment}', [AdminController::class, 'deleteAssessment'])->name('teacher.courses.assessments.destroy');
     });
-    
+
     // Lecturer routes
     Route::get('/lecturer/dashboard', [LecturerController::class, 'dashboard'])->name('lecturer.dashboard');
 });
@@ -364,9 +367,9 @@ Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('upload-chunk', [ChunkUploadController::class, 'uploadChunk'])->name('upload.chunk');
 Route::post('finish-upload', [ChunkUploadController::class, 'finishUpload'])->name('upload.finish');
 Route::get('/token', function () {
-    return csrf_token(); 
+    return csrf_token();
 });
 // getphp-ifo-testing-ini
 Route::get('/info', function () {
-    return phpinfo(); 
+    return phpinfo();
 });

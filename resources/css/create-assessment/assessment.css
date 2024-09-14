@@ -323,6 +323,9 @@ div.form_datas > #chat-input {
     width: 220px;
 }
 
+* audio {
+    height: 50px;
+}
 /* view_assessmen stylings */
 .nav_header {
     padding-top: 1rem;
