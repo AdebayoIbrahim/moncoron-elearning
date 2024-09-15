@@ -12,7 +12,7 @@
         </h4>
         <div class="pt-3 d-flex justify-content-end gap-3">
             <button type="button" class="btn btn-primary btn-md">Edit</button>
-            <button type="button" class="btn btn-secondary btn-md " id="create_assessment">Save Changes</button>
+            <button type="button" class="btn btn-secondary btn-md " id="create_assessment " disabled>Save Changes</button>
         </div>
     </div>
     {{-- question_area --}}

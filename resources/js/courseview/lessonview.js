@@ -256,9 +256,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const addassessmentBtn = document.querySelector("#add_assessment_btn");
     addassessmentBtn.onclick = function () {
         //TODO:verify-auth0status-before-navigation
-        window.open(
-            window.location.href.concat("/create-assessments"),
-            "_self"
-        );
+
+        // check-if-lesson-exist-already
+
+        if (addassessmentBtn?.textContent === "Manage Assessment") {
+            window.open(window.location.href.concat("/assessment"), "_self");
+        } else {
+            window.open(
+                window.location.href.concat("/create-assessments"),
+                "_self"
+            );
+        }
     };
 });

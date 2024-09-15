@@ -67,10 +67,21 @@ class AdminController extends Controller
         return view('admin.courses', compact('user', 'routeNamePart', 'courses'));
     }
 
+    // fetch-premium-course
+    public function getPremiumcourses()
+    {
+        $special =  Course::special()->get();  // Calls the scopeSpecial method
+        return view('courses.list', ['courses' => $special, 'courseType' => 'Special']);
+    }
+
     public function registerCourse(Request $request)
     {
         $imagePath = $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null;
 
+        $request->validate([
+            // type_check_fornormal_or_special
+            'course_type' => 'required|in:normal,special'
+        ]);
         $data = array_merge($request->all(), [
             'reference' => uniqid('CS_', true),
             'image' => $imagePath,
@@ -410,7 +421,10 @@ class AdminController extends Controller
         if (!$course) {
             return response()->json(['error' => 'Course not Found', 404]);
         }
+        // check-for-lessons
+        $checklesson = Lessonassessment::where("course_id", $courseid)->where("lesson_id", $lessonid)->first();
 
+        $hasasessment = $checklesson ? true : false;
         // lesson-validate-the-id
         $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
 
@@ -419,7 +433,7 @@ class AdminController extends Controller
         }
 
         // continue-f-all-is-well
-        return view('admin.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView']);
+        return view('admin.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView', 'hasassessment' => $hasasessment]);
     }
 
 

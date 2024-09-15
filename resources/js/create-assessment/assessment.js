@@ -302,6 +302,7 @@ submitBtn?.addEventListener("click", async () => {
             //TODO:THIS IS ACTUALLY A PUT REQUEST IN POST METHOD...
             //TODO:FIXED PUT REQUEST ISSUES INLARAVEL, THE CONTROLLER ACTUALL
             //TODO:UPDATE USING UPDATE FUNCTION
+            //TODOL MEthod spoofing
             response = await axios.post(
                 `/admin/courses/${courseId}/lesson/${lessonId}/assessmentupdate`,
                 { ...payload },
@@ -322,4 +323,11 @@ submitBtn?.addEventListener("click", async () => {
     } catch (err) {
         window.alert("Error Check Console for details", err.status);
     }
+});
+
+// helper-func-to-disable-buttons-for-admin-manage
+// select-all-custom-edit
+const allEditorclickers = document.querySelectorAll(".custom-editor");
+allEditorclickers.forEach((editors) => {
+    editors.style.pointerEvents = "none !important";
 });

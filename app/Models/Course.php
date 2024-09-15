@@ -21,11 +21,23 @@ class Course extends Model
     ];
 
     protected $searchable = [
-        'name', 'description', 'price', 'type'
+        'name',
+        'description',
+        'price',
+        'type'
     ];
 
     protected $sortable = [
-        'reference', 'name', 'price', 'capacity', 'duration', 'age_group', 'is_locked', 'created_at', 'type'
+        'reference',
+        'name',
+        'price',
+        'capacity',
+        'duration',
+        'age_group',
+        'is_locked',
+        'created_at',
+        'type',
+        'course_type'
     ];
 
     public function subscriptions()
@@ -42,7 +54,7 @@ class Course extends Model
     {
         return $this->hasMany(CourseAssessment::class);
     }
-    
+
     public function students()
     {
         return $this->belongsToMany(User::class, 'user_course', 'course_id', 'user_id');
@@ -71,4 +83,9 @@ class Course extends Model
         return $this->hasManyThrough(UserCourseLesson::class, CourseLesson::class, 'course_id', 'lesson_id');
     }
 
+    // fetch-premium-courses
+    public function scopeSpecial($query)
+    {
+        return $query->where('course_type', 'special');
+    }
 }
