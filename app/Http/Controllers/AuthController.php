@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Mail\PasswordResetMail;
@@ -12,7 +13,8 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         // Validate the request data
         $credentials = $request->validate([
             'email' => 'required',
@@ -39,13 +41,12 @@ class AuthController extends Controller
                     $redirectRoute = 'student.dashboard'; // Default route
                     break;
             }
-        
+
             // Log the successful login
             error_log('Login successful');
-        
+
             // Redirect to the determined route
             return redirect()->route($redirectRoute);
-            
         } else {
             // Authentication failed
             error_log('Login failed');
@@ -70,11 +71,19 @@ class AuthController extends Controller
 
         $emailExists = User::where('email', $data['email'])->exists();
         if ($emailExists) {
-            return view('signup', 
-                ['error' => 'A user with this email already exist!!!, kindly reset your password if the email belongs to you, or try again!!!',
-            ]);
-        }
-        else{
+            return view(
+                'signup',
+                [
+                    'error' => 'A user with this email already exist!!!, kindly reset your password if the email belongs to you, or try again!!!',
+                ]
+            );
+        } else {
+            // Determine user_type based on role
+            if (isset($data['role']) && $data['role'] === 'admin') {
+                $data['user_type'] = 'premium';
+            } else {
+                $data['user_type'] = 'regular';
+            }
             // Create the new user with the merged data
             User::create($data);
 
@@ -105,14 +114,12 @@ class AuthController extends Controller
             // Send the token to the user's email
             Mail::to($validatedData['email'])->send(new PasswordResetMail($token));
             $email = $validatedData['email'];
-            return view('verify',compact('email'));
-            
+            return view('verify', compact('email'));
         } else {
             // Authentication failed
             error_log('Invalid Email Address');
             return redirect()->back()->with('error', 'Invalid Email Address!!!');
         }
-
     }
 
     public function verify(Request $request)
@@ -127,12 +134,12 @@ class AuthController extends Controller
             ->where('email', $validatedData['email'])
             ->where('token', $validatedData['vcode'])
             ->exists();
-        
+
         $email = $validatedData['email'];
 
         if ($checkVCode) {
             // Verification successful, proceed with your logic
-            return view('changepassword',compact('email'));
+            return view('changepassword', compact('email'));
             //return response()->json(['message' => 'Verification successful.']);
         } else {
             // Verification failed, return an error
@@ -155,28 +162,25 @@ class AuthController extends Controller
         $password = $validatedData['password'];
         $conpassword = $validatedData['conpassword'];
 
-        if($password != $conpassword){
+        if ($password != $conpassword) {
             return view('changepassword', [
                 'email' => $validatedData['email'],
                 'error' => 'New Password and Confirm New Password does not match!!!'
             ]);
-        }
-        else{
+        } else {
             // Hash the new password
-        $hashedPassword = Hash::make($password);
+            $hashedPassword = Hash::make($password);
 
-        // Update the user's password with the hashed password
-        if (User::where('email', $validatedData['email'])->update(['password' => $hashedPassword])) {
+            // Update the user's password with the hashed password
+            if (User::where('email', $validatedData['email'])->update(['password' => $hashedPassword])) {
                 DB::table('password_resets')->where('email', $validatedData['email'])->delete();
                 return view('passwordchangesuccess');
-            }
-            else{
+            } else {
                 return view('changepassword', [
                     'email' => $validatedData['email'],
                     'error' => 'Failed to change your password!!!'
                 ]);
-            }            
-
+            }
         }
     }
 }
