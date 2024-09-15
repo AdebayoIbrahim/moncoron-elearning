@@ -82,4 +82,10 @@ class Course extends Model
     {
         return $this->hasManyThrough(UserCourseLesson::class, CourseLesson::class, 'course_id', 'lesson_id');
     }
+
+    // fetch-premium-courses
+    public function scopeSpecial($query)
+    {
+        return $query->where('course_type', 'special');
+    }
 }

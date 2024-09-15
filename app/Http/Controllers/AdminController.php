@@ -67,6 +67,13 @@ class AdminController extends Controller
         return view('admin.courses', compact('user', 'routeNamePart', 'courses'));
     }
 
+    // fetch-premium-course
+    public function getPremiumcourses()
+    {
+        $special =  Course::special()->get();  // Calls the scopeSpecial method
+        return view('courses.list', ['courses' => $special, 'courseType' => 'Special']);
+    }
+
     public function registerCourse(Request $request)
     {
         $imagePath = $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null;
