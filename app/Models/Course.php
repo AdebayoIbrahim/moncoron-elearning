@@ -88,4 +88,10 @@ class Course extends Model
     {
         return $query->where('course_type', 'special');
     }
+
+    // scope-normal-courses
+    public function scopeNormal($query)
+    {
+        return $query->where("course_type", "normal");
+    }
 }

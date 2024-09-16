@@ -61,7 +61,7 @@ class AdminController extends Controller
     public function courses()
     {
         $user = Auth::user();
-        $courses = Course::all();
+        $courses = Course::normal()->get();
         $routeNamePart = ucfirst(last(explode('.', Route::currentRouteName())));
 
         return view('admin.courses', compact('user', 'routeNamePart', 'courses'));
@@ -70,8 +70,9 @@ class AdminController extends Controller
     // fetch-premium-course
     public function getPremiumcourses()
     {
+        $user = Auth::user();
         $special =  Course::special()->get();  // Calls the scopeSpecial method
-        return view('courses.list', ['courses' => $special, 'courseType' => 'Special']);
+        return view('admin.courses', ['courses' => $special, 'routeNamePart' => 'Special', "user" => $user]);
     }
 
     public function registerCourse(Request $request)

@@ -90,7 +90,7 @@
                 {{-- force_check_for_premium_courses --}}
                 @if(auth()->user()->user_type === 'premium')
                 <li class="nav-item">
-                    <a href="{{ route('admin.courses') }}" class="nav-link nav-links d-flex align-items-center gap-2 {{ (request()->routeIs('admin.courses') || request()->routeIs('admin.courses.register')) ? 'active' : '' }} text-white">
+                    <a href="{{ route('admin.premiumcourses') }}" class="nav-link nav-links d-flex align-items-center gap-2 {{ (request()->routeIs('admin.premiumcourses'))  ? 'active' : '' }} text-white">
                         <i class="fas fa-crown mx-2"></i>
                         Special Courses
                     </a>
