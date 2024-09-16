@@ -75,7 +75,7 @@
                                             <span class="fa fa-ellipsis-v"></span>
                                         </a>
                                         <ul class="dropdown-menu text-small">
-                                            <li><a class="dropdown-item" href="/admin/courses/view/{{$course->id}}"><i class="fa fa-eye"></i> View</a></li>
+                                            <li><a class="dropdown-item" href="/admin/courses/{{$course->id}}"><i class="fa fa-eye"></i> View</a></li>
                                             <li><a class="dropdown-item editCourse" href="#" id="{{$course->id}}"><i class="fa fa-pencil"></i> Edit</a></li>
                                             <li><a class="dropdown-item" href="/admin/courses/delete/{{$course->id}}"><i class="fa fa-trash"></i> Delete</a></li>
                                         </ul>
