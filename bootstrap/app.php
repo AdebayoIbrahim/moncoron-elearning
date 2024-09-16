@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\premiumcoursesmiddleware;
+use App\Http\Middleware\Adminmiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             // my-other-middleware
-            'premiumuser' => premiumcoursesmiddleware::class
+            'premiumuser' => premiumcoursesmiddleware::class,
+            'admin' => Adminmiddleware::class
         ]);
 
         $middleware->append(RoleMiddleware::class);
