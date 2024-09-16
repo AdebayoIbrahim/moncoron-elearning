@@ -137,7 +137,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     // group-admin-ensure-admin-and-auth-middleware
-    Route::middleware(['admin'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
         // Creating a new assessment
         Route::get('/admin/courses/{courseId}/lesson/{lessonId}/create-assessments', [LessonAssessmentController::class, 'create'])->name('assessments.create');
 

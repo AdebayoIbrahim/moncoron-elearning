@@ -404,6 +404,14 @@ class AdminController extends Controller
             return response()->json(['error' => 'Course not found'], 404);
         };
 
+        // check-fi-user-has-course-access
+        if ($course->course_type === "special") {
+            // continue-tocheck-priviledge
+            if (auth()->user()->user_type != 'premium') {
+                return redirect('dashboard')->with('error', 'You have no acess to this course');
+            }
+        }
+
         $lessons = $course->lessons;
 
         // Return the course data as a JSON response

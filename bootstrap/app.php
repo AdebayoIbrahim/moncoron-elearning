@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             // my-other-middleware
             'premiumuser' => premiumcoursesmiddleware::class,
-            'admin' => Adminmiddleware::class
+            // 'admin' => Adminmiddleware::class
         ]);
 
         $middleware->append(RoleMiddleware::class);
