@@ -239,7 +239,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/courses', [AdminController::class, 'courses'])->name('admin.courses');
     // special-course
-    Route::get('/admin/specialcourses', [AdminController::class, 'getPremiumcourses'])->name('admin.premiumcourses');
+    Route::get('/admin/specialcourses', [AdminController::class, 'getPremiumcourses'])->name('admin.premiumcourses')->middleware('premiumuser');
 
     Route::post('/admin/courses/register', [AdminController::class, 'registerCourse'])->name('admin.courses.register');
     // add-lessons-to-specific-course

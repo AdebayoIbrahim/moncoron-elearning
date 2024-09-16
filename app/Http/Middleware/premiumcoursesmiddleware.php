@@ -23,6 +23,6 @@ class premiumcoursesmiddleware
             return $next($request);
         }
 
-        return redirect('\dashboard')->with('error', 'not a premium user');
+        return redirect('dashboard')->with('error', 'Not a Premium User!!');
     }
 }
