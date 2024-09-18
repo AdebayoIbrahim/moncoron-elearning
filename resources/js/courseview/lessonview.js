@@ -268,4 +268,210 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
     };
+
+    // video-chat-if-required-modes
+
+    const start = document.getElementById("StartCall");
+    start.onclick = function () {
+        startCall();
+    };
+
+    const loadingElement = document.querySelector("#loadingAnimation");
+    const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
+
+    let localAudioTrack, localVideoTrack, localStream;
+    let CHANNEL_NAME = "GroupClassChart";
+    let client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
+    const mediacontainer = document.querySelector(".media_container");
+    const spreadmedias = document.querySelector("#media_uploaded");
+
+    function showstreamload() {
+        loadingElement.classList.add("show_stream");
+    }
+    function closeLoading() {
+        loadingElement.classList.remove("show_stream");
+    }
+    // remove-existing-elements
+    function removeElements() {
+        spreadmedias.style.display = "none";
+    }
+    async function startCall() {
+        showstreamload();
+
+        try {
+            // Fetch the token from your server
+            const response = await fetch("/admin/video_token/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrftoken,
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({ channel_name: CHANNEL_NAME }),
+            });
+
+            const { token, uid } = await response.json();
+            console.log("Token: ", token);
+            console.log("Uid: ", uid);
+
+            const validToken = token && token.trim() !== "" ? token : null;
+            client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
+
+            // Join the channel with the token (or null if no token)
+            await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
+
+            console.log("User " + uid + " joined channel");
+
+            // Create the local audio and video tracks
+            localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+            await client.publish([localAudioTrack, localVideoTrack]);
+
+            console.log("Local tracks published");
+
+            // Create a container for the local video (teacher)
+            const localPlayerContainer = document.createElement("div");
+            localPlayerContainer.id = `local-player-${uid}`;
+            localPlayerContainer.style.width = "100%";
+            localPlayerContainer.style.height = "500px";
+            localPlayerContainer.textContent = `Teacher (uid: ${uid})`;
+            document.getElementById("local-video").append(localPlayerContainer);
+
+            // Play the local video track
+            localVideoTrack.play(localPlayerContainer);
+
+            closeLoading();
+            removeElements();
+
+            // Handle remote users
+            client.on("user-published", async (remoteUser, mediaType) => {
+                await client.subscribe(remoteUser, mediaType);
+
+                if (mediaType === "video") {
+                    const remoteVideoTrack = remoteUser.videoTrack;
+
+                    // Create a container for the remote video (student)
+                    const remotePlayerContainer = document.createElement("div");
+                    remotePlayerContainer.id = `remote-player-${remoteUser.uid}`;
+                    remotePlayerContainer.style.width = "640px";
+                    remotePlayerContainer.style.height = "480px";
+                    remotePlayerContainer.textContent = `Student (uid: ${remoteUser.uid})`;
+                    document
+                        .getElementById("remote-video")
+                        .append(remotePlayerContainer);
+
+                    remoteVideoTrack.play(remotePlayerContainer);
+                    console.log("Remote video track is playing");
+                }
+
+                if (mediaType === "audio") {
+                    const remoteAudioTrack = remoteUser.audioTrack;
+                    remoteAudioTrack.play();
+                    console.log("Remote audio track is playing");
+                }
+            });
+
+            client.on("user-unpublished", (remoteUser) => {
+                // Remove the remote video player when a remote user leaves
+                const remotePlayerContainer = document.getElementById(
+                    `remote-player-${remoteUser.uid}`
+                );
+                if (remotePlayerContainer) {
+                    remotePlayerContainer.remove();
+                    console.log("Remote user left the channel");
+                }
+            });
+        } catch (error) {
+            console.error("Error in startCall:", error);
+        }
+    }
+
+    async function joinClass() {
+        try {
+            const CHANNEL_NAME = "GroupClassChart";
+            const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
+
+            const response = await fetch("/admin/video_token/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrftoken,
+                },
+                body: JSON.stringify({ channel_name: CHANNEL_NAME }),
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Network response was not ok: ${response.statusText}`
+                );
+            }
+
+            const { token, uid } = await response.json();
+            console.log(token, uid);
+
+            const validToken = token && token.trim() !== "" ? token : null;
+
+            if (!token || !uid) {
+                throw new Error("Failed to retrieve token or uid");
+            }
+
+            const client = AgoraRTC.createClient({
+                mode: "rtc",
+                codec: "h264",
+            });
+
+            await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
+            console.log(`Student (uid: ${uid}) joined the class.`);
+
+            const localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            const localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+
+            // Create a container for the local (student) video
+            const localPlayerContainer = document.createElement("div");
+            localPlayerContainer.id = `local-player-${uid}`;
+            localPlayerContainer.textContent = `Student (uid: ${uid})`;
+            localPlayerContainer.style.width = "320px";
+            localPlayerContainer.style.height = "240px";
+            document.getElementById("local-video").append(localPlayerContainer);
+
+            localVideoTrack.play(localPlayerContainer);
+
+            client.on("user-published", async (user, mediaType) => {
+                await client.subscribe(user, mediaType);
+
+                if (mediaType === "video") {
+                    const remoteVideoTrack = user.videoTrack;
+
+                    const remotePlayerContainer = document.createElement("div");
+                    remotePlayerContainer.id = `remote-player-${user.uid}`;
+                    remotePlayerContainer.style.width = "640px";
+                    remotePlayerContainer.style.height = "480px";
+                    remotePlayerContainer.textContent = `Teacher (uid: ${user.uid})`;
+                    document
+                        .getElementById("remote-video")
+                        .append(remotePlayerContainer);
+
+                    remoteVideoTrack.play(remotePlayerContainer);
+                }
+
+                if (mediaType === "audio") {
+                    const remoteAudioTrack = user.audioTrack;
+                    remoteAudioTrack.play();
+                }
+            });
+
+            client.on("user-unpublished", (user) => {
+                const remotePlayerContainer = document.getElementById(
+                    `remote-player-${user.uid}`
+                );
+                if (remotePlayerContainer) {
+                    remotePlayerContainer.remove();
+                }
+            });
+
+            console.log("Class joined successfully by student.");
+        } catch (error) {
+            console.error(error);
+        }
+    }
 });
