@@ -103,6 +103,17 @@ class AdminController extends Controller
             'general_time_limit' => 'required|integer'
         ]);
 
+        $course = Course::find($courseid);
+
+
+        // // check-fi-user-has-course-access
+        // if ($course->course_type === "special") {
+        //     // continue-tocheck-priviledge
+        //     if (auth()->user()->user_type != 'premium') {
+        //         return redirect('dashboard')->with('error', 'You have no acess to this course');
+        //     }
+        // }
+
         // Validate if course and lesson exist
         $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
 
@@ -244,8 +255,6 @@ class AdminController extends Controller
 
         return response()->json($assessment, 201);
     }
-
-
     // outdated-assessments  controllers-below
 
     public function manageAssessments($courseId)
@@ -292,10 +301,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.course_assessments.index', $courseId)->with('success', 'Assessment created successfully.');
     }
-
-
-
-
 
     public function deleteAssessment(Request $request, $id)
     {
@@ -390,27 +395,25 @@ class AdminController extends Controller
         return redirect()->route('admin.assign-course')->with('success', 'Course unassigned successfully.');
     }
 
-    public function fetchCourse($id)
+    public function fetchCourse($courseid)
     {
         // Find the course by its ID
-        $course = Course::find($id);
+        $course = Course::find($courseid);
         //   check-if-lesson-exist
 
         $routeName = "CourseView";
-
-
         // Check if the course exists
         if (!$course) {
             return response()->json(['error' => 'Course not found'], 404);
         };
 
         // check-fi-user-has-course-access
-        if ($course->course_type === "special") {
-            // continue-tocheck-priviledge
-            if (auth()->user()->user_type != 'premium') {
-                return redirect('dashboard')->with('error', 'You have no acess to this course');
-            }
-        }
+        // if ($course->course_type === "special") {
+        //     // continue-tocheck-priviledge
+        //     if (auth()->user()->user_type != 'premium') {
+        //         return redirect('dashboard')->with('error', 'You have no acess to this course');
+        //     }
+        // }
 
         $lessons = $course->lessons;
 
@@ -430,6 +433,14 @@ class AdminController extends Controller
         if (!$course) {
             return response()->json(['error' => 'Course not Found', 404]);
         }
+
+        // check-fi-user-has-course-access
+        if ($course->course_type === "special") {
+            // continue-tocheck-priviledge
+            if (auth()->user()->user_type != 'premium') {
+                return redirect('dashboard')->with('error', 'You have no acess to this course');
+            }
+        }
         // check-for-lessons
         $checklesson = Lessonassessment::where("course_id", $courseid)->where("lesson_id", $lessonid)->first();
 
@@ -443,6 +454,50 @@ class AdminController extends Controller
 
         // continue-f-all-is-well
         return view('admin.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView', 'hasassessment' => $hasasessment]);
+    }
+
+    // add-lessons-toourse
+    public function addcourseLessons(Request $request, $courseid)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'video' => 'nullable|file|mimes:mp4,mov,avi,webm|max:20480',
+            'audio' => 'nullable|file|mimes:mp3,wav|max:10240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240', // 
+            'status' => 'nullable|string'
+        ]);
+
+        // Check if the course exists before proceeding
+        $course = Course::find($courseid);
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404); // Return 404 if the course doesn't exist
+        }
+
+        // Handle file upload for image
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('lessons/images', 'public') : null;
+        $videoPath = $request->hasFile('video') ? $request->file('video')->store("lessons/video", 'public') : null;
+        $audioPath = $request->hasFile('audio') ? $request->file('audio')->store("lessons/audio", 'public') : null;
+
+
+        // add-lesson-numer-filed-to-auto-increment-manually
+        // this-after-validation
+        $lastsession = CourseLesson::where('course_id', $courseid)->orderBy('lesson_number', 'desc')->first();
+        $nextlessonnumber = $lastsession ? $lastsession->lesson_number + 1 : 1;
+
+        // Create new lesson and link it to the course
+        $lesson = new CourseLesson();
+        $lesson->course_id = $courseid;
+        $lesson->name = $request->name;
+        $lesson->description = $request->description;
+        $lesson->video = $videoPath;
+        $lesson->audio = $audioPath;
+        $lesson->status = $request->status;
+        $lesson->image = $imagePath;
+        $lesson->lesson_number = $nextlessonnumber;
+        $lesson->save();
+
+        return response()->json($lesson, 201);
     }
 
 

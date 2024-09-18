@@ -27,7 +27,7 @@ use App\Models\Message;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AgoraController;
 
 // CKEditor upload route
 Route::post('/upload-image', [CKEditorController::class, 'uploadImage'])->name('ckeditor.upload');
@@ -136,8 +136,9 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-    // group-admin-ensure-admin-and-auth-middleware
-    Route::middleware(['auth'])->group(function () {
+
+    // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
+    Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment
         Route::get('/admin/courses/{courseId}/lesson/{lessonId}/create-assessments', [LessonAssessmentController::class, 'create'])->name('assessments.create');
 
@@ -175,6 +176,12 @@ Route::middleware(['auth'])->group(function () {
 
         // Route to delete assessment
         Route::delete('admin/courses/{courseId}/lessons/{lessonId}/assessments/{id}', [LessonAssessmentController::class, 'destroy'])->name('lesson_assessments.destroy');
+    });
+
+
+
+    // Admin-route-for-non-coursid-middleware-rtracks
+    Route::middleware(['admin'])->group(function () {
 
         Route::get('admin/manage-assessments', [LessonAssessmentController::class, 'manageAssessments'])->name('assessments.manage');
         Route::post('admin/publish-assessment/{id}', [LessonAssessmentController::class, 'publishAssessment'])->name('assessments.publish');
@@ -197,7 +204,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::delete('/admin/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'destroy'])->name('course_assessments.delete');
 
-
+        // Agora-video-chat-only-premium-users
+        Route::post('/admin/video_token/generate', [AgoraController::class, 'generateToken'])->name('videochat.start')->middleware('premiumuser');
 
 
 
@@ -210,7 +218,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admin/courses/register', [AdminController::class, 'registerCourse'])->name('admin.courses.register');
         // add-lessons-to-specific-course
         Route::post('/admin/course/{courseid}/lessons', [AdminController::class, 'addcourseLessons'])->name('admin.courses.lessons.create');
-        Route::get('/admin/courses/{id}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
+        Route::get('/admin/courses/{courseid}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
         // fetchcourse-details`
         Route::get('/admin/courses/{courseid}/lesson/{lessonid}', [AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
 
@@ -221,7 +229,6 @@ Route::middleware(['auth'])->group(function () {
 
         // Send a message to a specific lesson in a specific course
         Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
-
 
         Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
         Route::get('/admin/courses/view/{id}', [AdminController::class, 'viewCourse'])->name('admin.courseview');
@@ -296,8 +303,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('assessments/{assessment}', [AdminController::class, 'deleteAssessment'])->name('admin.courses.assessments.destroy');
         });
     });
-
-
 
 
 

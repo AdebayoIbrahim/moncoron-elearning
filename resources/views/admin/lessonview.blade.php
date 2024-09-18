@@ -2,7 +2,9 @@
 @section('content')
 @include('partials.admin_header')
 @csrf
-@vite(['resources/css/create-assessment/assessment.css','resources/js/courseview/lessonview.js'])
+@vite(['resources/css/create-assessment/assessment.css','resources/js/courseview/lessonview.js',''])
+
+
 <div class="container-fluid">
     <div class="row mt-2">
         {{-- @include('partials.admin_sidebar') --}}
@@ -16,36 +18,46 @@
 
             <div class="tool_add">
                 <button type="button" class="btn btn-primary btn-md" id="add_assessment_btn">{{$hasassessment ? 'Manage Assessment' : 'Add Assessment'}}</button>
+                <button id="join_call">Join Call</button>
             </div>
+
         </div>
+
         <div class="row Chat_ui">
+
             <!-- Right side: Lesson Media Files -->
             <div class="col-md-7">
                 <div class="card">
-                    <div class="card-header">
+
+                    <div class="card-header d-flex justify-content-between">
                         <h5>Lesson Media</h5>
+                        <h5 id="StartCall">Go Live</h5>
                     </div>
                     <div class="card-body media_container">
-                        @if($lesson->video)
-                        <h4>Video</h4>
-                        <video controls class="w-100 mb-3">
-                            <source src="{{ asset('storage/'. $lesson->video) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                        @endif
+                        <div id="remote-video"></div>
+                        <div id="local-video"></div>
+                        <div id="media_uploaded">
+                            @if($lesson->video)
+                            <h4>Video</h4>
+                            <video controls class="w-100 mb-3">
+                                <source src="{{ asset('storage/'. $lesson->video) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            @endif
 
-                        @if($lesson->audio)
-                        <h4>Audio</h4>
-                        <audio controls class="w-100 mb-3" style="height: 50px">
-                            <source src="{{ asset('storage/' . $lesson->audio) }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                        @endif
+                            @if($lesson->audio)
+                            <h4>Audio</h4>
+                            <audio controls class="w-100 mb-3" style="height: 50px">
+                                <source src="{{ asset('storage/' . $lesson->audio) }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            @endif
 
-                        @if($lesson->image)
-                        <h4>Image</h4>
-                        <img src="{{ asset('storage/' . $lesson->image) }}" alt="Lesson Image" class="img-fluid" style="object-fit: cover;widht: clac(100%-30px);height: 450px; border-radius: 0.4rem">
-                        @endif
+                            @if($lesson->image)
+                            <h4>Image</h4>
+                            <img src="{{ asset('storage/' . $lesson->image) }}" alt="Lesson Image" class="img-fluid" style="object-fit: cover;widht: clac(100%-30px);height: 450px; border-radius: 0.4rem">
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,7 +66,7 @@
                 <input type="hidden" id="curruserid" value="{{ auth()->user()->id }}">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Group Chat</h5>
+                        <h5>Group Chat : {{$lesson->lesson_number}}</h5>
                     </div>
                     <div class="card-body" id="chat-box" style="height: 450px; overflow-y: auto;
                                 overflew-x:hidden; padding: 15px;width:100%">
@@ -105,5 +117,10 @@
 
     </div>
 
+</div>
+
+<div id="loadingAnimation" class="loading-frame">
+    <h2>Streaming in progress..</h2>
+    <div>“Hang on! Your live class is about to begin.”</div>
 </div>
 @endsection
