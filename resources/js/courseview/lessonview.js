@@ -326,6 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("User " + uid + " joined channel");
 
             await client.setClientRole("host");
+
             // Create the local audio and video tracks
             localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
             localVideoTrack = await AgoraRTC.createCameraVideoTrack();
@@ -337,8 +338,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const localPlayerContainer = document.createElement("div");
             localPlayerContainer.id = `local-player-${uid}`;
             localPlayerContainer.style.width = "100%";
-            localPlayerContainer.style.height = "500px";
-            localPlayerContainer.textContent = `Teacher (uid: ${uid})`;
+            localPlayerContainer.style.height = "100%";
+            localPlayerContainer.classList.add("local_styled_video");
             document.getElementById("local-video").append(localPlayerContainer);
 
             // Play the local video track
@@ -357,8 +358,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Create a container for the remote video (student)
                     const remotePlayerContainer = document.createElement("div");
                     remotePlayerContainer.id = `remote-player-${remoteUser.uid}`;
-                    remotePlayerContainer.style.width = "640px";
-                    remotePlayerContainer.style.height = "480px";
+                    remotePlayerContainer.style.width = "100%";
+                    remotePlayerContainer.style.height = "100%";
                     remotePlayerContainer.textContent = `Student (uid: ${remoteUser.uid})`;
                     document
                         .getElementById("remote-video")
@@ -421,6 +422,19 @@ document.addEventListener("DOMContentLoaded", function () {
             await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
             console.log(`Student (uid: ${uid}) joined the class.`);
 
+            // Create and play the local audio and video tracks for the student
+            localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+
+            const localPlayerContainer = document.createElement("div");
+            localPlayerContainer.id = `local-player-${uid}`;
+            localPlayerContainer.style.width = "100%";
+            localPlayerContainer.style.height = "100%";
+            localPlayerContainer.classList.add("local_styled_video");
+            document.getElementById("local-video").append(localPlayerContainer);
+
+            localVideoTrack.play(localPlayerContainer);
+
             // Handle remote users
             client.on("user-published", async (user, mediaType) => {
                 await client.subscribe(user, mediaType);
@@ -430,14 +444,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const remotePlayerContainer = document.createElement("div");
                     remotePlayerContainer.id = `remote-player-${user.uid}`;
-                    remotePlayerContainer.style.width = "640px";
-                    remotePlayerContainer.style.height = "480px";
+                    remotePlayerContainer.style.width = "100%";
+                    remotePlayerContainer.style.height = "100%";
                     remotePlayerContainer.textContent = `Teacher (uid: ${user.uid})`;
                     document
                         .getElementById("remote-video")
                         .append(remotePlayerContainer);
 
                     remoteVideoTrack.play(remotePlayerContainer);
+                    console.log("Remote video track is playing");
                 }
 
                 if (mediaType === "audio") {

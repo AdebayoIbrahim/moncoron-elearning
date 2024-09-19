@@ -161,6 +161,9 @@ div.container_lesson_body {
 }
 .media_container > img,
 video,
+.media_container {
+    position: relative;
+}
 audio {
     width: 100%;
     height: 60vh;
@@ -344,20 +347,32 @@ div.form_datas > #chat-input {
     object-fit: cover;
 }
 
+#video_class_layout {
+    width: 100%;
+    height: 490px;
+}
+
 #remote-video {
     width: 100%;
-    height: 400px;
+    height: 450px;
+    /* position: absolute; */
+    /* bottom: 0; */
     /* display: none; */
 }
+
 #local-video {
     /* display: none; */
-    width: 400px;
-    height: 400px;
+    width: 200px;
+    height: 200px;
     position: absolute;
-    top: 50px;
+    top: 250px;
     border-radius: 50%;
-    right: 10px;
-    border: 3px solid red;
+    right: 20px;
+    /* border: 3px solid red; */
+}
+
+.local_styled_video > div {
+    border-radius: 50%;
 }
 .greenit {
     border: 3px solid green;
