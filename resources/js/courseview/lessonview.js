@@ -269,8 +269,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    // video-chat-if-required-modes
-
     const start = document.getElementById("StartCall");
     start.onclick = function () {
         startCall();
@@ -283,28 +281,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const loadingElement = document.querySelector("#loadingAnimation");
     const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
-
     let localAudioTrack, localVideoTrack;
     let CHANNEL_NAME = "GroupClassChart";
-    let client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
+    let client = AgoraRTC.createClient({ mode: "live", codec: "h264" });
     const mediacontainer = document.querySelector(".media_container");
     const spreadmedias = document.querySelector("#media_uploaded");
 
     function showstreamload() {
         loadingElement.classList.add("show_stream");
     }
+
     function closeLoading() {
         loadingElement.classList.remove("show_stream");
     }
-    // remove-existing-elements
+
+    // Remove existing elements
     function removeElements() {
         spreadmedias.style.display = "none";
     }
+
     async function startCall() {
         showstreamload();
 
         try {
-            // Fetch the token from your server
             const response = await fetch("/admin/video_token/generate", {
                 method: "POST",
                 headers: {
@@ -320,15 +319,12 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Uid: ", uid);
 
             const validToken = token && token.trim() !== "" ? token : null;
-            // Initialize the Agora client in live mode
-            client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
-            // await client.setClientRole("host");
-            // Set the client role to "host" (for
-            // Join the channel with the token (or null if no token)
-            await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
 
+            // Join the channel with the token
+            await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
             console.log("User " + uid + " joined channel");
 
+            await client.setClientRole("host");
             // Create the local audio and video tracks
             localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
             localVideoTrack = await AgoraRTC.createCameraVideoTrack();
@@ -380,7 +376,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             client.on("user-unpublished", (remoteUser) => {
-                // Remove the remote video player when a remote user leaves
                 const remotePlayerContainer = document.getElementById(
                     `remote-player-${remoteUser.uid}`
                 );
@@ -396,9 +391,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function joinClass() {
         try {
-            const CHANNEL_NAME = "GroupClassChart";
-            const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
-
             const response = await fetch("/admin/video_token/generate", {
                 method: "POST",
                 headers: {
@@ -422,29 +414,13 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!token || !uid) {
                 throw new Error("Failed to retrieve token or uid");
             }
-            // Initialize the Agora client in live mode
-            const client = AgoraRTC.createClient({
-                mode: "live",
-                codec: "h264",
-            });
 
+            // Set the client role to audience
             await client.setClientRole("audience");
             await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
             console.log(`Student (uid: ${uid}) joined the class.`);
 
-            const localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            const localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-
-            // Create a container for the local (student) video
-            const localPlayerContainer = document.createElement("div");
-            localPlayerContainer.id = `local-player-${uid}`;
-            localPlayerContainer.textContent = `Student (uid: ${uid})`;
-            localPlayerContainer.style.width = "320px";
-            localPlayerContainer.style.height = "240px";
-            document.getElementById("local-video").append(localPlayerContainer);
-
-            localVideoTrack.play(localPlayerContainer);
-
+            // Handle remote users
             client.on("user-published", async (user, mediaType) => {
                 await client.subscribe(user, mediaType);
 
