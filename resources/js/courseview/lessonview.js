@@ -276,10 +276,15 @@ document.addEventListener("DOMContentLoaded", function () {
         startCall();
     };
 
+    const join = document.getElementById("join_call");
+    join.onclick = function () {
+        joinClass();
+    };
+
     const loadingElement = document.querySelector("#loadingAnimation");
     const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
 
-    let localAudioTrack, localVideoTrack, localStream;
+    let localAudioTrack, localVideoTrack;
     let CHANNEL_NAME = "GroupClassChart";
     let client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
     const mediacontainer = document.querySelector(".media_container");
@@ -315,8 +320,10 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Uid: ", uid);
 
             const validToken = token && token.trim() !== "" ? token : null;
+            // Initialize the Agora client in live mode
             client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
-
+            // await client.setClientRole("host");
+            // Set the client role to "host" (for
             // Join the channel with the token (or null if no token)
             await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
 
@@ -414,12 +421,13 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!token || !uid) {
                 throw new Error("Failed to retrieve token or uid");
             }
-
+            // Initialize the Agora client in live mode
             const client = AgoraRTC.createClient({
-                mode: "rtc",
+                mode: "live",
                 codec: "h264",
             });
 
+            await client.setClientRole("audience");
             await client.join(APP_ID, CHANNEL_NAME, validToken, uid);
             console.log(`Student (uid: ${uid}) joined the class.`);
 
