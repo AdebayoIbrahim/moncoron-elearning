@@ -368,6 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         .append(remotePlayerContainer);
 
                     remoteVideoTrack.play(remotePlayerContainer);
+
                     console.log("Remote video track is playing");
                 }
 
