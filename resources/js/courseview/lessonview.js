@@ -325,6 +325,7 @@ var options = {
 };
 
 const toggleMic = document.getElementById("toggleaudio");
+const togglevid = document.getElementById("togglevideo");
 // Start the call
 async function startCall() {
     showstreamload();
@@ -473,14 +474,35 @@ toggleMic.addEventListener("click", async () => {
         // mute-theloca-streamer
         if (localTracks) {
             const { audioTrack } = localTracks;
-            audioTrack.setEnabled(false);
+            await audioTrack.setMuted(false);
         }
     } else {
         previcon.classList.replace("fa-microphone-slash", "fa-microphone");
-        localTracks.audioTrack.setEnabled(true);
+        await localTracks.audioTrack.setMuted(true);
     }
 
     mute = !mute;
+});
+
+// same-logic-for-video-toggle
+let vid = true;
+togglevid.addEventListener("click", async () => {
+    const previcon = togglevid?.querySelector(".fa-solid");
+    if (vid) {
+        previcon.classList.replace("fa-video", "fa-video-slash");
+        // vid-toggle-theloca-streamer
+        if (localTracks) {
+            const { videoTrack } = localTracks;
+            await videoTrack.setEnabled(false);
+            console.log("Video disabled");
+        }
+    } else {
+        previcon.classList.replace("fa-video-slash", "fa-video");
+        await localTracks.videoTrack.setEnabled(true);
+        console.log("Video enabled");
+    }
+
+    vid = !vid;
 });
 // Subscribe to remote user
 async function subscribe(user, mediaType) {

@@ -47,18 +47,14 @@
                             <div class="controls_section">
                                 {{-- mic-controls --}}
 
-                                {{-- cancel-video --}}
-                                <div class="control_container_vid">
+                                {{-- toggle-video --}}
+                                <div id="togglevideo" class="control_container_vid">
                                     <i class="fa-solid fa-video icon_styles_con"></i>
                                 </div>
-                                {{-- microphone --}}
+                                {{-- togglemicrophone --}}
                                 <div id="toggleaudio" class="control_container_vid">
                                     <i class="fa-solid fa-microphone icon_styles_con"></i>
                                 </div>
-                                {{-- cancelaudio --}}
-                                {{-- <div class="control_container_vid">
-                                    <i class="fa-solid fa-microphone-slash icon_styles_con"></i>
-                                </div> --}}
                                 {{-- end-call --}}
                                 <div class="control_container_vid" id="end_call">
                                     <i class="fa-solid fa-phone icon_styles_con canccall"></i>
