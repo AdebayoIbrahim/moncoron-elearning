@@ -2,7 +2,7 @@
 @section('content')
 @include('partials.admin_header')
 @csrf
-@vite(['resources/css/create-assessment/assessment.css','resources/js/courseview/lessonview.js',''])
+@vite(['resources/css/create-assessment/assessment.css','resources/js/courseview/lessonview.js','resources/sass/app.scss'])
 
 
 <div class="container-fluid">
@@ -18,30 +18,59 @@
 
             <div class="tool_add">
                 <button type="button" class="btn btn-primary btn-md" id="add_assessment_btn">{{$hasassessment ? 'Manage Assessment' : 'Add Assessment'}}</button>
-                <button id="join_call">Join Call</button>
+                {{-- //TODO:check --for-use-type-for-join-toappearhere-andon-condition --}}
+
+                <button id="" class="btn btn-primary " style="margin-left: 5px">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Schedule a live class
+                </button>
             </div>
 
         </div>
-
         <div class="row Chat_ui">
 
             <!-- Right side: Lesson Media Files -->
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <div class="card">
 
                     <div class="card-header d-flex justify-content-between">
                         <h5>Lesson Media</h5>
-                        <h5 id="StartCall">Go Live</h5>
+                        <button id="StartCall" type="button" class="btn btn-primary btn-md">
+                            <span><img width="25" height="25" src="https://img.icons8.com/color/48/online--v1.png" alt="online--v1" /></span>
+                            Go Live
+                        </button>
                     </div>
                     <div class="card-body media_container">
                         <div id="video_class_layout">
                             <div id="remote-video"></div>
                             <div id="local-video"></div>
+                            <div class="controls_section">
+                                {{-- mic-controls --}}
+
+                                {{-- cancel-video --}}
+                                <div class="control_container_vid">
+                                    <i class="fa-solid fa-video icon_styles_con"></i>
+                                </div>
+                                {{-- microphone --}}
+                                <div class="control_container_vid">
+                                    <i class="fa-solid fa-microphone icon_styles_con"></i>
+                                </div>
+                                {{-- cancelaudio --}}
+                                {{-- <div class="control_container_vid">
+                                    <i class="fa-solid fa-microphone-slash icon_styles_con"></i>
+                                </div> --}}
+                                {{-- end-call --}}
+                                <div class="control_container_vid" id="end_call">
+                                    <i class="fa-solid fa-phone icon_styles_con canccall"></i>
+                                </div>
+
+
+                            </div>
                         </div>
                         <div id="media_uploaded">
                             @if($lesson->video)
                             <h4>Video</h4>
-                            <video controls class="w-100 mb-3">
+                            <video controls class="w-100 mb-3" style="height: 60vh">
                                 <source src="{{ asset('storage/'. $lesson->video) }}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
@@ -63,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <!-- Left side: Chat UI -->
                 <input type="hidden" id="curruserid" value="{{ auth()->user()->id }}">
                 <div class="card">
@@ -123,6 +152,9 @@
 
 <div id="loadingAnimation" class="loading-frame">
     <h2>Streaming in progress..</h2>
-    <div>“Hang on! Your live class is about to begin.”</div>
+    <div class="h6">Hang on! Your live class is about to begin.</div>
+    <div>
+        <img src=" {{asset ('images/Loader.gif') }}" alt="stream-loading" style="width: 110px; height: 110px;">
+    </div>
 </div>
 @endsection

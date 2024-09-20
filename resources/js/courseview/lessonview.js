@@ -271,18 +271,19 @@ start.onclick = function () {
     startCall();
 };
 
-const joinBtn = document.getElementById("join_call");
-joinBtn.onclick = function () {
-    joinClass();
-};
+// const joinBtn = document?.getElementById("join_call");
+// joinBtn.onclick = function () {
+//     joinClass();
+// };
 
 const loadingElement = document.querySelector("#loadingAnimation");
-const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
-let localAudioTrack, localVideoTrack;
 let CHANNEL_NAME = "GroupClassChart";
-// let client = AgoraRTC.createClient({ mode: "live", codec: "h264" });
-const mediacontainer = document.querySelector(".media_container");
+const endCallvid = document.querySelector("#end_call");
+const videoCalllayout = document.querySelector("#video_class_layout");
 const spreadmedias = document.querySelector("#media_uploaded");
+const showvideocall = () => {
+    videoCalllayout.style.display = "block";
+};
 
 function showstreamload() {
     loadingElement.classList.add("show_stream");
@@ -297,6 +298,7 @@ function removeElements() {
     spreadmedias.style.display = "none";
 }
 
+// algora.io-setup-init
 var client = AgoraRTC.createClient({
     mode: "live",
     codec: "vp8",
@@ -346,6 +348,7 @@ async function startCall() {
 
 // Join the class
 async function joinClass() {
+    showstreamload();
     try {
         const response = await fetch("/admin/video_token/generate", {
             method: "POST",
@@ -368,7 +371,8 @@ async function joinClass() {
         options.token = token;
         options.uid = uid;
         options.channel = CHANNEL_NAME;
-        options.role = "audience";
+        // make-both-host
+        options.role = "host";
 
         await join();
     } catch (error) {
@@ -406,7 +410,6 @@ async function join() {
         if (!localTracks.videoTrack) {
             localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
         }
-
         // Play the local video track
         const localPlayerContainer = document.createElement("div");
         localPlayerContainer.id = `local-player-${options.uid}`;
@@ -414,7 +417,6 @@ async function join() {
         localPlayerContainer.style.height = "100%";
         localPlayerContainer.classList.add("local_styled_video");
         document.getElementById("local-video").append(localPlayerContainer);
-
         localTracks.videoTrack.play(localPlayerContainer);
         await client.publish(Object.values(localTracks));
         console.log("Local tracks published");
@@ -424,11 +426,16 @@ async function join() {
 
     closeLoading();
     removeElements();
+    showvideocall();
 }
 
+endCallvid.onclick = function () {
+    leave();
+};
 // Leave the channel
 async function leave() {
-    for (trackName in localTracks) {
+    console.log(localTracks);
+    for (let trackName in localTracks) {
         var track = localTracks[trackName];
         if (track) {
             track.stop();
