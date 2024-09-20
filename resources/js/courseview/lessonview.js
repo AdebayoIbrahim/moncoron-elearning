@@ -285,6 +285,9 @@ const showvideocall = () => {
     videoCalllayout.style.display = "block";
 };
 
+const closeVideocall = () => {
+    videoCalllayout.style.display = "none";
+};
 function showstreamload() {
     loadingElement.classList.add("show_stream");
 }
@@ -296,6 +299,11 @@ function closeLoading() {
 // Remove existing elements
 function removeElements() {
     spreadmedias.style.display = "none";
+}
+
+// add-existing-element
+function addElements() {
+    spreadmedias.style.display = "block";
 }
 
 // algora.io-setup-init
@@ -316,6 +324,7 @@ var options = {
     role: "audience",
 };
 
+const toggleMic = document.getElementById("toggleaudio");
 // Start the call
 async function startCall() {
     showstreamload();
@@ -450,9 +459,29 @@ async function leave() {
 
     // Leave the channel
     await client.leave();
+    closeVideocall();
+    addElements();
+
     console.log("Client left channel");
 }
 
+let mute = true;
+toggleMic.addEventListener("click", async () => {
+    const previcon = toggleMic?.querySelector(".fa-solid");
+    if (mute) {
+        previcon.classList.replace("fa-microphone", "fa-microphone-slash");
+        // mute-theloca-streamer
+        if (localTracks) {
+            const { audioTrack } = localTracks;
+            audioTrack.setEnabled(false);
+        }
+    } else {
+        previcon.classList.replace("fa-microphone-slash", "fa-microphone");
+        localTracks.audioTrack.setEnabled(true);
+    }
+
+    mute = !mute;
+});
 // Subscribe to remote user
 async function subscribe(user, mediaType) {
     const uid = user.uid;

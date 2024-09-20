@@ -52,7 +52,7 @@
                                     <i class="fa-solid fa-video icon_styles_con"></i>
                                 </div>
                                 {{-- microphone --}}
-                                <div class="control_container_vid">
+                                <div id="toggleaudio" class="control_container_vid">
                                     <i class="fa-solid fa-microphone icon_styles_con"></i>
                                 </div>
                                 {{-- cancelaudio --}}
