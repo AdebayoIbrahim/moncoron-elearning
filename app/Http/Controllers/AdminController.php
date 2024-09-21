@@ -14,6 +14,9 @@ use App\Models\Lessonassessment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+// notifications
+// this-d-for-general
+use App\Notifications\Generalnotify;
 
 class AdminController extends Controller
 {
@@ -93,6 +96,13 @@ class AdminController extends Controller
         }
 
         Course::create($data);
+
+        // send-a-notification-to-allusers
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->notify(new Generalnotify('This is a general notification for all users!'));
+        }
+
         return redirect()->back()->with('success', 'New Course created successfully.');
     }
     public function Addlessonassessment(Request $request, $courseid, $lessonid)
