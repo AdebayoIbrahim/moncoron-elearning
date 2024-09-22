@@ -51,9 +51,12 @@
                     <p class="not_text">{{$notification->data['message']}}</p>
                     {{-- audio?ifpresent --}}
                     {{-- attached-link --}}
-                    {!! isset($notification->data['attached_link']) ?
-                    '<p class="not_text"><a href="'.$notification->data['attached_link'].'">Explore the Course</a></p>'
-                    : null !!}
+                    @if(isset($notification->data['attached_link']))
+                    <p class="not_text">
+                        <a href="{{ $notification->data['attached_link'] }}">Explore the course</a>
+                    </p>
+                    @endif
+
                 </div>
 
                 {{-- is-read-check --}}

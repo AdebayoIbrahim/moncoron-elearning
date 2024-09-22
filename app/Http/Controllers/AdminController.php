@@ -105,10 +105,13 @@ class AdminController extends Controller
 
 
         // srap-attached-link
-        $attachedlink = '/admin/courses/' . $createdcourse->course_id;
+        $attachedlink =  (string) '/admin/courses/' . $createdcourse->id;
+
+        // log-check-course-link
+        Log::info('Attached Link: ' . $attachedlink);
 
         foreach ($users as $user) {
-            $user->notify(new Generalnotify('🎉 New Course Added! Explore and boost your skills now.', $currentuser, $attachedlink, $createdcourse,));
+            $user->notify(new Generalnotify('🎉 New Course Added! Explore and boost your skills now.', $currentuser, $attachedlink));
         }
 
         return redirect()->back()->with('success', 'New Course created successfully.');
