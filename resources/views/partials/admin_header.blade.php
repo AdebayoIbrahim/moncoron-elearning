@@ -23,14 +23,44 @@
         {{-- Dropdown menu --}}
         <ul class="dropdown-menu dropdown-menu-end mt-2 parent_container" aria-labelledby="dropdownMenuButton" style="width: 500px;padding-inline:1rem;border-color:transparent;overflow-x:hidden;border-radius: 0.8rem">
             {{-- <heade-clear-btn></heade-clear-btn> --}}
-            <div style="display: flex;justify-content: space-between; align-items: center; padding-top: .5rem">
+            <div style="display: flex;justify-content: space-between; align-items: center; padding-block: .5rem">
                 <h4>Notifications</h4>
                 <button type="button" class="btn btn-info btn-sm">Clear</button>
             </div>
             @if(count(auth()->user()->notifications) != 0)
             @foreach(auth()->user()->notifications as $notification)
-            <div class=" notification">
-                <li class="dopdown-item">{{ $notification->data['message'] }}</li>
+            <div class="notification">
+                {{-- sender-avater start--}}
+                <div class="avatar_sender_container">
+                    @if($notification->data['sender_name'] == 'admin')
+                    <img src={{asset('images/ellipse-62@2x.png')}} alt="sender_avatar" width="40" height="40">
+                    @else
+                    {{-- show a default-avatar --}}
+                    @endif
+                </div>
+                {{-- sender-avatar-ends-here --}}
+                {{-- flex-text-messgae-contents --}}
+                <div class="notification_content">
+                    {{-- sender-name --}}
+                    @if($notification->data['sender_name'] == 'admin')
+                    <p><b>Moncoran</b> just sent you a new notification!</p>
+                    @else
+                    <p>{{$notification->data['sender_name'].'sent a notification' }}</p>
+                    @endif
+                    {{-- text -- default-there-shouldbe a text--}}
+                    <p class="not_text">{{$notification->data['message']}}</p>
+                    {{-- audio?ifpresent --}}
+                    {{-- attached-link --}}
+                    {!! isset($notification->data['attached_link']) ?
+                    '<p class="not_text"><a href="'.$notification->data['attached_link'].'">Explore the Course</a></p>'
+                    : null !!}
+                </div>
+
+                {{-- is-read-check --}}
+
+                @if($notification->read_at === null)
+                <span class="mt-2" style="width: 8px; height : 6px; border-radius: 50%; background: #236ad6;"></span>
+                @endif
             </div>
             @endforeach
             @else
@@ -39,7 +69,7 @@
             <div class="bottom_nav_notifications">
                 <div class="line_full"></div>
                 <div class="mt-1">
-                    <button type="button" class="btn btn-sm btn-transparent" style="color: blue">
+                    <button type="button" class="btn btn-sm btn-transparent" style="color: blue" onclick="handlemarkRead()">
                         <span><i class="fa-solid fa-check-double"></i></span>
                         <span style="margin-left: .6rem;font-size:1rem">Mark all as Read</span>
                     </button>
@@ -83,3 +113,9 @@
     <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
   </div> -->
 </header>
+<script>
+    function handlemarkRead(arg) {
+        // console.log(arg)
+    }
+
+</script>

@@ -28,8 +28,7 @@
 
     {{-- agora-video --}}
     <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.22.0.js"></script>
-
-
+    @vite(['resources/css/app.css'])
 </head>
 
 <body>
