@@ -95,12 +95,20 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'A Course with this Title already exists.');
         }
 
-        Course::create($data);
+        $createdcourse = Course::create($data);
 
         // send-a-notification-to-allusers
         $users = User::all();
+
+        // check-user-who-sent-the-notificatin
+        $currentuser = auth()->user();
+
+
+        // srap-attached-link
+        $attachedlink = '/admin/courses/' . $createdcourse->course_id;
+
         foreach ($users as $user) {
-            $user->notify(new Generalnotify('This is a general notification for all users!'));
+            $user->notify(new Generalnotify('🎉 New Course Added! Explore and boost your skills now.', $currentuser, $attachedlink, $createdcourse,));
         }
 
         return redirect()->back()->with('success', 'New Course created successfully.');

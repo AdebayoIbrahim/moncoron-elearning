@@ -195,17 +195,3 @@
 .parent_container {
     box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.15);
 }
-.notification {
-    padding-top: 1.2rem;
-}
-.bottom_nav_notifications {
-    padding-top: 2rem;
-    position: relative;
-}
-.line_full {
-    position: absolute;
-    height: 2px;
-    background: #f4f4f4;
-    width: calc(100% + 3rem);
-    transform: translateX(-2rem);
-}

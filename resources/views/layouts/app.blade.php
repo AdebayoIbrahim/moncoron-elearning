@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
+    @vite(['resources/js/app.js','resources/css/custom-editor/editor.css', 'resources/js/custom-editor/editor.js','resources/css/app.css'])
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $routeNamePart ?? 'Moncoran' }} | Moncoran</title>
-    @vite(['resources/js/app.js','resources/css/custom-editor/editor.css', 'resources/js/custom-editor/editor.js'])
     <link rel="icon" href="{{ asset('images/image-21@2x.png') }}" />
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">

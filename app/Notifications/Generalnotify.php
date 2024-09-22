@@ -20,12 +20,11 @@ class Generalnotify extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($message, $course = null, $user = null, $audio = null, $link = null)
+    public function __construct($message, $user = null, $audio = null, $link = null, $course = null,)
     {
         $this->message = $message;
         $this->course = $course;
         $this->user = $user;
-        $this->audio = $audio;
         $this->link = $link;
     }
 
@@ -54,9 +53,8 @@ class Generalnotify extends Notification
         return [
             'message' => $this->message,
             'sender_name' => $this->isAdmincheck($this->user),
-            'audio_present' => $this->audio ?? null,
             'attached_link' => $this->link ?? null,
-            'course' => $this->course ? $this->course->course_id : null,
+            'course' => $this->course ? $this->course->name : null,
         ];
     }
 
