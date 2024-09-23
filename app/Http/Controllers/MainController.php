@@ -32,38 +32,31 @@ class MainController extends Controller
     public function courses()
     {
         $user = Auth::user();
-        $courses = Course::all();
+        // scope-general-courses
+        $courses = Course::normal()->get();
         $routeName = Route::currentRouteName();
         $mycourses = Course::whereIn('id', $user->subscriptions->pluck('course_id'))->get();
         $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Courses';
 
         return view('student.courses', compact('user', 'routeNamePart', 'courses', 'mycourses'));
     }
-
-    // Show Course
-    public function show($id)
+    // Show Course Details
+    public function showcourse($courseid)
     {
-        $course = Course::find($id);
+        // Find the course by its ID
+        $course = Course::find($courseid);
+        //   check-if-lesson-exist
 
+        $routeName = "CourseView";
+        // Check if the course exists
         if (!$course) {
             return response()->json(['error' => 'Course not found'], 404);
-        }
+        };
 
-        return response()->json($course);
-    }
-
-    // Show Course Details
-    public function showcourse($id)
-    {
-        $user = Auth::user();
-        $course = Course::with(['lessons.users' => function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        }])->findOrFail($id);
-
-        $routeNamePart = 'Courses';
+        // fetch-related-lessons
         $lessons = $course->lessons;
-
-        return view('student.coursedesc', compact('user', 'routeNamePart', 'course', 'lessons'));
+        // Return the Blade view and pass the course data to it
+        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
     }
 
     // Update Lesson Progress
@@ -239,50 +232,50 @@ class MainController extends Controller
             'questions' => 'required|array',
             'questions.*' => 'required|integer',
         ]);
-    
+
         $user = Auth::user();
         $answers = $validatedData['questions'];
         $score = 0;
-    
+
         // Ensure questions is treated as an array
         $questions = is_array($assessment->questions) ? $assessment->questions : json_decode($assessment->questions, true);
-    
+
         if (!is_array($questions)) {
             return redirect()->route('student.courses.assessments', $course->id)
                 ->with('error', 'There was an issue with the assessment format. Please contact support.');
         }
-    
+
         $totalQuestions = count($questions);
-    
+
         foreach ($questions as $questionIndex => $question) {
             if (!isset($answers[$questionIndex])) {
                 continue;
             }
-    
+
             $selectedOptionIndex = $answers[$questionIndex];
-    
+
             if (isset($question['options'][$selectedOptionIndex]['correct']) && $question['options'][$selectedOptionIndex]['correct']) {
                 $score += 2; // Each correct answer gives 2 points
             }
         }
-    
+
         $percentageScore = ($score / ($totalQuestions * 2)) * 100;
-    
+
         CourseAssessmentSubmission::create([
             'user_id' => $user->id,
             'course_assessment_id' => $assessment->id,
             'answers' => json_encode($answers),
             'score' => $score,
         ]);
-    
+
         if ($percentageScore >= 70) {
             // Award leaderboard points
             $user->increment('leaderboard_points', 5);
-    
+
             // Generate certificate
             $this->generateCertificate($user, $course);
         }
-    
+
         return redirect()->route('student.courses.assessments', $course->id)
             ->with('success', "Assessment submitted successfully. You scored {$percentageScore}%");
     }

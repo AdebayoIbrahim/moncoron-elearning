@@ -126,15 +126,6 @@ class AdminController extends Controller
 
         $course = Course::find($courseid);
 
-
-        // // check-fi-user-has-course-access
-        // if ($course->course_type === "special") {
-        //     // continue-tocheck-priviledge
-        //     if (auth()->user()->user_type != 'premium') {
-        //         return redirect('dashboard')->with('error', 'You have no acess to this course');
-        //     }
-        // }
-
         // Validate if course and lesson exist
         $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
 
@@ -429,12 +420,7 @@ class AdminController extends Controller
         };
 
         // check-fi-user-has-course-access
-        // if ($course->course_type === "special") {
-        //     // continue-tocheck-priviledge
-        //     if (auth()->user()->user_type != 'premium') {
-        //         return redirect('dashboard')->with('error', 'You have no acess to this course');
-        //     }
-        // }
+        // course-access-is now handled in middleware
 
         $lessons = $course->lessons;
 

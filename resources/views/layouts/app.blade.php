@@ -18,7 +18,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo Paaji 2:wght@400;600&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
     <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+
+    {{-- agora-video --}}
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.22.0.js"></script>
+    @vite(['resources/css/app.css'])
 </head>
 
 <body>
@@ -34,7 +39,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+
 
     <script>
         // Initialize Pusher
@@ -190,20 +195,6 @@
     </script>
 
     <script src="{{ asset('js/sidebar.js') }}"></script>
-
-    <li class="nav-item dropdown">
-        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-            <i class="fa fa-bell"></i> Notifications <span id="notification-count" class="badge">{{ Auth::user()->unreadNotifications->count() }}</span>
-        </a>
-
-        <div id="notification-dropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            @foreach (Auth::user()->unreadNotifications as $notification)
-            <a class="dropdown-item" href="{{ url('/notifications') }}">
-                {{ $notification->data['message'] }}
-            </a>
-            @endforeach
-        </div>
-    </li>
 </body>
 
 </html>

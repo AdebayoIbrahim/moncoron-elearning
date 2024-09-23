@@ -65,11 +65,14 @@ Route::get('/notifications', function () {
 })->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
-    // Student routes
+    // Student routes starts here
+    // also addenrollment-type-check
+    Route::middleware(['checkifenrolled', 'checkspecial'])->group(function () {
+        Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
+    });
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
-    Route::get('/courses/{id}', [MainController::class, 'show'])->name('student.courses.show');
-    Route::get('/courses/view/{id}', [MainController::class, 'showcourse'])->name('student.coursedesc');
+
     Route::post('/updateprogress', [MainController::class, 'updateProgress'])->name('updateprogress');
     Route::post('/pay', [MainController::class, 'handlePayment'])->name('pay');
     Route::get('/profile', [MainController::class, 'profile'])->name('student.profile');
@@ -133,9 +136,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'index'])->name('chat.index');
     Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/call', [ChatController::class, 'sendCallSignal'])->name('chat.call');
-
-
-
 
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
@@ -231,7 +231,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
 
         Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
-        Route::get('/admin/courses/view/{id}', [AdminController::class, 'viewCourse'])->name('admin.courseview');
         Route::get('/admin/courses/delete/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
         Route::post('/admin/courses/lesson', [AdminController::class, 'addLesson'])->name('admin.courses.lesson');
         Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');

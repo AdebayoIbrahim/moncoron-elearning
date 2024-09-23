@@ -12,7 +12,7 @@ const editorAdd = new bootstrap.Modal(
 
 const btnShow = document.querySelector("#addLesson");
 
-btnShow.addEventListener("click", () => {
+btnShow?.addEventListener("click", () => {
     editorAdd.show();
 });
 
@@ -77,13 +77,14 @@ async function handleClick() {
             }
         );
         // TODO:add-logic-to-reload-after-success-respoonse
-        if (response) {
+        if (response.ok) {
             confirm("Lesson Added Successfully!");
             window.location.reload();
+        } else {
+            window.alert("Failed to add lesson. Check console for details.");
         }
     } catch (error) {
         console.error("Error adding lesson:", error);
-        window.alert("Failed to add lesson. Check console for details.");
     }
 }
 
