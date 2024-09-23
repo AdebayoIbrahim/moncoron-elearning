@@ -23,7 +23,7 @@
                 @endif
                 <div class="card-header">
                     <h2 class="text-bold">
-                        {{$course->name}} <a class="btn btn-primary pull-right" href="/admin/courses"><i class="fa fa-arrow-left"></i> Go Back</a>
+                        {{$course->name}} <a class="btn btn-primary pull-right" href="/courses"><i class="fa fa-arrow-left"></i> Go Back</a>
                     </h2>
                 </div>
                 <div class="card-body">
@@ -31,9 +31,7 @@
                     <hr />
                     <div class="d-flex justify-content-between">
                         <h2 class=" text-bold ">Lessons </h2>
-                        <button class="btn btn-primary mr-20" id="addLesson"><i class="fa fa-plus"></i>
-                            Add Lesson
-                        </button>
+                        {{-- no add- lesson-forstdent --}}
                     </div>
 
                     @if($lessons->isEmpty())

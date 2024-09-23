@@ -12,7 +12,7 @@ const editorAdd = new bootstrap.Modal(
 
 const btnShow = document.querySelector("#addLesson");
 
-btnShow.addEventListener("click", () => {
+btnShow?.addEventListener("click", () => {
     editorAdd.show();
 });
 
