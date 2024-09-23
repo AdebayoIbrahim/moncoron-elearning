@@ -29,7 +29,8 @@
                 <button type="button" class="btn btn-info btn-sm">Clear</button>
             </div>
             @if(count(auth()->user()->notifications) != 0)
-            @foreach(auth()->user()->notifications as $notification)
+            {{-- fetch-firs-7 --}}
+            @foreach(auth()->user()->notifications->slice(0,8) as $notification)
             <div class="notification">
                 {{-- sender-avater start--}}
                 <div class="avatar_sender_container">
@@ -72,11 +73,14 @@
             @endif
             <div class="bottom_nav_notifications">
                 <div class="line_full"></div>
-                <div class="mt-1">
+                <div class="mt-1" style="display: flex;justify-content: space-between;align-items:center">
+                    {{-- display-mark-ll-as-read-onlyif-thersunread --}}
+                    @if(count(auth()->user()->unreadNotifications) != 0)
                     <button type="button" class="btn btn-sm btn-transparent" style="color: blue" id="querymarkread">
                         <span><i class="fa-solid fa-check-double"></i></span>
                         <span style="margin-left: .6rem;font-size:1rem">Mark all as Read</span>
                     </button>
+                    @endif
                     {{--TODO view-all-button--}}
                 </div>
             </div>
