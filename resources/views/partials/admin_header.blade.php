@@ -73,7 +73,7 @@
             @endif
             <div class="bottom_nav_notifications">
                 <div class="line_full"></div>
-                <div class="mt-1" style="display: flex;justify-content: space-between;align-items:center">
+                <div class="mt-1" style="display: flex;justify-content: space-between;align-items:center;padding-block:.3rem">
                     {{-- display-mark-ll-as-read-onlyif-thersunread --}}
                     @if(count(auth()->user()->unreadNotifications) != 0)
                     <button type="button" class="btn btn-sm btn-transparent" style="color: blue" id="querymarkread">
@@ -82,6 +82,13 @@
                     </button>
                     @endif
                     {{--TODO view-all-button--}}
+                    {{-- vie-all-btn-onlywhe-thers-notifiaction --}}
+                    <div style="margin-left: auto">
+                        <a href="/notificaions" class="btn btn-primary btn-sm">
+                            View all notificaions
+                        </a>
+                    </div>
+                    {{-- end --}}
                 </div>
             </div>
         </ul>
