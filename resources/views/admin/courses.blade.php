@@ -29,10 +29,8 @@
                             <tr>
                                 <th>S/N</th>
                                 <th>Name</th>
-                                <th>All Lessons Paid</th>
                                 <th>Price</th>
                                 <th>Capacity</th>
-                                <th>Duration</th>
                                 <th>Age Group</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -43,16 +41,8 @@
                             <tr>
                                 <td>{{$loop->iteration}}</td>
                                 <td>{{$course->name}}</td>
-                                <td>
-                                    @if($course->all_lessons_paid == 0)
-                                    <span class="badge text-bg-primary">No</span>
-                                    @else
-                                    <span class="badge text-bg-success">Yes</span>
-                                    @endif
-                                </td>
                                 <td>${{$course->price}}</td>
                                 <td>{{$course->capacity}}</td>
-                                <td>{{$course->duration}} Days</td>
                                 <td>
                                     @if($course->age_group == 0)
                                     All Age Group
@@ -138,16 +128,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-4">
-                                <label class="label text-bold">All Lessons Paid?</label>
-                                <select class="form-control" name="all_lessons_paid" required>
-                                    <option value="" selected disabled>-- Select Option --</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group mb-4">
                                 <label class="label text-bold">Lock this course?</label>
@@ -182,15 +163,7 @@
                                 </small>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-4">
-                                <label class="label text-bold">Duration</label>
-                                <input type="number" class="form-control" name="duration" required>
-                                <small class="text-xs">
-                                    State how long (in days) a student can access this course after subscribing to it. 0 for unlimited duration.
-                                </small>
-                            </div>
-                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group mb-4">
                                 <label class="label text-bold">Description</label>
@@ -266,16 +239,6 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-4">
-                                <label class="label text-bold">All Lessons Paid?</label>
-                                <select class="form-control" name="all_lessons_paid" required>
-                                    <option id="all_lessons_paid" value="" selected>-- Select Option --</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-4">
                                 <label class="label text-bold">Lock this course?</label>
                                 <select class="form-control" name="is_locked" required>
                                     <option id="is_locked" value="" selected>-- Select Option --</option>
@@ -293,15 +256,7 @@
                                 </small>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-4">
-                                <label class="label text-bold">Duration</label>
-                                <input type="number" class="form-control" name="duration" id="duration" required>
-                                <small class="text-xs">
-                                    State how long (in days) a student can access this course after subscribing to it. 0 for unlimited duration.
-                                </small>
-                            </div>
-                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group mb-4">
                                 <label class="label text-bold">Description</label>

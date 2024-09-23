@@ -1,3 +1,4 @@
+@vite(['resources/js/helpers.js'])
 <header class="navbar text-bg-purple sticky-top flex-md-nowrap p-0">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">
         <img src="{{ asset('images/image-21@2x.png') }}" class="pe-none me-2" width="42" height="42">
@@ -13,9 +14,9 @@
     <div class="dropdown" style="margin-left: auto; margin-top: 0.5rem; cursor: pointer;">
         <div class="position-relative" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-bell" style="color: #fff; font-size: 1.67rem;"></i>
-            @if(count(auth()->user()->notifications) != 0)
+            @if(count(auth()->user()->notifications) != 0 && count(auth()->user()->unreadNotifications) != 0)
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{count(auth()->user()->notifications)}}
+                {{count(auth()->user()->unreadNotifications)}}
                 <span class="visually-hidden">unread messages</span>
             </span>
             @endif
@@ -28,7 +29,8 @@
                 <button type="button" class="btn btn-info btn-sm">Clear</button>
             </div>
             @if(count(auth()->user()->notifications) != 0)
-            @foreach(auth()->user()->notifications as $notification)
+            {{-- fetch-firs-7 --}}
+            @foreach(auth()->user()->notifications->slice(0,8) as $notification)
             <div class="notification">
                 {{-- sender-avater start--}}
                 <div class="avatar_sender_container">
@@ -51,9 +53,12 @@
                     <p class="not_text">{{$notification->data['message']}}</p>
                     {{-- audio?ifpresent --}}
                     {{-- attached-link --}}
-                    {!! isset($notification->data['attached_link']) ?
-                    '<p class="not_text"><a href="'.$notification->data['attached_link'].'">Explore the Course</a></p>'
-                    : null !!}
+                    @if(isset($notification->data['attached_link']))
+                    <p class="not_text">
+                        <a href="{{ $notification->data['attached_link'] }}">Explore the course</a>
+                    </p>
+                    @endif
+
                 </div>
 
                 {{-- is-read-check --}}
@@ -68,11 +73,22 @@
             @endif
             <div class="bottom_nav_notifications">
                 <div class="line_full"></div>
-                <div class="mt-1">
-                    <button type="button" class="btn btn-sm btn-transparent" style="color: blue" onclick="handlemarkRead()">
+                <div class="mt-1" style="display: flex;justify-content: space-between;align-items:center;padding-block:.3rem">
+                    {{-- display-mark-ll-as-read-onlyif-thersunread --}}
+                    @if(count(auth()->user()->unreadNotifications) != 0)
+                    <button type="button" class="btn btn-sm btn-transparent" style="color: blue" id="querymarkread">
                         <span><i class="fa-solid fa-check-double"></i></span>
                         <span style="margin-left: .6rem;font-size:1rem">Mark all as Read</span>
                     </button>
+                    @endif
+                    {{--TODO view-all-button--}}
+                    {{-- vie-all-btn-onlywhe-thers-notifiaction --}}
+                    <div style="margin-left: auto">
+                        <a href="/notificaions" class="btn btn-primary btn-sm">
+                            View all notificaions
+                        </a>
+                    </div>
+                    {{-- end --}}
                 </div>
             </div>
         </ul>
@@ -113,9 +129,3 @@
     <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
   </div> -->
 </header>
-<script>
-    function handlemarkRead(arg) {
-        // console.log(arg)
-    }
-
-</script>

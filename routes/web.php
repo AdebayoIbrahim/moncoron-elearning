@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgoraController;
-
+use App\Http\Controllers\NotificationController;
 // CKEditor upload route
 Route::post('/upload-image', [CKEditorController::class, 'uploadImage'])->name('ckeditor.upload');
 
@@ -323,12 +323,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/courses/{courseId}/lessons/{lessonId}/chat', [ChatController::class, 'index'])->name('student.chat.index');
 
     Route::get('/admin/student-grades', [AdminController::class, 'studentGrades'])->name('admin.student_grades');
-
-
-
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-
-    // Student Routes for Course Assessments
+    // auth-user-mark-all-as-read
+    Route::post('/notification/markallasread', [NotificationController::class, 'markAllasRead'])->name('notifications.markall');
+    // Student Routes for Course Assessment
     Route::get('/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('student.courses.assessments');
     Route::get('/courses/{course}/assessments/{assessment}', [CourseAssessmentController::class, 'show'])->name('student.courses.assessments.show');
     Route::get('/courses/{course}/assessments/{assessment}/attempt', [CourseAssessmentController::class, 'attempt'])->name('student.courses.assessments.attempt');

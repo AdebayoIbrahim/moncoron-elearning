@@ -80,3 +80,5 @@ window.Echo.channel("chat").listen("message.sent", (e) => {
         console.log("Signal Data:", e.signalData);
     }
 });
+
+console.log("checker");
