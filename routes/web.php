@@ -64,11 +64,14 @@ Route::get('/notifications', function () {
     return view('notifications.index');
 })->middleware('auth');
 
+// Maincontroller-has-student-controllerstoo
 Route::middleware(['auth'])->group(function () {
     // Student routes starts here
     // also addenrollment-type-check
     Route::middleware(['checkifenrolled', 'checkspecial'])->group(function () {
         Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
+        // navigate-to-acourse-lesson-for-students
+        Route::get('courses/{courseid}/lessons/{id}', [MainController::class, 'showlessons'])->name('student.lessons.show');
     });
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
@@ -161,7 +164,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Submitting the assessment
         Route::post('courses/{courseId}/lessons/{lessonId}/assessment/submit', [LessonAssessmentController::class, 'submitAssessment'])->name('student.assessments.submit');
-
+        // getlessons-in-acourse
         Route::get('courses/{course_id}/lessons/{id}', [LessonController::class, 'show'])->name('lessons.show');
 
         Route::post('courses/{course_id}/lessons/{id}/upload', [LessonController::class, 'uploadStudentMedia'])->name('lessons.uploadStudentMedia');
@@ -219,7 +222,7 @@ Route::middleware(['auth'])->group(function () {
         // add-lessons-to-specific-course
         Route::post('/admin/course/{courseid}/lessons', [AdminController::class, 'addcourseLessons'])->name('admin.courses.lessons.create');
         Route::get('/admin/courses/{courseid}', [AdminController::class, 'fetchCourse'])->name('admin.courses.fetch');
-        // fetchcourse-details`
+        // fetchcourse-details-lessons`
         Route::get('/admin/courses/{courseid}/lesson/{lessonid}', [AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
 
         // Dynamic-new-chat-routes

@@ -8,6 +8,8 @@ use App\Models\Subscriptions;
 use App\Models\UserCourseLesson;
 use App\Models\CourseAssessment;
 use App\Models\CourseAssessmentSubmission;
+use App\Models\CourseLesson;
+use App\Models\Lessonassessment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +59,24 @@ class MainController extends Controller
         $lessons = $course->lessons;
         // Return the Blade view and pass the course data to it
         return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
+    }
+
+    // showlessons-in a specific-course
+    public function showlessons($courseid, $lessonid)
+    {
+        // checking-coursexistence-not-needed-sinceitshabdled-bymiddleware-andwouldgotonotfoundifso
+        //andnochecks-foruser-type-sinceof premium-sinceits hadled in middleware
+
+        // check-for-lessons
+        $checklesson = Lessonassessment::where("course_id", $courseid)->where("lesson_id", $lessonid)->first();
+
+        $hasasessment = $checklesson ? true : false;
+        // lesson-validate-the-id
+        $lesson = CourseLesson::where('course_id', $courseid)->where('lesson_number', $lessonid)->first();
+
+        if (!$lesson) {
+            return response()->json(['error' => 'Lesson not found'], 404);
+        }
     }
 
     // Update Lesson Progress
