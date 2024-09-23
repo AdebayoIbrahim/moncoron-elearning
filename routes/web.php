@@ -65,10 +65,14 @@ Route::get('/notifications', function () {
 })->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
-    // Student routes
+    // Student routes starts here
+    // also addenrollment-type-check
+    Route::middleware(['checkifenrolled', 'checkspecial'])->group(function () {
+        Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
+    });
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
-    Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc')->middleware('checkspecial');
+
     Route::post('/updateprogress', [MainController::class, 'updateProgress'])->name('updateprogress');
     Route::post('/pay', [MainController::class, 'handlePayment'])->name('pay');
     Route::get('/profile', [MainController::class, 'profile'])->name('student.profile');
