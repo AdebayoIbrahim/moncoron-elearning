@@ -133,9 +133,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/call', [ChatController::class, 'sendCallSignal'])->name('chat.call');
 
-
-
-
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment
