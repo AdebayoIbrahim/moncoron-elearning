@@ -49,7 +49,7 @@ export const getPermissions = () => {
 
 // getthenotifications-all-andactions-here
 const readAllnotification = document.getElementById("querymarkread");
-readAllnotification.addEventListener("click", async () => {
+readAllnotification?.addEventListener("click", async () => {
     // make-post-req
     try {
         axios.post(

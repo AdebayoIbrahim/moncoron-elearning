@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['checkifenrolled', 'checkspecial'])->group(function () {
         Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
         // navigate-to-acourse-lesson-for-students
-        Route::get('courses/{courseid}/lessons/{id}', [MainController::class, 'showlessons'])->name('student.lessons.show');
+        Route::get('/admin/courses/{courseid}/lesson/{lessonid}', [MainController::class, 'showlessons'])->name('student.lessons.show');
     });
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
@@ -315,9 +315,6 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/result', [LessonAssessmentController::class, 'showAssessmentResult'])->name('student.assessments.result');
-
-    Route::get('/courses/{courseId}/lessons/{lessonId}', [LessonController::class, 'show'])
-        ->name('student.lessons.show');
 
     Route::get('/courses/{courseId}/lessons/{lessonId}/assessments/{id}/edit', [LessonAssessmentController::class, 'edit'])->name('lesson_assessments.edit');
 

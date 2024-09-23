@@ -67,6 +67,7 @@ class MainController extends Controller
         // checking-coursexistence-not-needed-sinceitshabdled-bymiddleware-andwouldgotonotfoundifso
         //andnochecks-foruser-type-sinceof premium-sinceits hadled in middleware
 
+        $course = Course::find($courseid);
         // check-for-lessons
         $checklesson = Lessonassessment::where("course_id", $courseid)->where("lesson_id", $lessonid)->first();
 
@@ -77,6 +78,9 @@ class MainController extends Controller
         if (!$lesson) {
             return response()->json(['error' => 'Lesson not found'], 404);
         }
+
+        // continue-if-all-is-well
+        return view('student.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView', 'hasassessment' => $hasasessment]);
     }
 
     // Update Lesson Progress
