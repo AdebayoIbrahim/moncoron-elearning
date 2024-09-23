@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 // THIS MIDDLEWARE IS FOR STUDENTS COURSES ROUTE ONLY 
+
+use App\Models\Course;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +26,10 @@ class studentcourseaccessmiddleware
 
 
         if (Auth::check() && Auth::user()->role === 'student') {
+            // ifcourse-exist
+            if (!Course::find($courseid)) {
+                return redirect('/dashboard')->with('error', 'Course Doesnot Exist');
+            };
             // check-if-user-enrolled-for-thecourse
             // onetomanyrelationshipisdefinedonusertosubscriptions
             $subscriptions = Subscriptions::where('course_id', $courseid)->whereHas('user', function ($query) use ($studentid) {

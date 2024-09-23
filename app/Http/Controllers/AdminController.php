@@ -459,7 +459,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Lesson not found'], 404);
         }
 
-        // continue-f-all-is-well
+        // continue-if-all-is-well
         return view('admin.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView', 'hasassessment' => $hasasessment]);
     }
 
