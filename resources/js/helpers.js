@@ -1,3 +1,5 @@
+import axios from "axios";
+const csrf = document.querySelector('input[name = "_token"]')?.value;
 export const getPermissions = () => {
     // Older browsers might not implement mediaDevices at all, so we set an empty object first
     if (navigator.mediaDevices === undefined) {
@@ -8,7 +10,7 @@ export const getPermissions = () => {
     // with getUserMedia as it would overwrite existing properties.
     // Here, we will just add the getUserMedia property if it's missing.
     if (navigator.mediaDevices.getUserMedia === undefined) {
-        navigator.mediaDevices.getUserMedia = function(constraints) {
+        navigator.mediaDevices.getUserMedia = function (constraints) {
             // First get ahold of the legacy getUserMedia, if present
             const getUserMedia =
                 navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -35,12 +37,32 @@ export const getPermissions = () => {
     return new Promise((resolve, reject) => {
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
-            .then(stream => {
+            .then((stream) => {
                 resolve(stream);
             })
-            .catch(err => {
+            .catch((err) => {
                 reject(err);
                 //   throw new Error(`Unable to fetch stream ${err}`);
             });
     });
 };
+
+// getthenotifications-all-andactions-here
+const readAllnotification = document.getElementById("querymarkread");
+readAllnotification.addEventListener("click", async () => {
+    // make-post-req
+    try {
+        axios.post(
+            "/notification/markallasread",
+            {},
+            {
+                headers: {
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": csrf,
+                },
+            }
+        );
+    } catch (err) {
+        window.alert("Error marking as read!");
+    }
+});

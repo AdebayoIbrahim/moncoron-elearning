@@ -96,8 +96,8 @@ divs.forEach((div) => {
         clickedDiv.style.border = "2px solid #5a48c8";
     });
 });
-const nextbtn = document.querySelector("#next_btn_lesson");
-nextbtn.addEventListener("click", () => {
+const nextbtn = document?.querySelector("#next_btn_lesson");
+nextbtn?.addEventListener("click", () => {
     const refreshdivs = document.querySelectorAll(".container_lesson_body");
     const selectedDiv = Array.from(refreshdivs).find((div) => {
         return div.style.border === "2px solid rgb(90, 72, 200)";
