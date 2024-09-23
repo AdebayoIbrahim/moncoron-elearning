@@ -17,13 +17,17 @@
             </div>
 
             <div class="tool_add">
-                <button type="button" class="btn btn-primary btn-md" id="add_assessment_btn">{{$hasassessment ? 'Manage Assessment' : 'Add Assessment'}}</button>
-                {{-- //TODO:check --for-use-type-for-join-toappearhere-andon-condition --}}
-
-                <button id="" class="btn btn-primary " style="margin-left: 5px">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    Schedule a live class
+                @if ($hasassessment)
+                <button type="button" class="btn btn-primary btn-md" id="add_assessment_btn">Take Assessment</button>
+                @endif
+                {{-- //TODO:check --for-user-type-for-join-toappearhere-andon-condition-tempcheck-if-the-user-ispremium --}}
+                @if(auth()->user()->user_type === "premium")
+                {{-- live-only-on-premium --}}
+                <button id="StartCall" type="button" class="btn btn-primary btn-md">
+                    <span><img width="25" height="25" src="https://img.icons8.com/color/48/online--v1.png" alt="online--v1" /></span>
+                    Join a Live Class
                 </button>
+                @endif
             </div>
 
         </div>
@@ -35,10 +39,7 @@
 
                     <div class="card-header d-flex justify-content-between">
                         <h5>Lesson Media</h5>
-                        <button id="StartCall" type="button" class="btn btn-primary btn-md">
-                            <span><img width="25" height="25" src="https://img.icons8.com/color/48/online--v1.png" alt="online--v1" /></span>
-                            Go Live
-                        </button>
+                        {{-- only-user-can-start-liveclass --}}
                     </div>
                     <div class="card-body media_container">
                         <div id="video_class_layout">
