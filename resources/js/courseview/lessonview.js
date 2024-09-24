@@ -20,7 +20,7 @@ const fileCorellation =
 
 // fetching-messages-fro-db
 async function fetchMessages() {
-    fetch(`/admin/courses/${courseId}/lesson/${lessonId}/messages`)
+    fetch(`/courses/${courseId}/lesson/${lessonId}/messages`)
         .then((response) => response.json())
         .then((messages) => {
             renderMessages(messages);
@@ -38,7 +38,7 @@ sendButton.addEventListener("click", function () {
         return;
     }
 
-    fetch(`/admin/courses/${courseId}/lesson/${lessonId}/message`, {
+    fetch(`/courses/${courseId}/lesson/${lessonId}/message`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

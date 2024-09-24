@@ -79,28 +79,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateprogress', [MainController::class, 'updateProgress'])->name('updateprogress');
     Route::post('/pay', [MainController::class, 'handlePayment'])->name('pay');
     Route::get('/profile', [MainController::class, 'profile'])->name('student.profile');
-    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
-    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-    Route::post('/chat/signal', [ChatController::class, 'sendCallSignal'])->name('chat.signal');
-
-    Route::get('/courses/{courseId}/lessons/{lessonId}/chat', [ChatController::class, 'index'])->name('chat.index');
-    Route::post('/courses/{courseId}/lessons/{lessonId}/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-
-    Route::post('/courses/{courseId}/lessons/{lessonId}/delete', [ChatController::class, 'deleteMessage'])->name('chat.delete');
-
-
-
-    // Route to show chat interface
-    Route::get('courses/{course_id}/lessons/{lesson_id}/chat', [ChatController::class, 'index'])->name('chat.index');
-
-    // Route to send a chat message
-    Route::post('courses/{course_id}/lessons/{lesson_id}/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-
-    // Route to send call signals (if needed)
-    Route::post('courses/{course_id}/lessons/{lesson_id}/chat/sendCallSignal', [ChatController::class, 'sendCallSignal'])->name('chat.sendCallSignal');
-
-
-
 
     Route::get('/send-broadcast', function () {
         $user = User::find(2); // Assuming a user with ID 1 exists
@@ -132,13 +110,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/video-chat/accept', [VideoChatController::class, 'acceptCall'])->name('video-chat.accept');
     Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->name('video-chat.signal');
 
-
-    // Lesson routes
-    //Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'lessonChat'])->name('chat.lesson');
-    // Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendLessonMessage'])->name('chat.lesson.send');
-    Route::get('/chat/courses/{course_id}/lessons/{lesson_id}', [ChatController::class, 'index'])->name('chat.index');
-    Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-    Route::post('/chat/courses/{course_id}/lessons/{lesson_id}/call', [ChatController::class, 'sendCallSignal'])->name('chat.call');
+    // GENERIC-CHATS-ROUTES-ONLY-CHECK-FOR-AUTHANDSPECIALACCESS
+    // Dynamic-new-chat-routes
+    // Fetch messages for a specific lesson in a specific course
+    Route::middleware(['checkifenrolled'])->group(function () {
+        Route::get('/courses/{courseId}/lesson/{lessonId}/messages', [ChatmessagesController::class, 'fetchMessages'])->name('chat.fetch');
+        // Send a message to a specific lesson in a specific course
+        Route::post('/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
+    });
 
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
@@ -225,13 +204,7 @@ Route::middleware(['auth'])->group(function () {
         // fetchcourse-details-lessons`
         Route::get('/admin/courses/{courseid}/lesson/{lessonid}', [AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
 
-        // Dynamic-new-chat-routes
-        // Fetch messages for a specific lesson in a specific course
-        Route::get('/admin/courses/{courseId}/lesson/{lessonId}/messages', [ChatmessagesController::class, 'fetchMessages'])->name('chat.fetch');
 
-
-        // Send a message to a specific lesson in a specific course
-        Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
 
         Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
         Route::get('/admin/courses/delete/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
@@ -317,9 +290,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/result', [LessonAssessmentController::class, 'showAssessmentResult'])->name('student.assessments.result');
 
     Route::get('/courses/{courseId}/lessons/{lessonId}/assessments/{id}/edit', [LessonAssessmentController::class, 'edit'])->name('lesson_assessments.edit');
-
-
-    Route::get('/courses/{courseId}/lessons/{lessonId}/chat', [ChatController::class, 'index'])->name('student.chat.index');
 
     Route::get('/admin/student-grades', [AdminController::class, 'studentGrades'])->name('admin.student_grades');
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
