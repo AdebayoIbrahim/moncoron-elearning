@@ -110,6 +110,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/video-chat/accept', [VideoChatController::class, 'acceptCall'])->name('video-chat.accept');
     Route::post('/video-chat/signal', [VideoChatController::class, 'sendSignal'])->name('video-chat.signal');
 
+    // GENERIC-CHATS-ROUTES-ONLY-CHECK-FOR-AUTHANDSPECIALACCESS
+    // Dynamic-new-chat-routes
+    // Fetch messages for a specific lesson in a specific course
+    Route::middleware(['checkifenrolled'])->group(function () {
+        Route::get('/courses/{courseId}/lesson/{lessonId}/messages', [ChatmessagesController::class, 'fetchMessages'])->name('chat.fetch');
+        // Send a message to a specific lesson in a specific course
+        Route::post('/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
+    });
+
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment
@@ -195,13 +204,7 @@ Route::middleware(['auth'])->group(function () {
         // fetchcourse-details-lessons`
         Route::get('/admin/courses/{courseid}/lesson/{lessonid}', [AdminController::class, 'fetchlesson'])->name('admin.course.lessonview');
 
-        // Dynamic-new-chat-routes
-        // Fetch messages for a specific lesson in a specific course
-        Route::get('/admin/courses/{courseId}/lesson/{lessonId}/messages', [ChatmessagesController::class, 'fetchMessages'])->name('chat.fetch');
 
-
-        // Send a message to a specific lesson in a specific course
-        Route::post('/admin/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
 
         Route::put('/admin/courses/update', [AdminController::class, 'updateCourse'])->name('admin.courses.update');
         Route::get('/admin/courses/delete/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');

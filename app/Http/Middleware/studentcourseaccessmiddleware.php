@@ -25,12 +25,18 @@ class studentcourseaccessmiddleware
         $studentid = auth()->user()->id;
 
 
+        // if-admin-requested-then-pass-thisisnecessary-for-course-lesson-chats-mssages
+        // as-its necessary-forallroles
+        if (Auth::check() && Auth::user()->role === 'admin') {
+            // resolve-the-request
+            return $next($request);
+        }
         if (Auth::check() && Auth::user()->role === 'student') {
             // ifcourse-exist
             if (!Course::find($courseid)) {
                 return redirect('/dashboard')->with('error', 'Course Doesnot Exist');
             };
-            // check-if-user-enrolled-for-thecourse
+            // check-if-user-enrolled-for-thecourse-enforce-enrollment
             // onetomanyrelationshipisdefinedonusertosubscriptions
             $subscriptions = Subscriptions::where('course_id', $courseid)->whereHas('user', function ($query) use ($studentid) {
                 $query->where('id', $studentid);

@@ -22,10 +22,14 @@ class genericspecialcoursemiddleware
 
         $course = Course::find($courseid);
 
+        if (!$course) {
+            return redirect('/dashboard')->with('error', 'Course not found!');
+        }
+
         if ($course->course_type === "special") {
             //     // continue-tocheck-priviledge
             if (auth()->user()->user_type != 'premium') {
-                return redirect('dashboard')->with('error', 'You have no acess to this course');
+                return redirect('/dashboard')->with('error', 'You have no acess to this course');
             }
         }
 
