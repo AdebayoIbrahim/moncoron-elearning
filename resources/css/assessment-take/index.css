@@ -56,13 +56,14 @@ video {
     font-size: 1.4rem;
     cursor: pointer;
 }
-section.btn-actions {
+section.btn-actions-cbt {
     display: flex;
     gap: 1rem;
     align-items: center;
     margin-left: 1rem;
+    padding-top: 0.9rem;
 }
-section.btn-actions button {
+section.btn-actions-cbt button {
     width: 150px;
 }
 

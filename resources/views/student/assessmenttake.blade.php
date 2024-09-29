@@ -22,6 +22,11 @@
             {{$Questions['general_time_limit']}}
         </div>
         @foreach($Questions['questions'] as $question)
+        @php
+        // get-unique-label
+        $uniquelabel = 'Question'. $loop->index + 1
+
+        @endphp
         <div class="area-question-data questions-{{$loop->index + 1}}" id="question_each">
             {{-- div.count_questions --}}
             <h4>Question {{$loop->index + 1}} out of {{$totalquest}}</h4>
@@ -59,8 +64,8 @@
                         <h6 class="mb-2">{{$alphabet[$index]}}.</h6>
 
                         <div class="options_ans{{$loop->index}} op_ans_style">
-                            <input type="radio" name="answer{{$loop->index + 1}}">
-                            <label for="answer{{$loop->index + 1}}">
+                            <input type="radio" name={{$uniquelabel}} id="{{$uniquelabel}}">
+                            <label for="{{$uniquelabel}}">
                                 @if(!empty($option['option_text']))
                                 {{ $option['option_text'] }}
                                 @endif
@@ -70,7 +75,7 @@
                     @endforeach
                 </div>
             </div>
-            <section class="btn-actions">
+            <section class="btn-actions-cbt">
                 <button type="button" class="btn btn-info btn-md">Previous</button>
                 <button type="button" class="btn btn-success btn-md " id="Next-quest">Next</button>
             </section>
