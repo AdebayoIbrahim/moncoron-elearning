@@ -1,0 +1,77 @@
+.loading-frame {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    background: rgba(246, 243, 243, 0.6);
+    /* z-index: -1; */
+    /* z-index: 99; */
+}
+
+/* cbt-are-designs */
+div.cbt-area {
+    margin-top: 0.2rem;
+}
+.action_cbt_buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+}
+.area-question-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    display: none;
+}
+:is(.area-question-data) img,
+video {
+    height: 200px;
+    object-fit: cover;
+}
+.option_cbt {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 5px;
+}
+.op_ans_style {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: 1.2rem;
+    cursor: pointer;
+}
+.op_ans_style input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.op_ans_style label {
+    font-size: 1.4rem;
+    cursor: pointer;
+    user-select: none;
+}
+section.btn-actions-cbt {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: 1rem;
+    padding-top: 0.9rem;
+}
+section.btn-actions-cbt button {
+    width: 150px;
+}
+
+.highlight_questions_track {
+    padding-top: 5px;
+    margin-top: 1.3rem;
+    padding-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}

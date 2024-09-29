@@ -72,6 +72,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
         // navigate-to-acourse-lesson-for-students
         Route::get('/courses/{courseid}/lesson/{lessonid}', [MainController::class, 'showlessons'])->name('student.lessonsvie.show');
+        // take-a-lesson-assessment-students
+        Route::get('/courses/{courseId}/lesson/{lessonId}/take-assessment', [MainController::class, 'takeAssessment'])->name('student.take-assessment');
     });
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
@@ -118,7 +120,6 @@ Route::middleware(['auth'])->group(function () {
         // Send a message to a specific lesson in a specific course
         Route::post('/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
     });
-
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment
