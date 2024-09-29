@@ -239,7 +239,7 @@ class MainController extends Controller
             return redirect('/courses')->with('error', 'Assessment not ready for this course');
         }
 
-        $Questions = $questionsexist->questions;
+        $Questions = json_decode($questionsexist->questions, true);
 
         return view('student.assessmenttake', compact('Questions'));
     }
