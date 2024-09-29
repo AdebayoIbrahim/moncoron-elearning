@@ -118,7 +118,6 @@ Route::middleware(['auth'])->group(function () {
         // Send a message to a specific lesson in a specific course
         Route::post('/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
     });
-
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment

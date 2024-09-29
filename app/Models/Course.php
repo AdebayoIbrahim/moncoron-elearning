@@ -94,4 +94,9 @@ class Course extends Model
     {
         return $query->where("course_type", "normal");
     }
+
+    public function lessonresult()
+    {
+        return $this->hasMany(lessonassessmentresults::class);
+    }
 }
