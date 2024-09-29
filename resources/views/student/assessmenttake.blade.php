@@ -29,7 +29,7 @@
         @endphp
         <div class="area-question-data questions-{{$loop->index + 1}}" id="question_each">
             {{-- div.count_questions --}}
-            <h4>Question {{$loop->index + 1}} out of {{$totalquest}}</h4>
+            <h4 style="padding-block: 1rem">Question {{$loop->index + 1}} out of {{$totalquest}}</h4>
             <div style="display: flex;gap:5px;align-items:center">
                 @if(!empty($question['question_text']))
                 <h5 class="mb-2">{{$loop->index + 1}}.</h5>
@@ -64,8 +64,8 @@
                         <h6 class="mb-2">{{$alphabet[$index]}}.</h6>
 
                         <div class="options_ans{{$loop->index}} op_ans_style">
-                            <input type="radio" name={{$uniquelabel}} id="{{$uniquelabel}}">
-                            <label for="{{$uniquelabel}}">
+                            <input type="radio" name={{$uniquelabel .' '.$loop->index}} id="{{$uniquelabel .' '.$loop->index}}">
+                            <label for="{{$uniquelabel .' '.$loop->index}}">
                                 @if(!empty($option['option_text']))
                                 {{ $option['option_text'] }}
                                 @endif
