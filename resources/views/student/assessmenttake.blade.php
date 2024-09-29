@@ -22,7 +22,7 @@
             {{$Questions['general_time_limit']}}
         </div>
         @foreach($Questions['questions'] as $question)
-        <div class="area-question-data">
+        <div class="area-question-data questions-{{$loop->index + 1}}" id="question_each">
             {{-- div.count_questions --}}
             <h4>Question {{$loop->index + 1}} out of {{$totalquest}}</h4>
             <div style="display: flex;gap:5px;align-items:center">
@@ -78,12 +78,10 @@
         </div>
         <section class="highlight_questions_track">
             <div style="display: flex; flex-wrap: wrap;">
-                @for($i = 0; $i < 60; $i++) <div style="border: 1px solid #ddd; padding: 5px; width: 40px; text-align: center; margin: 2px; font-weight: 500">
+                @for($i = 0; $i < 60; $i++) <div style="border: 1px solid #ddd; padding: 5px; width: 40px; text-align: center; margin: 2px; font-weight: 500;cursor:pointer" id="box_navigate_cbt">
                     {{$i + 1}}
-
             </div>
             @endfor
-
         </section>
     </div>
     @endforeach
