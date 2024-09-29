@@ -258,11 +258,14 @@ addassessmentBtn.onclick = function () {
 
     if (addassessmentBtn?.textContent === "Manage Assessment") {
         window.open(window.location.href.concat("/assessment"), "_self");
-    } else {
+    } else if (addassessmentBtn?.textContent === "Add Assessment") {
         window.open(
             window.location.href.concat("/create-assessments"),
             "_self"
         );
+        // for-students-view
+    } else if (addassessmentBtn?.textContent === "Take Assessment") {
+        window.open(window.location.href.concat("/take-assessment"), "_self");
     }
 };
 

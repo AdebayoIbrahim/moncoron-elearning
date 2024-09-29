@@ -72,6 +72,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
         // navigate-to-acourse-lesson-for-students
         Route::get('/courses/{courseid}/lesson/{lessonid}', [MainController::class, 'showlessons'])->name('student.lessonsvie.show');
+        // take-a-lesson-assessment-students
+        Route::get('/courses/{courseId}/lesson/{lessonId}/take-assessment', [MainController::class, 'takeAssessment'])->name('student.take-assessment');
     });
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');

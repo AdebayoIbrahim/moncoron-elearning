@@ -203,26 +203,56 @@ class MainController extends Controller
 
         $routeName = Route::currentRouteName();
         $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessments';
-        $assessments = $course->assessments;
+        $assessments = json_decode($course->assessments, true);
 
         return view('student.assessments.index', compact('course', 'assessments', 'routeNamePart'));
     }
 
     // Show Assessment
-    public function showAssessment(Course $course, CourseAssessment $assessment)
+    // public function showAssessment(Course $course, CourseAssessment $assessment)
+    // {
+    //     $user = Auth::user();
+    //     if (!$user->courses->contains($course->id)) {
+    //         return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+    //     }
+
+    //     $assessment->questions = json_decode($assessment->questions, true);  // Ensure questions are decoded to an array
+
+    //     $routeName = Route::currentRouteName();
+    //     $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
+
+    //     return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart'));
+    // }
+
+    // student-takes-assessments
+    public function takeAssessment($course_id, $lessonid)
     {
-        $user = Auth::user();
-        if (!$user->courses->contains($course->id)) {
-            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
+        $Lessonpresent = CourseLesson::where('lesson_number', $lessonid);
+
+        if (!$Lessonpresent) {
+            return redirect('/courses')->with('error', 'Lesson-not-found');
         }
 
-        $assessment->questions = json_decode($assessment->questions, true);  // Ensure questions are decoded to an array
+        // fetch-assessment-questions
+        $questionsexist = Lessonassessment::where('lesson_id', $lessonid)->first();
+        if (!$questionsexist) {
+            return redirect('/courses')->with('error', 'Assessment not ready for this course');
+        }
 
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
+        $Questions = $questionsexist->questions;
 
-        return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart'));
+        return view('student.assessmenttake', compact('Questions'));
     }
+
+
+
+
+
+
+
+
+
+
 
     // Attempt Assessment
     public function attemptAssessment(Request $request, Course $course, CourseAssessment $assessment)
