@@ -55,6 +55,7 @@ video {
 .op_ans_style label {
     font-size: 1.4rem;
     cursor: pointer;
+    user-select: none;
 }
 section.btn-actions-cbt {
     display: flex;
