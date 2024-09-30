@@ -146,7 +146,7 @@ function addQuestion(questionCount) {
             </select>
         </div>
         <div class="form-group">
-            <label for="value_${questionCount}">Question Value</label>
+            <label for="value_${questionCount}">Question Point</label>
             <input type="number" name="questions[${questionCount}][value]" class="form-control question_value" id="value_${questionCount}" required>
         </div>
         <button type="button" class="btn btn-danger btn-sm remove-question mt-3">Remove Question</button>

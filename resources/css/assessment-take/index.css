@@ -24,7 +24,7 @@ div.cbt-area {
     gap: 2rem;
 }
 .area-question-data {
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     gap: 0.8rem;
     display: none;
@@ -53,7 +53,7 @@ video {
     cursor: pointer;
 }
 .op_ans_style label {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     cursor: pointer;
     user-select: none;
 }

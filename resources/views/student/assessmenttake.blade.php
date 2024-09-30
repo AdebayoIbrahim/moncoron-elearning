@@ -18,6 +18,8 @@
 
     <div class="cbt-area">
         <div class="action_cbt_buttons">
+            {{-- submit-btn- --}}
+            <button type="button" class="btn btn-danger btn-md" id="submit_cbt" style="width: 150px;">Submit</button>
             {{-- assessment-timer --}}
             {{$Questions['general_time_limit']}}
         </div>
@@ -29,16 +31,17 @@
         @endphp
         <div class="area-question-data questions-{{$loop->index + 1}}" id="question_each">
             {{-- div.count_questions --}}
-            <h4 style="padding-block: 1rem">Question {{$loop->index + 1}} out of {{$totalquest}}</h4>
+            <h4 class="question_current_index" style="padding-block: 1rem" id="{{$loop->index + 1}}">Question {{$loop->index + 1}} out of {{$totalquest}}</h4>
             <div style="display: flex;gap:5px;align-items:center">
                 @if(!empty($question['question_text']))
                 <h5 class="mb-2">{{$loop->index + 1}}.</h5>
                 <h5>{{$question['question_text']}}</h5>
                 @endif
             </div>
+            {{-- Todo  render-empty if no -media is present--}}
+            @if(isset($question['media']))
             <div style="display: flex;gap: 5px;align-items:center;margin-left:3rem">
                 <!-- Media -->
-                @if(!empty($question['media']))
                 @if(!empty($question['media']['image_path']))
                 <img src="{{ asset('storage/' . $question['media']['image_path']) }}" alt="Question Image" class="pop_upload_file">
                 @endif
@@ -50,8 +53,8 @@
                 <video controls class="pop_upload_file" src="{{ asset('storage/' . $question['media']['video_path']) }}">
                 </video>
                 @endif
-                @endif
             </div>
+            @endif
             {{-- options-choose --}}
             <div class="options_choose" style="margin-left: 1.2rem">
                 <div class="form-group mt-4 options_group">
@@ -64,7 +67,7 @@
                         <h6 class="mb-2">{{$alphabet[$index]}}.</h6>
 
                         <div class="options_ans{{$loop->index}} op_ans_style">
-                            <input type="radio" name={{$uniquelabel .' '.$loop->index}} id="{{$uniquelabel .' '.$loop->index}}">
+                            <input type="radio" name={{$uniquelabel}} id="{{$uniquelabel .' '.$loop->index}}" data-id={{$loop->index + 1}}>
                             <label for="{{$uniquelabel .' '.$loop->index}}">
                                 @if(!empty($option['option_text']))
                                 {{ $option['option_text'] }}
@@ -75,34 +78,77 @@
                     @endforeach
                 </div>
             </div>
-            <section class="btn-actions-cbt">
-                <button type="button" class="btn btn-info btn-md">Previous</button>
-                <button type="button" class="btn btn-success btn-md " id="Next-quest">Next</button>
-            </section>
-
         </div>
-        <section class="highlight_questions_track">
-            <div style="display: flex; flex-wrap: wrap;">
-                @for($i = 0; $i < 60; $i++) <div style="border: 1px solid #ddd; padding: 5px; width: 40px; text-align: center; margin: 2px; font-weight: 500;cursor:pointer" id="box_navigate_cbt">
-                    {{$i + 1}}
-            </div>
-            @endfor
-        </section>
+        @endforeach
+        <div id=" progress-tracker">
+            {{-- track-progress-area --}}
+            <section class="btn-actions-cbt">
+                <button type="button" class="btn btn-info btn-md" id="prev_cbt">Previous</button>
+                <button type="button" class="btn btn-success btn-md " id="next_cbt">Next</button>
+            </section>
+            <section class="highlight_questions_track">
+                <div style="display: flex; flex-wrap: wrap;">
+                    @for($i = 0; $i < 60; $i++) <div style="border: 1px solid #ddd; padding: 5px; width: 40px; text-align: center; margin: 2px; font-weight: 500;cursor:pointer" id="box_navigate_cbt">
+                        {{$i + 1}}
+                </div>
+                @endfor
+            </section>
+        </div>
     </div>
-    @endforeach
-
-    {{-- track-progress-area --}}
-    <div id=" progress-tracker"></div>
-</div>
-
-</div>
 
 
-{{-- <div id="loadingAnimation" class="loading-frame">
+
+
+    {{-- <div id="loadingAnimation" class="loading-frame">
     <h2>Loading Assessment..</h2>
     <div class="h6">Hang Tight! Your Test is about to begin!</div>
     <div>
         <img src=" {{asset ('images/Loader.gif') }}" alt="stream-loading" style="width: 110px; height: 110px;">
 </div>
 </div> --}}
+
+<div class="modal modal-md fad" tabindex="-1" id="modal_result">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">
+                    Test Result</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container_modal_body" id="dd-times">
+                    <div style=" text-align: center; padding-botton: 10px" class=" d-flex justify-content-center">
+                        @if(session('resultpass'))
+                        <dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
+                        @elseif(session('resultfailed'))
+                        <dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
+                        @endif
+                    </div>
+                    @if(session('resultpass') && session('percentageScore'))
+                    <h5 style="text-align: center">{{session('resultpass')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
+                    @elseif(session('resultfailed') && session('percentageScore'))
+                    <h5 style="text-align: center">{{session('resultfailed')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
+                    @endif
+                </div>
+            </div>
+            <div class="modal-footer">
+                @if(session('resultpass'))
+                <button type="button" class="btn btn-primary">Retake Assessment</button>
+                @elseif(session('resultfailed'))
+                <button type="button" class="btn btn-primary">Next Lesson</button>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('resultpass') || session('resultfail'))
+        const modalElement = document.getElementById('modal_result');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        @endif
+    });
+
+</script>
