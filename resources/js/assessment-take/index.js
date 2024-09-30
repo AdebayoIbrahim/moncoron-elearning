@@ -1,9 +1,12 @@
-import * as bootstrap from "bootstrap";
 import axios from "axios";
-const satsusmodal = new bootstrap.Modal(
-    document.querySelector("#modal_result")
-);
-satsusmodal.show();
+const csrftoken = document.querySelector("input[name=_token]")?.value;
+// get_lesson_idand_corse_id
+const urlString = window.location.href;
+const regex = /courses\/(\d+)\/lesson\/(\d+)/;
+const match = urlString.match(regex);
+let { courseId, lessonId } = match
+    ? { courseId: match[1], lessonId: match[2] }
+    : { courseId: null, lessonId: null };
 const questions = document.querySelectorAll(".area-question-data");
 questions[0].style.display = "block";
 
@@ -45,6 +48,10 @@ prev.onclick = function () {
 // submit-button-click-save-ans-score-assessment
 const submitCbtBtn = document.querySelector("#submit_cbt");
 submitCbtBtn.addEventListener("click", () => {
+    processSubmission();
+});
+
+async function processSubmission() {
     // initialize-answrs
     const answers = [];
 
@@ -64,5 +71,29 @@ submitCbtBtn.addEventListener("click", () => {
         });
     });
 
-    console.log(answers);
-});
+    const payload = {
+        answers,
+    };
+
+    try {
+        const response = await axios.post(
+            `/courses/${courseId}/lesson/${lessonId}`,
+            {
+                ...payload,
+            },
+            {
+                headers: {
+                    "X-CSRF-Token": csrftoken,
+                    "Content-Type": "multipart/form-data",
+                    Accept: "application/json",
+                },
+            }
+        );
+
+        if (response) {
+            console.log(response);
+        }
+    } catch (err) {
+        window.alert("An error occoured!,", err.status);
+    }
+}

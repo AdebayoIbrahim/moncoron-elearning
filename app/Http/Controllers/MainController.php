@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Unicodeveloper\Paystack\Facades\Paystack;
+use Illuminate\Support\Facades\Log;
+
 
 class MainController extends Controller
 {
@@ -252,8 +254,10 @@ class MainController extends Controller
         // filter-the-questions-answers-from-thedb
         $matchedQuestions = json_decode(Lessonassessment::where('course_id', $course_id)->where('lesson_id', $lessonid)->first()->questions, true);
 
+        Log::info('json response', $matchedQuestions);
+
         // loop-throug-questand-calc
-        foreach ($matchedQuestions as $question) {
+        foreach ($matchedQuestions['questions'] as $question) {
             // get-the-id-of-question
             $matchquestid = $question['id'];
             // filter-correct-option
@@ -273,7 +277,12 @@ class MainController extends Controller
         }
 
         // Calculate percentage score
-        $percentageScore = $totalpoints > 0 ? ($totalscore / $totalpoints) * 100 : 0;
+        if ($totalpoints > 0) {
+            $percentageScore = ($totalscore / $totalpoints) * 100;
+        } else {
+            $percentageScore = 0;
+        }
+        Log::info("Calculated percentage score: " . $percentageScore);
         $pass_score = 60;
 
         $assessmentres = lessonassessmentresults::updateOrCreate(
@@ -293,9 +302,9 @@ class MainController extends Controller
         );
 
         if (round($percentageScore) >= $pass_score) {
-            return redirect()->back()->with('resultpass', "Congratulations! You passed the assessment with a score of {$percentageScore}%.")->with(compact('percentageScore'));
+            return redirect()->back()->with('resultpass', "Congratulations! You passed the assessment with a score of")->with(compact('percentageScore'));
         } else {
-            return redirect()->back()->with('resultfailed', "Unfortunately, you did not pass the assessment. Your score is {$percentageScore}%. Please try again.")->with(compact('percentageScore'));
+            return redirect()->back()->with('resultfailed', "Unfortunately, you did not pass the assessment. Your score is.")->with(compact('percentageScore'));
         }
     }
 

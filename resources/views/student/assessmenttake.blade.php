@@ -116,17 +116,39 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="container_modal_body">
-                    <div style="text-align: center; padding-botton: 10px" class=" d-flex justify-content-center">
+                <div class="container_modal_body" id="dd-times">
+                    <div style=" text-align: center; padding-botton: 10px" class=" d-flex justify-content-center">
+                        @if(session('resultpass'))
                         <dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
+                        @elseif(session('resultfailed'))
+                        <dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
+                        @endif
                     </div>
-                    <h5 style="text-align: center">Congratulations! You passed the assessment with a score of <b><span style="color: blue"> 80%</span></b></h5>
+                    @if(session('resultpass') && session('percentageScore'))
+                    <h5 style="text-align: center">{{session('resultpass')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
+                    @elseif(session('resultfailed') && session('percentageScore'))
+                    <h5 style="text-align: center">{{session('resultfailed')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
+                    @endif
                 </div>
             </div>
             <div class="modal-footer">
+                @if(session('resultpass'))
                 <button type="button" class="btn btn-primary">Retake Assessment</button>
+                @elseif(session('resultfailed'))
+                <button type="button" class="btn btn-primary">Next Lesson</button>
+                @endif
             </div>
         </div>
     </div>
 </div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('resultpass') || session('resultfail'))
+        const modalElement = document.getElementById('modal_result');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        @endif
+    });
+
+</script>

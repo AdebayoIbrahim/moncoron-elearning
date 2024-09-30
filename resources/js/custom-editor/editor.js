@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const audioinput = document.getElementById("audio-upload");
     const audioUpload = document.querySelector("#audio-icon");
     // Basic formatting
-    boldBtn.addEventListener("click", () => {
+    boldBtn?.addEventListener("click", () => {
         document.execCommand("bold");
         // window.alert("Check-eorked")
         // console.log("boleeee")
