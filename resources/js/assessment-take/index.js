@@ -25,10 +25,9 @@ const next = document.querySelector("#next_cbt");
 const prev = document.querySelector("#prev_cbt");
 
 next.onclick = function () {
-    if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
-        showQuestion(currentQuestionIndex);
-    }
+    currentQuestionIndex++;
+    currentQuestionIndex >= questions.length && (currentQuestionIndex = 0);
+    showQuestion(currentQuestionIndex);
 };
 
 prev.onclick = function () {
