@@ -9,7 +9,8 @@ class lessonassessmentresults extends Model
 {
     use HasFactory;
     protected $table = 'lesson_assessment_result';
-    protected $fillable = ['course_id', 'lesson_id', 'answers', 'score'];
+    protected $fillable = ['course_id', 'lesson_id', 'answers', 'score', 'student_id', 'status'];
+
 
     // relationship-with-course
     public function course()

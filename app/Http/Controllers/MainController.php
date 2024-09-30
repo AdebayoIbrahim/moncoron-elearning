@@ -10,6 +10,7 @@ use App\Models\CourseAssessment;
 use App\Models\CourseAssessmentSubmission;
 use App\Models\CourseLesson;
 use App\Models\Lessonassessment;
+use App\Models\lessonassessmentresults;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -208,22 +209,6 @@ class MainController extends Controller
         return view('student.assessments.index', compact('course', 'assessments', 'routeNamePart'));
     }
 
-    // Show Assessment
-    // public function showAssessment(Course $course, CourseAssessment $assessment)
-    // {
-    //     $user = Auth::user();
-    //     if (!$user->courses->contains($course->id)) {
-    //         return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
-    //     }
-
-    //     $assessment->questions = json_decode($assessment->questions, true);  // Ensure questions are decoded to an array
-
-    //     $routeName = Route::currentRouteName();
-    //     $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
-
-    //     return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart'));
-    // }
-
     // student-takes-assessments
     public function takeAssessment($course_id, $lessonid)
     {
@@ -241,15 +226,78 @@ class MainController extends Controller
 
         $Questions = json_decode($questionsexist->questions, true);
 
-        return view('student.assessmenttake', compact('Questions'));
+        $routeNamePart = "CBT Test";
+        return view('student.assessmenttake', compact('Questions', 'routeNamePart'));
     }
 
+    // submit-assessments
+    public function submitlessonAssessment(Request $request, $course_id, $lessonid)
+    {
 
+        $validated = $request->validate([
+            'answers' => 'array | required'
+        ]);
 
+        // type-check-lesson
+        $Lessonpresent = CourseLesson::where('lesson_number', $lessonid);
 
+        if (!$Lessonpresent) {
+            return redirect('/courses')->with('error', 'Lesson-not-found');
+        }
 
+        // initializing-score
+        $totalscore = 0;
+        // intialize-points
+        $totalpoints = 0;
+        // filter-the-questions-answers-from-thedb
+        $matchedQuestions = json_decode(Lessonassessment::where('course_id', $course_id)->where('lesson_id', $lessonid)->first()->questions, true);
 
+        // loop-throug-questand-calc
+        foreach ($matchedQuestions as $question) {
+            // get-the-id-of-question
+            $matchquestid = $question['id'];
+            // filter-correct-option
+            $correctoption = collect($question['options'])->firstWhere("is_correct", 'true');
+            // then-filter-the-correct-matched question
+            $studentanswer = collect($validated['answers'])->firstWhere('question_id', $matchquestid);
+            //   mark-it-if-correct
+            // basically-ids-is-uesd for making -since some -options-containds-files
+            if (isset($studentanswer) && $studentanswer['selected_option']  === $correctoption['id']) {
+                // if true add the scorescast-data-if-needed
+                $totalscore += (int) $question['points'];
+            } else {
+                continue;
+            }
 
+            $totalpoints += (int) $question['points'];
+        }
+
+        // Calculate percentage score
+        $percentageScore = $totalpoints > 0 ? ($totalscore / $totalpoints) * 100 : 0;
+        $pass_score = 60;
+
+        $assessmentres = lessonassessmentresults::updateOrCreate(
+            [
+                'course_id' => $course_id,
+                'lesson_id' => $lessonid,
+                'answers' => json_encode($validated['answers']),
+                'score' => $percentageScore,
+                'student_id' => auth()->user()->id,
+                'status' => round($percentageScore) >= $pass_score ? "Passed" : "Failed",
+            ],
+            [
+                'answers' => json_encode($validated['answers']),
+                'score' => $percentageScore,
+                'status' => round($percentageScore) >= $pass_score ? "Passed" : "Failed",
+            ]
+        );
+
+        if (round($percentageScore) >= $pass_score) {
+            return redirect()->back()->with('resultpass', "Congratulations! You passed the assessment with a score of {$percentageScore}%.")->with(compact('percentageScore'));
+        } else {
+            return redirect()->back()->with('resultfailed', "Unfortunately, you did not pass the assessment. Your score is {$percentageScore}%. Please try again.")->with(compact('percentageScore'));
+        }
+    }
 
 
 

@@ -18,6 +18,8 @@
 
     <div class="cbt-area">
         <div class="action_cbt_buttons">
+            {{-- submit-btn- --}}
+            <button type="button" class="btn btn-danger btn-md" id="submit_cbt" style="width: 150px;">Submit</button>
             {{-- assessment-timer --}}
             {{$Questions['general_time_limit']}}
         </div>
@@ -65,7 +67,7 @@
                         <h6 class="mb-2">{{$alphabet[$index]}}.</h6>
 
                         <div class="options_ans{{$loop->index}} op_ans_style">
-                            <input type="radio" name={{$uniquelabel .' '.$loop->index}} id="{{$uniquelabel .' '.$loop->index}}">
+                            <input type="radio" name={{$uniquelabel}} id="{{$uniquelabel .' '.$loop->index}}" data-id={{$loop->index + 1}}>
                             <label for="{{$uniquelabel .' '.$loop->index}}">
                                 @if(!empty($option['option_text']))
                                 {{ $option['option_text'] }}
@@ -104,4 +106,27 @@
         <img src=" {{asset ('images/Loader.gif') }}" alt="stream-loading" style="width: 110px; height: 110px;">
 </div>
 </div> --}}
+
+<div class="modal modal-md fad" tabindex="-1" id="modal_result">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">
+                    Test Result</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container_modal_body">
+                    <div style="text-align: center; padding-botton: 10px" class=" d-flex justify-content-center">
+                        <dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
+                    </div>
+                    <h5 style="text-align: center">Congratulations! You passed the assessment with a score of <b><span style="color: blue"> 80%</span></b></h5>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Retake Assessment</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

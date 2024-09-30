@@ -1,3 +1,9 @@
+import * as bootstrap from "bootstrap";
+import axios from "axios";
+const satsusmodal = new bootstrap.Modal(
+    document.querySelector("#modal_result")
+);
+satsusmodal.show();
 const questions = document.querySelectorAll(".area-question-data");
 questions[0].style.display = "block";
 
@@ -36,5 +42,27 @@ prev.onclick = function () {
     showQuestion(currentQuestionIndex);
 };
 
-// Show the first question initially
-showQuestion(currentQuestionIndex);
+// submit-button-click-save-ans-score-assessment
+const submitCbtBtn = document.querySelector("#submit_cbt");
+submitCbtBtn.addEventListener("click", () => {
+    // initialize-answrs
+    const answers = [];
+
+    questions.forEach((questionarea, index) => {
+        // quesion-id-is-1++-although-not-ideal-will-get-attributes-later
+        const questionId = index + 1;
+
+        //get options-selected
+        const optionselect =
+            questionarea?.querySelector(
+                `input[name="Question${questionId}"]:checked`
+            ) || null;
+
+        answers.push({
+            question_id: questionId,
+            selected_option: optionselect?.getAttribute("data-id") || null,
+        });
+    });
+
+    console.log(answers);
+});
