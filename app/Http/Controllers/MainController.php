@@ -11,6 +11,7 @@ use App\Models\CourseAssessmentSubmission;
 use App\Models\CourseLesson;
 use App\Models\Lessonassessment;
 use App\Models\lessonassessmentresults;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -58,8 +59,33 @@ class MainController extends Controller
             return response()->json(['error' => 'Course not found'], 404);
         };
 
+        // morechecks-for-completition-or-not
+        // $newlessonchecks = lessonassessmentresults::where('course_id')
+        $usrid = auth()->user()->id;
+        $newlessonslist = User::find($usrid)->userAssessmentresult;
+
+
+
         // fetch-related-lessons
         $lessons = $course->lessons;
+
+
+        if (!$newlessonslist) {
+            foreach ($lessons as  $lesson) {
+                $lesson->is_completed = false;
+            }
+        }
+
+        foreach ($lessons as  $lesson) {
+            $lesson->is_completed = false;
+
+            foreach ($newlessonslist as $updlesson) {
+                if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
+                    $lesson->is_completed = true;
+                    // break;
+                }
+            }
+        }
         // Return the Blade view and pass the course data to it
         return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
     }

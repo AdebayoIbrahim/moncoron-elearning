@@ -56,7 +56,11 @@
                                         <p class="container_text mt-2">
                                             {{$lesson->comment ?? 0}} Comment
                                         </p>
+                                        @if($lesson->is_completed)
                                         <i class="fa-solid fa-circle-play styled-icon"></i>
+                                        @else
+                                        <i class="fa-solid fa-lock styled-icon"></i>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
