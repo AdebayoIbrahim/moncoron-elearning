@@ -124,10 +124,8 @@
                         <dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
                         @endif
                     </div>
-                    @if(session('resultpass') && session('percentageScore'))
-                    <h5 style="text-align: center">{{session('resultpass')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
-                    @elseif(session('resultfailed') && session('percentageScore'))
-                    <h5 style="text-align: center">{{session('resultfailed')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
+                    @if(session('percentageScore'))
+                    <h5 style="text-align: center">{{session('resultpass')}}<b><span style="color: blue">{{ session ('$percentageScore')}}</span></b></h5>
                     @endif
                 </div>
             </div>
@@ -142,13 +140,3 @@
     </div>
 </div>
 @endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @if(session('resultpass') || session('resultfail'))
-        const modalElement = document.getElementById('modal_result');
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
-        @endif
-    });
-
-</script>

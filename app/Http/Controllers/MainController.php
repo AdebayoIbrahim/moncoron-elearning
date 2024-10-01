@@ -236,6 +236,9 @@ class MainController extends Controller
     public function submitlessonAssessment(Request $request, $course_id, $lessonid)
     {
 
+        Log::info('Request Data:', $request->all());
+
+
         $validated = $request->validate([
             'answers' => 'array | required'
         ]);
@@ -270,7 +273,7 @@ class MainController extends Controller
                 // if true add the scorescast-data-if-needed
                 $totalscore += (int) $question['points'];
             } else {
-                continue;
+                $totalscore += 0;
             }
 
             $totalpoints += (int) $question['points'];
@@ -284,6 +287,7 @@ class MainController extends Controller
         }
         Log::info("Calculated percentage score: " . $percentageScore);
         $pass_score = 60;
+
 
         $assessmentres = lessonassessmentresults::updateOrCreate(
             [
@@ -301,7 +305,9 @@ class MainController extends Controller
             ]
         );
 
+        Log::info('assessments ' . $assessmentres);
         if (round($percentageScore) >= $pass_score) {
+            Log::info('ppp ' . $percentageScore);
             return redirect()->back()->with('resultpass', "Congratulations! You passed the assessment with a score of")->with(compact('percentageScore'));
         } else {
             return redirect()->back()->with('resultfailed', "Unfortunately, you did not pass the assessment. Your score is.")->with(compact('percentageScore'));

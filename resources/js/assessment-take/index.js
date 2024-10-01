@@ -1,3 +1,4 @@
+import * as bootstrap from "bootstrap";
 import axios from "axios";
 const csrftoken = document.querySelector("input[name=_token]")?.value;
 // get_lesson_idand_corse_id
@@ -20,22 +21,20 @@ function showQuestion(index) {
     });
 }
 
-const btnprogress = document
-    .querySelectorAll("#box_navigate_cbt")
-    .forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            const currid = parseInt(btn.innerText);
-            currentQuestionIndex = currid;
-            showQuestion(currentQuestionIndex);
-        });
+document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        const currid = parseInt(btn.innerText);
+        currentQuestionIndex = currid;
+        showQuestion(currentQuestionIndex);
     });
+});
 
 const next = document.querySelector("#next_cbt");
 const prev = document.querySelector("#prev_cbt");
 
 next.onclick = function () {
     currentQuestionIndex++;
-    currentQuestionIndex >= questions.length && (currentQuestionIndex = 0);
+    currentQuestionIndex >= questions.length && (currentQuestionIndex = 1);
     showQuestion(currentQuestionIndex);
 };
 
@@ -44,6 +43,9 @@ prev.onclick = function () {
     currentQuestionIndex < 0 && (currentQuestionIndex = questions.length - 1);
     showQuestion(currentQuestionIndex);
 };
+
+const modalElement = document.getElementById("modal_result");
+const modal = new bootstrap.Modal(modalElement);
 
 // submit-button-click-save-ans-score-assessment
 const submitCbtBtn = document.querySelector("#submit_cbt");
@@ -77,14 +79,14 @@ async function processSubmission() {
 
     try {
         const response = await axios.post(
-            `/courses/${courseId}/lesson/${lessonId}`,
+            `/courses/${courseId}/lesson/${lessonId}/submit-assessment`,
             {
                 ...payload,
             },
             {
                 headers: {
                     "X-CSRF-Token": csrftoken,
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                     Accept: "application/json",
                 },
             }
@@ -92,6 +94,7 @@ async function processSubmission() {
 
         if (response) {
             console.log(response);
+            modal.show();
         }
     } catch (err) {
         window.alert("An error occoured!,", err.status);
