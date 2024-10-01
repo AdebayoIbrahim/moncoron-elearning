@@ -235,10 +235,6 @@ class MainController extends Controller
     // submit-assessments
     public function submitlessonAssessment(Request $request, $course_id, $lessonid)
     {
-
-        Log::info('Request Data:', $request->all());
-
-
         $validated = $request->validate([
             'answers' => 'array | required'
         ]);
@@ -286,9 +282,7 @@ class MainController extends Controller
         }
         Log::info("Calculated percentage score: " . $percentageScore);
         $pass_score = 60;
-
-
-        $assessmentres = lessonassessmentresults::updateOrCreate(
+        lessonassessmentresults::updateOrCreate(
             [
                 'course_id' => $course_id,
                 'lesson_id' => $lessonid,

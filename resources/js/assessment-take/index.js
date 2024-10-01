@@ -22,7 +22,7 @@ function showQuestion(index) {
 }
 
 document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", () => {
         const currid = parseInt(btn.innerText);
         currentQuestionIndex = currid;
         showQuestion(currentQuestionIndex);
@@ -126,3 +126,35 @@ function updateModals(response) {
         footerCont.innerHTML = buttonfail;
     }
 }
+
+function startTimer(duration, display) {
+    let timer = duration;
+
+    const interval = setInterval(() => {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+
+        const displayMinutes = minutes < 10 ? "0" + minutes : minutes;
+        const displaySeconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = `${displayMinutes}:${displaySeconds}`;
+        if (--timer < 0) {
+            clearInterval(interval);
+            // auto-submit
+            processSubmission();
+        }
+    }, 1000);
+}
+
+// timer-functionality
+document.addEventListener("DOMContentLoaded", function () {
+    const timerElement = document.getElementById("question_timer");
+    let timeLimit = parseInt(timerElement.getAttribute("data-time-limit"));
+    startTimer(timeLimit, timerElement);
+});
+
+// mock-loader
+const loader = document.getElementById("loadingAnimation");
+setTimeout(() => {
+    loader.classList.add("invisible_loader");
+}, 4000);

@@ -3,6 +3,7 @@
 @include('partials.header')
 @vite(['resources/css/create-assessment/assessment.css','resources/js/custom-editor/editor.js','resources/js/courseview/course.js'])
 @csrf
+
 <div class="container-fluid">
 
     <div class="row">
