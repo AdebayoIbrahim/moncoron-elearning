@@ -257,12 +257,11 @@ class MainController extends Controller
         // filter-the-questions-answers-from-thedb
         $matchedQuestions = json_decode(Lessonassessment::where('course_id', $course_id)->where('lesson_id', $lessonid)->first()->questions, true);
 
-        Log::info('json response', $matchedQuestions);
-
         // loop-throug-questand-calc
         foreach ($matchedQuestions['questions'] as $question) {
             // get-the-id-of-question
             $matchquestid = $question['id'];
+
             // filter-correct-option
             $correctoption = collect($question['options'])->firstWhere("is_correct", 'true');
             // then-filter-the-correct-matched question
@@ -305,16 +304,15 @@ class MainController extends Controller
             ]
         );
 
-        Log::info('assessments ' . $assessmentres);
+
         if (round($percentageScore) >= $pass_score) {
-            Log::info('ppp ' . $percentageScore);
-            return redirect()->back()->with('resultpass', "Congratulations! You passed the assessment with a score of")->with(compact('percentageScore'));
+            $message = "Congratulations! You passed the assessment with a score of <span style='color: blue; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
+            return response()->json(['statustext' => 'passed', 'message' => $message], 200);
         } else {
-            return redirect()->back()->with('resultfailed', "Unfortunately, you did not pass the assessment. Your score is.")->with(compact('percentageScore'));
+            $message = "Unfortunately, you did not pass the assessment. Your score is <span style='color: red; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
+            return response()->json(['statustext' => 'failed', 'message' => $message], 200);
         }
     }
-
-
 
 
     // Attempt Assessment

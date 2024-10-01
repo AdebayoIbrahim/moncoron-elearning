@@ -53,6 +53,8 @@ submitCbtBtn.addEventListener("click", () => {
     processSubmission();
 });
 
+const iconmodal = document.getElementById("dolittle_icon");
+
 async function processSubmission() {
     // initialize-answrs
     const answers = [];
@@ -93,10 +95,34 @@ async function processSubmission() {
         );
 
         if (response) {
-            console.log(response);
+            // console.log(response);
+            updateModals(response?.data);
             modal.show();
         }
     } catch (err) {
         window.alert("An error occoured!,", err.status);
+        console.log(err);
+    }
+}
+
+let passicon = `<dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>`;
+
+let failicon = `<dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>`;
+
+const resultmodalText = document.getElementById("result_modal_text");
+const footerCont = document.getElementById("footer_button");
+const buttonfail = `<button type="button" class="btn btn-primary">Retake Assessment</button>`;
+
+const buttonpass = `<button type="button" class="btn btn-primary">Next Lesson</button>`;
+
+function updateModals(response) {
+    if (response.statustext === "passed") {
+        iconmodal.innerHTML = passicon;
+        resultmodalText.innerHTML = response?.message;
+        footerCont.innerHTML = buttonpass;
+    } else if (response.statustext === "failed") {
+        iconmodal.innerHTML = failicon;
+        resultmodalText.innerHTML = response?.message;
+        footerCont.innerHTML = buttonfail;
     }
 }

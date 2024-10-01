@@ -12,6 +12,11 @@
     <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
+
+    @if(session('tester'))
+    <div class="alert alert-danger">{{ session('tester') }}</div>
+    @endif
+
     @php
     $totalquest = count($Questions['questions'])
     @endphp
@@ -116,25 +121,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="container_modal_body" id="dd-times">
-                    <div style=" text-align: center; padding-botton: 10px" class=" d-flex justify-content-center">
-                        @if(session('resultpass'))
-                        <dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
-                        @elseif(session('resultfailed'))
-                        <dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
-                        @endif
+                <div class="container_modal_body" id="dd_container_res">
+                    <div style=" text-align: center; padding-botton: 10px" class=" d-flex justify-content-center" id="dolittle_icon">
                     </div>
-                    @if(session('percentageScore'))
-                    <h5 style="text-align: center">{{session('resultpass')}}<b><span style="color: blue">{{ session ('$percentageScore')}}</span></b></h5>
-                    @endif
+                    <h5 style="text-align: center" id="result_modal_text"></h5>
                 </div>
             </div>
-            <div class="modal-footer">
-                @if(session('resultpass'))
-                <button type="button" class="btn btn-primary">Retake Assessment</button>
-                @elseif(session('resultfailed'))
-                <button type="button" class="btn btn-primary">Next Lesson</button>
-                @endif
+            <div class="modal-footer" id="footer_button">
             </div>
         </div>
     </div>
