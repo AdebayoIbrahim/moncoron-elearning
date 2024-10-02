@@ -8,19 +8,24 @@ const match = urlString.match(regex);
 let { courseId, lessonId } = match
     ? { courseId: match[1], lessonId: match[2] }
     : { courseId: null, lessonId: null };
+
+// make-the-first-one-show
 const questions = document.querySelectorAll(".area-question-data");
 questions[0].style.display = "block";
 
+// currentindex
 let currentQuestionIndex = parseInt(
     document.querySelector(".question_current_index")?.id
 );
 
+// shw-question
 function showQuestion(index) {
     questions.forEach((question, i) => {
-        question.style.display = i === index ? "block" : "none";
+        question.style.display = i + 1 === index ? "block" : "none";
     });
 }
 
+// Icon-box-lick-progress
 document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
     btn.addEventListener("click", () => {
         const currid = parseInt(btn.innerText);
@@ -29,21 +34,25 @@ document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
     });
 });
 
+// next-and-prev-btn
 const next = document.querySelector("#next_cbt");
 const prev = document.querySelector("#prev_cbt");
 
 next.onclick = function () {
     currentQuestionIndex++;
-    currentQuestionIndex >= questions.length && (currentQuestionIndex = 1);
+    currentQuestionIndex > questions.length && (currentQuestionIndex = 1);
     showQuestion(currentQuestionIndex);
+    indicateChoosen();
 };
 
 prev.onclick = function () {
     currentQuestionIndex--;
-    currentQuestionIndex < 0 && (currentQuestionIndex = questions.length - 1);
+    currentQuestionIndex < 1 && (currentQuestionIndex = questions.length);
     showQuestion(currentQuestionIndex);
+    indicateChoosen();
 };
 
+// modal-element-popup
 const modalElement = document.getElementById("modal_result");
 const modal = new bootstrap.Modal(modalElement);
 
@@ -53,8 +62,10 @@ submitCbtBtn.addEventListener("click", () => {
     processSubmission();
 });
 
+// icon-modal
 const iconmodal = document.getElementById("dolittle_icon");
 
+// submit-func-call
 async function processSubmission() {
     // initialize-answrs
     const answers = [];
@@ -111,20 +122,28 @@ let failicon = `<dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a0
 
 const resultmodalText = document.getElementById("result_modal_text");
 const footerCont = document.getElementById("footer_button");
-const buttonfail = `<button type="button" class="btn btn-primary">Retake Assessment</button>`;
+const buttonfail = `<a class="btn btn-primary" href="/courses/${courseId}">Retake Assessment</a>`;
 
-const buttonpass = `<button type="button" class="btn btn-primary">Next Lesson</button>`;
+const buttonpass = `<a  class="btn btn-primary" id = "next_lesson">Next Lesson</a>`;
 
+let urlnavigate;
 function updateModals(response) {
     if (response.statustext === "passed") {
         iconmodal.innerHTML = passicon;
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonpass;
+        urlnavigate = response?.url;
     } else if (response.statustext === "failed") {
         iconmodal.innerHTML = failicon;
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonfail;
+    } else if (response.statustext === "redirect") {
+        resultmodalText.innerHTML = response?.message;
+        footerCont.innerHTML = buttonpass;
+        urlnavigate = response?.url;
     }
+
+    document.getElementById("next_lesson")?.setAttribute("href", urlnavigate);
 }
 
 function startTimer(duration, display) {
@@ -148,13 +167,29 @@ function startTimer(duration, display) {
 
 // timer-functionality
 document.addEventListener("DOMContentLoaded", function () {
+    const loader = document.getElementById("loadingAnimation");
+    setTimeout(() => {
+        loader.classList.add("invisible_loader");
+    }, 2000);
+
     const timerElement = document.getElementById("question_timer");
     let timeLimit = parseInt(timerElement.getAttribute("data-time-limit"));
-    startTimer(timeLimit, timerElement);
+    // startTimer(timeLimit, timerElement);
 });
 
-// mock-loader
-const loader = document.getElementById("loadingAnimation");
-setTimeout(() => {
-    loader.classList.add("invisible_loader");
-}, 4000);
+// track-if-checked-and-styled
+function indicateChoosen() {
+    questions.forEach((questionarea, index) => {
+        const optionselect = questionarea?.querySelector(
+            `input[name="Question${index + 1}"]:checked`
+        );
+        if (optionselect) {
+            const boxNavigateCbt = document.querySelector(
+                `#box_navigate_cbt[data-target="${index + 1}"]`
+            );
+            if (boxNavigateCbt) {
+                boxNavigateCbt.classList.add("selected_opt_styles");
+            }
+        }
+    });
+}

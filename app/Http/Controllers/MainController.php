@@ -68,28 +68,42 @@ class MainController extends Controller
 
         // fetch-related-lessons
         $lessons = $course->lessons;
-
-        $isnewstudent = true;
-
         if (!$newlessonslist) {
             foreach ($lessons as  $lesson) {
-                $lesson->is_completed = false;
+                if ($lesson->lesson_number === 1) {
+
+                    $lesson->is_accessible = true;
+                } else {
+                    $lesson->is_accessible = false;
+                }
             }
-        }
+        } else {
+            // if_asessment_already-exist-get_thelastorgreatest-id
+            $max_lesson = lessonassessmentresults::where('lesson_id', $newlessonslist->max('lesson_id'))->first();
 
-        foreach ($lessons as  $lesson) {
-            $lesson->is_completed = false;
+            // $max_lesson = $newlessonslist->max('lesson_id');
+            if ($max_lesson->status === "Passed") {
+                $next_id  = (int) $max_lesson->lesson_id + 1;
 
-            foreach ($newlessonslist as $updlesson) {
-                if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
-                    $lesson->is_completed = true;
-                    $isnewstudent = false;
-                    break;
+                foreach ($lessons as $lesson) {
+                    if ($lesson->lesson_number <= $next_id) {
+                        $lesson->is_accessible = true;
+                    } else {
+                        $lesson->is_accessible = false;
+                    }
+                }
+            } else {
+                // then-all-lesson-before-shouldntbe accessible
+                foreach ($lessons as $lesson) {
+                    if ($lesson->lesson_number <= $max_lesson->lesson_id) {
+                        $lesson->is_accessible = true;
+                    } else {
+                        $lesson->is_accessible = false;
+                    }
                 }
             }
         }
-        // Return the Blade view and pass the course data to it
-        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName, 'ismewstudent' => $isnewstudent]);
+        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
     }
 
     // showlessons-in a specific-course
@@ -114,26 +128,6 @@ class MainController extends Controller
         return view('student.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView', 'hasassessment' => $hasasessment]);
     }
 
-    // Update Lesson Progress
-    public function updateProgress(Request $request)
-    {
-        $user = Auth::user();
-        $lessonId = $request->lesson_id;
-        $courseId = $request->course_id;
-
-        UserCourseLesson::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'course_id' => $courseId,
-                'lesson_id' => $lessonId
-            ],
-            [
-                'completed' => true
-            ]
-        );
-
-        return response()->json(['success' => true]);
-    }
 
     // Handle Payment
     public function handlePayment(Request $request)
@@ -212,33 +206,6 @@ class MainController extends Controller
         return view('student.profile', compact('user', 'routeNamePart', 'course'));
     }
 
-    // Assessments
-    public function assessments(Course $course)
-    {
-        $user = Auth::user();
-        if (!$user->courses->contains($course->id)) {
-            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
-        }
-
-        // Check if the student has completed all lessons
-        $completedLessons = UserCourseLesson::where('user_id', $user->id)
-            ->where('course_id', $course->id)
-            ->count();
-
-        // Ensure lessons is treated as an array
-        $lessons = is_array($course->lessons) ? $course->lessons : json_decode($course->lessons, true);
-
-        if ($completedLessons !== count($lessons)) {
-            return redirect()->route('student.courses')->with('error', 'You must complete all lessons before taking the assessment.');
-        }
-
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessments';
-        $assessments = json_decode($course->assessments, true);
-
-        return view('student.assessments.index', compact('course', 'assessments', 'routeNamePart'));
-    }
-
     // student-takes-assessments
     public function takeAssessment($course_id, $lessonid)
     {
@@ -308,16 +275,28 @@ class MainController extends Controller
         } else {
             $percentageScore = 0;
         }
-        Log::info("Calculated percentage score: " . $percentageScore);
+
+        // check-if-user-already-passed-before
+        $usrasslst = auth()->user()->userAssessmentresult;
+        if (!$usrasslst->isEmpty()) {
+            $checkerfunction = $usrasslst->where('lesson_id', $lessonid)->where('status', 'Passed')->first();
+
+            if ($checkerfunction) {
+                return response()->json([
+                    'statustext' => 'redirect',
+                    'url' => "/courses/{$course_id}",
+                    'message' => 'You already passed this Lesson! Go to the next. lesson'
+                ], 200);
+            }
+        }
+
+
         $pass_score = 60;
         lessonassessmentresults::updateOrCreate(
             [
                 'course_id' => $course_id,
                 'lesson_id' => $lessonid,
-                'answers' => json_encode($validated['answers']),
-                'score' => $percentageScore,
                 'student_id' => auth()->user()->id,
-                'status' => round($percentageScore) >= $pass_score ? "Passed" : "Failed",
             ],
             [
                 'answers' => json_encode($validated['answers']),
@@ -327,9 +306,10 @@ class MainController extends Controller
         );
 
 
+
         if (round($percentageScore) >= $pass_score) {
             $message = "Congratulations! You passed the assessment with a score of <span style='color: blue; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
-            return response()->json(['statustext' => 'passed', 'message' => $message], 200);
+            return response()->json(['statustext' => 'passed', 'message' => $message, 'url' => "/courses/{$course_id}",], 200);
         } else {
             $message = "Unfortunately, you did not pass the assessment. Your score is <span style='color: red; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
             return response()->json(['statustext' => 'failed', 'message' => $message], 200);

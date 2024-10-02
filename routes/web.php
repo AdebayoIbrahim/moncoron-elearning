@@ -75,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
         // take-a-lesson-assessment-students
         Route::get('/courses/{courseId}/lesson/{lessonId}/take-assessment', [MainController::class, 'takeAssessment'])->name('student.take-assessment');
         // submit-assess,ent-post-request
-        Route::post('/courses/{courseId}/lesson/{lessonid}/submit-assessment', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
+        Route::post('/courses/{courseId}/lesson/{lessonId}/submit-assessment', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
     });
 
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');

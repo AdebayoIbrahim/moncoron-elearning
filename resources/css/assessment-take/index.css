@@ -85,3 +85,9 @@ section.btn-actions-cbt button {
     font-size: 2.3rem;
     width: 100px;
 }
+
+/* for-selected-question-*/
+.selected_opt_styles {
+    background: rgb(29, 29, 101);
+    color: white;
+}

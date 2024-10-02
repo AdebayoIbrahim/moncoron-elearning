@@ -226,7 +226,7 @@ recordSendbutton.addEventListener("click", async () => {
         try {
             console.log(formobj);
             await axios.post(
-                `/admin/courses/${courseId}/lesson/${lessonId}/message`,
+                `/courses/${courseId}/lesson/${lessonId}/message`,
                 { ...formobj },
                 {
                     method: "POST",

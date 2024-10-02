@@ -90,21 +90,14 @@ async function handleClick() {
 
 const divs = document.querySelectorAll(".container_lesson_body");
 // Looping through each div and add a click event listener
-divs.forEach((div, index) => {
+divs.forEach((div) => {
     div.addEventListener("click", (event) => {
         let canHighlight = true;
-
-        if (index > 0) {
-            const prevDiv = divs[index - 1];
-            // Checking if the previous div is completed
-            if (prevDiv.getAttribute("data_attribute") !== "current") {
-                event.preventDefault();
-                event.stopPropagation();
-                canHighlight = false;
-                alert(
-                    "This lesson is locked until you complete the previous one."
-                );
-            }
+        if (div.getAttribute("data-attribute") != "accessible") {
+            event.preventDefault();
+            event.stopPropagation();
+            canHighlight = false;
+            alert("This lesson is locked until you complete the previous one.");
         }
         // Only allow highlighting if the lesson is accessible
         if (canHighlight) {

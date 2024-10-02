@@ -41,7 +41,7 @@
                     <div class="lesson_layer">
                         <div class="d-flex  align-center flex-wrap pt-3 gap-3">
                             @foreach($lessons as $lesson)
-                            <div class="container_lesson_body" data-attribute={{$lesson->is_completed || ($ismewstudent && $lesson->lesson_number === 1) ? "current" : "pending"}}>
+                            <div class="container_lesson_body" data-attribute={{$lesson->is_accessible ? "accessible" : "pending"}}>
                                 <div class=" container_content">
                                     <div style="font-weight: 450;font-size: 1.2rem; color :rgba(5, 30, 45, 1) ">
                                         1.{{$loop->index + 1}} LESSON
@@ -56,22 +56,12 @@
                                         <p class="container_text mt-2">
                                             {{$lesson->comment ?? 0}} Comment
                                         </p>
-                                        @if($ismewstudent)
-                                        @if($lesson->lesson_number === 1)
+                                        @if($lesson->is_accessible)
                                         <i class="fa-solid fa-circle-play styled-icon"></i>
                                         @else
                                         <i class="fa-solid fa-lock styled-icon"></i>
                                         @endif
-                                        @else
-                                        @php
-                                        $prevcheck = $lessons[$lesson->lesson_number - 1] ?? null
-                                        @endphp
-                                        @if($lesson->is_completed || ($prevcheck && $prevcheck->is_completed))
-                                        <i class="fa-solidfa-circle-play styled-icon"></i>
-                                        @else
-                                        <i class="fa-solid fa-lock styled-icon"></i>
-                                        @endif
-                                        @endif
+
                                     </div>
                                 </div>
                             </div>
