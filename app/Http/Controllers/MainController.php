@@ -68,28 +68,55 @@ class MainController extends Controller
 
         // fetch-related-lessons
         $lessons = $course->lessons;
-
-        $isnewstudent = true;
-
         if (!$newlessonslist) {
             foreach ($lessons as  $lesson) {
-                $lesson->is_completed = false;
+                if ($lesson->lesson_number === 1) {
+
+                    $lesson->is_accessible = true;
+                } else {
+                    $lesson->is_accessible = false;
+                }
             }
-        }
+        } else {
+            // if_asessment_already-exist-get_thelastorgreatest-id
+            $max_lesson = lessonassessmentresults::where('lesson_id', $newlessonslist->max('lesson_id'))->first();
 
-        foreach ($lessons as  $lesson) {
-            $lesson->is_completed = false;
+            // $max_lesson = $newlessonslist->max('lesson_id');
+            if ($max_lesson->status === "Passed") {
+                $next_id  = (int) $max_lesson->lesson_id + 1;
 
-            foreach ($newlessonslist as $updlesson) {
-                if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
-                    $lesson->is_completed = true;
-                    $isnewstudent = false;
-                    break;
+                foreach ($lessons as $lesson) {
+                    if ($lesson->lesson_number <= $next_id) {
+                        $lesson->is_accessible = true;
+                    } else {
+                        $lesson->is_accessible = false;
+                    }
+                }
+            } else {
+                // then-all-lesson-before-shouldntbe accessible
+                foreach ($lessons as $lesson) {
+                    if ($lesson->lesson_number <= $max_lesson->lesson_id) {
+                        $lesson->is_accessible = true;
+                    } else {
+                        $lesson->is_accessible = false;
+                    }
                 }
             }
         }
+
+        // foreach ($lessons as  $lesson) {
+        //     $lesson->is_completed = false;
+
+        //     foreach ($newlessonslist as $updlesson) {
+        //         if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
+        //             $lesson->is_completed = true;
+        //             $isnewstudent = false;
+        //             break;
+        //         }
+        //     }
+        // }
         // Return the Blade view and pass the course data to it
-        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName, 'ismewstudent' => $isnewstudent]);
+        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
     }
 
     // showlessons-in a specific-course

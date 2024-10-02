@@ -122,7 +122,7 @@ let failicon = `<dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a0
 
 const resultmodalText = document.getElementById("result_modal_text");
 const footerCont = document.getElementById("footer_button");
-const buttonfail = `<a class="btn btn-primary" href  = '/courses/'${courseId}>Retake Assessment</a>`;
+const buttonfail = `<a class="btn btn-primary" href="/courses/${courseId}">Retake Assessment</a>`;
 
 const buttonpass = `<a  class="btn btn-primary" id = "next_lesson">Next Lesson</a>`;
 
