@@ -103,19 +103,6 @@ class MainController extends Controller
                 }
             }
         }
-
-        // foreach ($lessons as  $lesson) {
-        //     $lesson->is_completed = false;
-
-        //     foreach ($newlessonslist as $updlesson) {
-        //         if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
-        //             $lesson->is_completed = true;
-        //             $isnewstudent = false;
-        //             break;
-        //         }
-        //     }
-        // }
-        // Return the Blade view and pass the course data to it
         return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
     }
 
