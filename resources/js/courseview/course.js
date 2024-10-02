@@ -90,7 +90,19 @@ async function handleClick() {
 
 const divs = document.querySelectorAll(".container_lesson_body");
 // Loop through each div and add a click event listener
-divs.forEach((div) => {
+divs.forEach((div, index) => {
+    // algorithm-check-if-prev-completed
+    if (index === 0) {
+    } else {
+        // Get the previous div
+        const prevDiv = divs[index - 1];
+        if (prevDiv.getAttribute("data_attribute") === "current") {
+            // do-nothing
+        } else {
+            div.style.background = "orange";
+        }
+    }
+
     div.addEventListener("click", (event) => {
         const clickedDiv = event.currentTarget;
         divs.forEach((div) => (div.style.border = ""));

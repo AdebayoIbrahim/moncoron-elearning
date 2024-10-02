@@ -69,6 +69,7 @@ class MainController extends Controller
         // fetch-related-lessons
         $lessons = $course->lessons;
 
+        $isnewstudent = true;
 
         if (!$newlessonslist) {
             foreach ($lessons as  $lesson) {
@@ -82,12 +83,13 @@ class MainController extends Controller
             foreach ($newlessonslist as $updlesson) {
                 if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
                     $lesson->is_completed = true;
-                    // break;
+                    $isnewstudent = false;
+                    break;
                 }
             }
         }
         // Return the Blade view and pass the course data to it
-        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
+        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName, 'ismewstudent' => $isnewstudent]);
     }
 
     // showlessons-in a specific-course
