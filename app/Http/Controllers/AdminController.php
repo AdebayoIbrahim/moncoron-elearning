@@ -116,9 +116,38 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'New Course created successfully.');
     }
+
+    // revamp:register-student
+    public function registerStudent(Request $request)
+    {
+        $data = array_merge($request->all(), [
+            'ref' => uniqid('USR_', true),
+            'role' => 'student',
+        ]);
+
+        $emailExists = User::where('email', $data['email'])->exists();
+        if ($emailExists) {
+
+            return redirect()->back()->with('error', 'User with this Email already Exist');
+        } else {
+            User::create($data);
+
+            return redirect()->back()->with('success', 'Student Created Successfully');
+        }
+    }
+
+
+
+
+
+
+
+
+
     public function Addlessonassessment(Request $request, $courseid, $lessonid)
     {
         // Validate input
+
         $validated = $request->validate([
             'questions' => 'required|array',
             'general_time_limit' => 'required|integer'
