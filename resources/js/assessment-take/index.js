@@ -8,19 +8,24 @@ const match = urlString.match(regex);
 let { courseId, lessonId } = match
     ? { courseId: match[1], lessonId: match[2] }
     : { courseId: null, lessonId: null };
+
+// make-the-first-one-show
 const questions = document.querySelectorAll(".area-question-data");
 questions[0].style.display = "block";
 
+// currentindex
 let currentQuestionIndex = parseInt(
     document.querySelector(".question_current_index")?.id
 );
 
+// shw-question
 function showQuestion(index) {
     questions.forEach((question, i) => {
         question.style.display = i + 1 === index ? "block" : "none";
     });
 }
 
+// Icon-box-lick-progress
 document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
     btn.addEventListener("click", () => {
         const currid = parseInt(btn.innerText);
@@ -29,6 +34,7 @@ document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
     });
 });
 
+// next-and-prev-btn
 const next = document.querySelector("#next_cbt");
 const prev = document.querySelector("#prev_cbt");
 
@@ -36,14 +42,17 @@ next.onclick = function () {
     currentQuestionIndex++;
     currentQuestionIndex > questions.length && (currentQuestionIndex = 1);
     showQuestion(currentQuestionIndex);
+    indicateChoosen();
 };
 
 prev.onclick = function () {
     currentQuestionIndex--;
     currentQuestionIndex < 1 && (currentQuestionIndex = questions.length);
     showQuestion(currentQuestionIndex);
+    indicateChoosen();
 };
 
+// modal-element-popup
 const modalElement = document.getElementById("modal_result");
 const modal = new bootstrap.Modal(modalElement);
 
@@ -53,8 +62,10 @@ submitCbtBtn.addEventListener("click", () => {
     processSubmission();
 });
 
+// icon-modal
 const iconmodal = document.getElementById("dolittle_icon");
 
+// submit-func-call
 async function processSubmission() {
     // initialize-answrs
     const answers = [];
@@ -158,4 +169,19 @@ document.addEventListener("DOMContentLoaded", function () {
     // startTimer(timeLimit, timerElement);
 });
 
-// mock-loader
+// track-if-checked-and-styled
+function indicateChoosen() {
+    questions.forEach((questionarea, index) => {
+        const optionselect = questionarea?.querySelector(
+            `input[name="Question${index + 1}"]:checked`
+        );
+        if (optionselect) {
+            const boxNavigateCbt = document.querySelector(
+                `#box_navigate_cbt[data-target="${index + 1}"]`
+            );
+            if (boxNavigateCbt) {
+                boxNavigateCbt.classList.add("selected_opt_styles");
+            }
+        }
+    });
+}

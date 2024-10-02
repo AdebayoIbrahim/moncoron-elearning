@@ -18,7 +18,8 @@
     @endif
 
     @php
-    $totalquest = count($Questions['questions'])
+    $totalquest = count($Questions['questions']);
+
     @endphp
 
     <div class="cbt-area">
@@ -33,7 +34,7 @@
         @foreach($Questions['questions'] as $question)
         @php
         // get-unique-label
-        $uniquelabel = 'Question'. $loop->index + 1
+        $uniquelabel = 'Question'. $loop->index + 1;
 
         @endphp
         <div class="area-question-data questions-{{$loop->index + 1}}" id="question_each">
@@ -95,7 +96,7 @@
             </section>
             <section class="highlight_questions_track">
                 <div style="display: flex; flex-wrap: wrap;">
-                    @for($i = 0; $i < 60; $i++) <div style="border: 1px solid #ddd; padding: 5px; width: 40px; text-align: center; margin: 2px; font-weight: 500;cursor:pointer" id="box_navigate_cbt">
+                    @for($i = 0; $i < 60; $i++) <div style="border: 1px solid #ddd; padding: 5px; width: 40px; text-align: center; margin: 2px; font-weight: 500;cursor:pointer;border-radius: 5px" id="box_navigate_cbt" data-target={{$i + 1}}>
                         {{$i + 1}}
                 </div>
                 @endfor
