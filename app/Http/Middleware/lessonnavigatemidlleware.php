@@ -37,7 +37,7 @@ class lessonnavigatemidlleware
             if ($checkerfunction) {
                 return $next($request);
             } else {
-                return redirect("/courses/{$coursefetchid}/{$checkprevid}")->with('error', 'Hmm, it seems like you haven\'t finished the previous course yet. Please complete it before proceeding.');
+                return redirect("/courses/{$coursefetchid}")->with('error', 'Hmm, it seems like you haven\'t finished the previous course yet. Please complete it before proceeding.');
             }
         }
     }
