@@ -41,7 +41,7 @@
                     <div class="lesson_layer">
                         <div class="d-flex  align-center flex-wrap pt-3 gap-3">
                             @foreach($lessons as $lesson)
-                            <div class="container_lesson_body">
+                            <div class="container_lesson_body" data-attribute={{$lesson->is_accessible ? "accessible" : "pending"}}>
                                 <div class=" container_content">
                                     <div style="font-weight: 450;font-size: 1.2rem; color :rgba(5, 30, 45, 1) ">
                                         1.{{$loop->index + 1}} LESSON
