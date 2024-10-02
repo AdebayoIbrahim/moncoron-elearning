@@ -122,20 +122,28 @@ let failicon = `<dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a0
 
 const resultmodalText = document.getElementById("result_modal_text");
 const footerCont = document.getElementById("footer_button");
-const buttonfail = `<button type="button" class="btn btn-primary">Retake Assessment</button>`;
+const buttonfail = `<a class="btn btn-primary" href  = '/courses/'${courseId}>Retake Assessment</a>`;
 
-const buttonpass = `<button type="button" class="btn btn-primary">Next Lesson</button>`;
+const buttonpass = `<a  class="btn btn-primary" id = "next_lesson">Next Lesson</a>`;
 
+let urlnavigate;
 function updateModals(response) {
     if (response.statustext === "passed") {
         iconmodal.innerHTML = passicon;
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonpass;
+        urlnavigate = response?.url;
     } else if (response.statustext === "failed") {
         iconmodal.innerHTML = failicon;
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonfail;
+    } else if (response.statustext === "redirect") {
+        resultmodalText.innerHTML = response?.message;
+        footerCont.innerHTML = buttonpass;
+        urlnavigate = response?.url;
     }
+
+    document.getElementById("next_lesson")?.setAttribute("href", urlnavigate);
 }
 
 function startTimer(duration, display) {

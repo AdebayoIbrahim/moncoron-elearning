@@ -11,12 +11,6 @@
     @if(session('error'))
     <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
-
-
-    @if(session('tester'))
-    <div class="alert alert-danger">{{ session('tester') }}</div>
-    @endif
-
     @php
     $totalquest = count($Questions['questions']);
 
@@ -28,7 +22,7 @@
             <button type="button" class="btn btn-danger btn-md" id="submit_cbt" style="width: 150px; font-size: 1rem">Submit</button>
             {{-- assessment-timer --}}
             <div id="question_timer" data-time-limit="{{ $Questions['general_time_limit'] }}">
-                {{ $Questions['general_time_limit'] }}
+                {{ $Questions['general_time_limit'] . ":00" }}
             </div>
         </div>
         @foreach($Questions['questions'] as $question)

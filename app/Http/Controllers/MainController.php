@@ -114,26 +114,6 @@ class MainController extends Controller
         return view('student.lessonview', ['course' => $course, 'lesson' => $lesson, 'routeNamePart' => 'LessonView', 'hasassessment' => $hasasessment]);
     }
 
-    // Update Lesson Progress
-    public function updateProgress(Request $request)
-    {
-        $user = Auth::user();
-        $lessonId = $request->lesson_id;
-        $courseId = $request->course_id;
-
-        UserCourseLesson::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'course_id' => $courseId,
-                'lesson_id' => $lessonId
-            ],
-            [
-                'completed' => true
-            ]
-        );
-
-        return response()->json(['success' => true]);
-    }
 
     // Handle Payment
     public function handlePayment(Request $request)
@@ -212,33 +192,6 @@ class MainController extends Controller
         return view('student.profile', compact('user', 'routeNamePart', 'course'));
     }
 
-    // Assessments
-    public function assessments(Course $course)
-    {
-        $user = Auth::user();
-        if (!$user->courses->contains($course->id)) {
-            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
-        }
-
-        // Check if the student has completed all lessons
-        $completedLessons = UserCourseLesson::where('user_id', $user->id)
-            ->where('course_id', $course->id)
-            ->count();
-
-        // Ensure lessons is treated as an array
-        $lessons = is_array($course->lessons) ? $course->lessons : json_decode($course->lessons, true);
-
-        if ($completedLessons !== count($lessons)) {
-            return redirect()->route('student.courses')->with('error', 'You must complete all lessons before taking the assessment.');
-        }
-
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessments';
-        $assessments = json_decode($course->assessments, true);
-
-        return view('student.assessments.index', compact('course', 'assessments', 'routeNamePart'));
-    }
-
     // student-takes-assessments
     public function takeAssessment($course_id, $lessonid)
     {
@@ -308,16 +261,28 @@ class MainController extends Controller
         } else {
             $percentageScore = 0;
         }
-        Log::info("Calculated percentage score: " . $percentageScore);
+
+        // check-if-user-already-passed-before
+        $usrasslst = auth()->user()->userAssessmentresult;
+        if (!$usrasslst->isEmpty()) {
+            $checkerfunction = $usrasslst->where('lesson_id', $lessonid)->where('status', 'Passed')->first();
+
+            if ($checkerfunction) {
+                return response()->json([
+                    'statustext' => 'redirect',
+                    'url' => "/courses/{$course_id}",
+                    'message' => 'You already passed this Lesson! Go to the next. lesson'
+                ], 200);
+            }
+        }
+
+
         $pass_score = 60;
         lessonassessmentresults::updateOrCreate(
             [
                 'course_id' => $course_id,
                 'lesson_id' => $lessonid,
-                'answers' => json_encode($validated['answers']),
-                'score' => $percentageScore,
                 'student_id' => auth()->user()->id,
-                'status' => round($percentageScore) >= $pass_score ? "Passed" : "Failed",
             ],
             [
                 'answers' => json_encode($validated['answers']),
@@ -327,9 +292,10 @@ class MainController extends Controller
         );
 
 
+
         if (round($percentageScore) >= $pass_score) {
             $message = "Congratulations! You passed the assessment with a score of <span style='color: blue; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
-            return response()->json(['statustext' => 'passed', 'message' => $message], 200);
+            return response()->json(['statustext' => 'passed', 'message' => $message, 'url' => "/courses/{$course_id}",], 200);
         } else {
             $message = "Unfortunately, you did not pass the assessment. Your score is <span style='color: red; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
             return response()->json(['statustext' => 'failed', 'message' => $message], 200);
