@@ -17,7 +17,7 @@ let currentQuestionIndex = parseInt(
 
 function showQuestion(index) {
     questions.forEach((question, i) => {
-        question.style.display = i === index ? "block" : "none";
+        question.style.display = i + 1 === index ? "block" : "none";
     });
 }
 
@@ -34,13 +34,13 @@ const prev = document.querySelector("#prev_cbt");
 
 next.onclick = function () {
     currentQuestionIndex++;
-    currentQuestionIndex >= questions.length && (currentQuestionIndex = 1);
+    currentQuestionIndex > questions.length && (currentQuestionIndex = 1);
     showQuestion(currentQuestionIndex);
 };
 
 prev.onclick = function () {
     currentQuestionIndex--;
-    currentQuestionIndex < 0 && (currentQuestionIndex = questions.length - 1);
+    currentQuestionIndex < 1 && (currentQuestionIndex = questions.length);
     showQuestion(currentQuestionIndex);
 };
 
@@ -148,13 +148,14 @@ function startTimer(duration, display) {
 
 // timer-functionality
 document.addEventListener("DOMContentLoaded", function () {
+    const loader = document.getElementById("loadingAnimation");
+    setTimeout(() => {
+        loader.classList.add("invisible_loader");
+    }, 2000);
+
     const timerElement = document.getElementById("question_timer");
     let timeLimit = parseInt(timerElement.getAttribute("data-time-limit"));
-    startTimer(timeLimit, timerElement);
+    // startTimer(timeLimit, timerElement);
 });
 
 // mock-loader
-const loader = document.getElementById("loadingAnimation");
-setTimeout(() => {
-    loader.classList.add("invisible_loader");
-}, 4000);
