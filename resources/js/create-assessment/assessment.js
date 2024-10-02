@@ -169,8 +169,8 @@ submitBtn?.addEventListener("click", async () => {
     const timelimit = document.querySelector("#time_limit").value;
 
     const questionsData = [];
+    // question-id-incrementing
     let questionId = 1;
-    let optionid = 1;
 
     // Get all question elements
     const questionsSet = document.querySelectorAll(".question");
@@ -202,6 +202,8 @@ submitBtn?.addEventListener("click", async () => {
         const optionsLayer = quest.querySelectorAll(".options_group");
 
         for (const opt of optionsLayer) {
+            // option-id-increment-per-questions
+            let optionid = 1;
             const optionsLoop = opt.querySelectorAll(".editor-content");
 
             for (const optItem of optionsLoop) {

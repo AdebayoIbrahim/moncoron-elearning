@@ -8,6 +8,7 @@ use App\Http\Middleware\premiumcoursesmiddleware;
 use App\Http\Middleware\Adminmiddleware;
 use App\Http\Middleware\genericspecialcoursemiddleware;
 use App\Http\Middleware\studentcourseaccessmiddleware;
+use App\Http\Middleware\lessonnavigatemidlleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => Adminmiddleware::class,
             'checkspecial' => genericspecialcoursemiddleware::class,
             'checkifenrolled' => studentcourseaccessmiddleware::class,
+            'lessonaccesscontrol' => lessonnavigatemidlleware::class,
         ]);
 
         $middleware->append(RoleMiddleware::class);

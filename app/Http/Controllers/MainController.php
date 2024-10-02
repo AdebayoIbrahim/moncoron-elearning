@@ -11,6 +11,7 @@ use App\Models\CourseAssessmentSubmission;
 use App\Models\CourseLesson;
 use App\Models\Lessonassessment;
 use App\Models\lessonassessmentresults;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -58,10 +59,37 @@ class MainController extends Controller
             return response()->json(['error' => 'Course not found'], 404);
         };
 
+        // morechecks-for-completition-or-not
+        // $newlessonchecks = lessonassessmentresults::where('course_id')
+        $usrid = auth()->user()->id;
+        $newlessonslist = User::find($usrid)->userAssessmentresult;
+
+
+
         // fetch-related-lessons
         $lessons = $course->lessons;
+
+        $isnewstudent = true;
+
+        if (!$newlessonslist) {
+            foreach ($lessons as  $lesson) {
+                $lesson->is_completed = false;
+            }
+        }
+
+        foreach ($lessons as  $lesson) {
+            $lesson->is_completed = false;
+
+            foreach ($newlessonslist as $updlesson) {
+                if ($updlesson->lesson_id === $lesson->lesson_number && $updlesson->status === "Passed") {
+                    $lesson->is_completed = true;
+                    $isnewstudent = false;
+                    break;
+                }
+            }
+        }
         // Return the Blade view and pass the course data to it
-        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
+        return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName, 'ismewstudent' => $isnewstudent]);
     }
 
     // showlessons-in a specific-course
@@ -235,7 +263,6 @@ class MainController extends Controller
     // submit-assessments
     public function submitlessonAssessment(Request $request, $course_id, $lessonid)
     {
-
         $validated = $request->validate([
             'answers' => 'array | required'
         ]);
@@ -254,12 +281,11 @@ class MainController extends Controller
         // filter-the-questions-answers-from-thedb
         $matchedQuestions = json_decode(Lessonassessment::where('course_id', $course_id)->where('lesson_id', $lessonid)->first()->questions, true);
 
-        Log::info('json response', $matchedQuestions);
-
         // loop-throug-questand-calc
         foreach ($matchedQuestions['questions'] as $question) {
             // get-the-id-of-question
             $matchquestid = $question['id'];
+
             // filter-correct-option
             $correctoption = collect($question['options'])->firstWhere("is_correct", 'true');
             // then-filter-the-correct-matched question
@@ -270,7 +296,7 @@ class MainController extends Controller
                 // if true add the scorescast-data-if-needed
                 $totalscore += (int) $question['points'];
             } else {
-                continue;
+                $totalscore += 0;
             }
 
             $totalpoints += (int) $question['points'];
@@ -284,8 +310,7 @@ class MainController extends Controller
         }
         Log::info("Calculated percentage score: " . $percentageScore);
         $pass_score = 60;
-
-        $assessmentres = lessonassessmentresults::updateOrCreate(
+        lessonassessmentresults::updateOrCreate(
             [
                 'course_id' => $course_id,
                 'lesson_id' => $lessonid,
@@ -301,14 +326,15 @@ class MainController extends Controller
             ]
         );
 
+
         if (round($percentageScore) >= $pass_score) {
-            return redirect()->back()->with('resultpass', "Congratulations! You passed the assessment with a score of")->with(compact('percentageScore'));
+            $message = "Congratulations! You passed the assessment with a score of <span style='color: blue; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
+            return response()->json(['statustext' => 'passed', 'message' => $message], 200);
         } else {
-            return redirect()->back()->with('resultfailed', "Unfortunately, you did not pass the assessment. Your score is.")->with(compact('percentageScore'));
+            $message = "Unfortunately, you did not pass the assessment. Your score is <span style='color: red; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
+            return response()->json(['statustext' => 'failed', 'message' => $message], 200);
         }
     }
-
-
 
 
     // Attempt Assessment

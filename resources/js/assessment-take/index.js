@@ -1,3 +1,4 @@
+import * as bootstrap from "bootstrap";
 import axios from "axios";
 const csrftoken = document.querySelector("input[name=_token]")?.value;
 // get_lesson_idand_corse_id
@@ -20,22 +21,20 @@ function showQuestion(index) {
     });
 }
 
-const btnprogress = document
-    .querySelectorAll("#box_navigate_cbt")
-    .forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            const currid = parseInt(btn.innerText);
-            currentQuestionIndex = currid;
-            showQuestion(currentQuestionIndex);
-        });
+document.querySelectorAll("#box_navigate_cbt").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        const currid = parseInt(btn.innerText);
+        currentQuestionIndex = currid;
+        showQuestion(currentQuestionIndex);
     });
+});
 
 const next = document.querySelector("#next_cbt");
 const prev = document.querySelector("#prev_cbt");
 
 next.onclick = function () {
     currentQuestionIndex++;
-    currentQuestionIndex >= questions.length && (currentQuestionIndex = 0);
+    currentQuestionIndex >= questions.length && (currentQuestionIndex = 1);
     showQuestion(currentQuestionIndex);
 };
 
@@ -45,11 +44,16 @@ prev.onclick = function () {
     showQuestion(currentQuestionIndex);
 };
 
+const modalElement = document.getElementById("modal_result");
+const modal = new bootstrap.Modal(modalElement);
+
 // submit-button-click-save-ans-score-assessment
 const submitCbtBtn = document.querySelector("#submit_cbt");
 submitCbtBtn.addEventListener("click", () => {
     processSubmission();
 });
+
+const iconmodal = document.getElementById("dolittle_icon");
 
 async function processSubmission() {
     // initialize-answrs
@@ -77,23 +81,80 @@ async function processSubmission() {
 
     try {
         const response = await axios.post(
-            `/courses/${courseId}/lesson/${lessonId}`,
+            `/courses/${courseId}/lesson/${lessonId}/submit-assessment`,
             {
                 ...payload,
             },
             {
                 headers: {
                     "X-CSRF-Token": csrftoken,
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                     Accept: "application/json",
                 },
             }
         );
 
         if (response) {
-            console.log(response);
+            // console.log(response);
+            updateModals(response?.data);
+            modal.show();
         }
     } catch (err) {
         window.alert("An error occoured!,", err.status);
+        console.log(err);
     }
 }
+
+let passicon = `<dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>`;
+
+let failicon = `<dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>`;
+
+const resultmodalText = document.getElementById("result_modal_text");
+const footerCont = document.getElementById("footer_button");
+const buttonfail = `<button type="button" class="btn btn-primary">Retake Assessment</button>`;
+
+const buttonpass = `<button type="button" class="btn btn-primary">Next Lesson</button>`;
+
+function updateModals(response) {
+    if (response.statustext === "passed") {
+        iconmodal.innerHTML = passicon;
+        resultmodalText.innerHTML = response?.message;
+        footerCont.innerHTML = buttonpass;
+    } else if (response.statustext === "failed") {
+        iconmodal.innerHTML = failicon;
+        resultmodalText.innerHTML = response?.message;
+        footerCont.innerHTML = buttonfail;
+    }
+}
+
+function startTimer(duration, display) {
+    let timer = duration;
+
+    const interval = setInterval(() => {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+
+        const displayMinutes = minutes < 10 ? "0" + minutes : minutes;
+        const displaySeconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = `${displayMinutes}:${displaySeconds}`;
+        if (--timer < 0) {
+            clearInterval(interval);
+            // auto-submit
+            processSubmission();
+        }
+    }, 1000);
+}
+
+// timer-functionality
+document.addEventListener("DOMContentLoaded", function () {
+    const timerElement = document.getElementById("question_timer");
+    let timeLimit = parseInt(timerElement.getAttribute("data-time-limit"));
+    startTimer(timeLimit, timerElement);
+});
+
+// mock-loader
+const loader = document.getElementById("loadingAnimation");
+setTimeout(() => {
+    loader.classList.add("invisible_loader");
+}, 4000);

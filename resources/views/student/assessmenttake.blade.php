@@ -12,16 +12,23 @@
     <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
+
+    @if(session('tester'))
+    <div class="alert alert-danger">{{ session('tester') }}</div>
+    @endif
+
     @php
     $totalquest = count($Questions['questions'])
     @endphp
 
     <div class="cbt-area">
-        <div class="action_cbt_buttons">
+        <div class="action_cbt_buttons d-flex align-items-center gap-3">
             {{-- submit-btn- --}}
-            <button type="button" class="btn btn-danger btn-md" id="submit_cbt" style="width: 150px;">Submit</button>
+            <button type="button" class="btn btn-danger btn-md" id="submit_cbt" style="width: 150px; font-size: 1rem">Submit</button>
             {{-- assessment-timer --}}
-            {{$Questions['general_time_limit']}}
+            <div id="question_timer" data-time-limit="{{ $Questions['general_time_limit'] }}">
+                {{ $Questions['general_time_limit'] }}
+            </div>
         </div>
         @foreach($Questions['questions'] as $question)
         @php
@@ -99,56 +106,32 @@
 
 
 
-    {{-- <div id="loadingAnimation" class="loading-frame">
-    <h2>Loading Assessment..</h2>
-    <div class="h6">Hang Tight! Your Test is about to begin!</div>
-    <div>
-        <img src=" {{asset ('images/Loader.gif') }}" alt="stream-loading" style="width: 110px; height: 110px;">
-</div>
-</div> --}}
+    <div id="loadingAnimation" class="loading-frame">
+        <h2>Loading Test...</h2>
+        <div class="h6">Hang Tight! Your Test is about to begin!</div>
+        <div>
+            <img src=" {{asset ('images/Loader.gif') }}" alt="stream-loading" style="width: 110px; height: 110px;">
+        </div>
+    </div>
 
-<div class="modal modal-md fad" tabindex="-1" id="modal_result">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">
-                    Test Result</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container_modal_body" id="dd-times">
-                    <div style=" text-align: center; padding-botton: 10px" class=" d-flex justify-content-center">
-                        @if(session('resultpass'))
-                        <dotlottie-player src="https://lottie.host/69a64540-0934-4244-8840-29b3bc08d921/a95uBnXlyg.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
-                        @elseif(session('resultfailed'))
-                        <dotlottie-player src="https://lottie.host/439c9c30-4286-4a5b-a033-cdf8855f4216/GpO6NLRhtH.json" background="transparent" speed="1" style="width: 150px; height: 150px;" autoplay></dotlottie-player>
-                        @endif
-                    </div>
-                    @if(session('resultpass') && session('percentageScore'))
-                    <h5 style="text-align: center">{{session('resultpass')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
-                    @elseif(session('resultfailed') && session('percentageScore'))
-                    <h5 style="text-align: center">{{session('resultfailed')}}<b><span style="color: blue">{{$percentageScore}}</span></b></h5>
-                    @endif
+    <div class="modal modal-md fad" tabindex="-1" id="modal_result">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-bold text-primary" id="Editor_modal">
+                        Test Result</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                @if(session('resultpass'))
-                <button type="button" class="btn btn-primary">Retake Assessment</button>
-                @elseif(session('resultfailed'))
-                <button type="button" class="btn btn-primary">Next Lesson</button>
-                @endif
+                <div class="modal-body">
+                    <div class="container_modal_body" id="dd_container_res">
+                        <div style=" text-align: center; padding-botton: 10px" class=" d-flex justify-content-center" id="dolittle_icon">
+                        </div>
+                        <h5 style="text-align: center" id="result_modal_text"></h5>
+                    </div>
+                </div>
+                <div class="modal-footer" id="footer_button">
+                </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @if(session('resultpass') || session('resultfail'))
-        const modalElement = document.getElementById('modal_result');
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
-        @endif
-    });
-
-</script>
+    @endsection

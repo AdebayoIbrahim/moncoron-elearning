@@ -63,8 +63,8 @@ class User extends Authenticatable
     public function courseLessons()
     {
         return $this->belongsToMany(CourseLesson::class, 'user_course_lessons', 'user_id', 'lesson_id')
-                    ->withPivot('completed')
-                    ->withTimestamps();
+            ->withPivot('completed')
+            ->withTimestamps();
     }
 
     public function leaderboard()
@@ -102,8 +102,8 @@ class User extends Authenticatable
     public function dawahs()
     {
         return $this->belongsToMany(Dawah::class, 'dawahs_users', 'user_id', 'dawah_id')
-                    ->withPivot('is_teacher')
-                    ->withTimestamps();
+            ->withPivot('is_teacher')
+            ->withTimestamps();
     }
 
     public function userCourseLessons()
@@ -115,5 +115,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserLessonAssessment::class);
     }
-    
+
+    public function userAssessmentresult()
+    {
+        return $this->hasMany(lessonassessmentresults::class, 'student_id');
+    }
 }

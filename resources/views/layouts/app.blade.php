@@ -2,11 +2,13 @@
 <html lang="en">
 
 <head>
-    @vite(['resources/js/app.js','resources/css/custom-editor/editor.css', 'resources/js/custom-editor/editor.js','resources/css/app.css'])
+    @vite(['resources/js/app.js','resources/css/custom-editor/editor.css','resources/css/app.css'])
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $routeNamePart ?? 'Moncoran' }} | Moncoran</title>
     <link rel="icon" href="{{ asset('images/image-21@2x.png') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('css/sidebar.css') }}" rel="stylesheet">
@@ -18,15 +20,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo Paaji 2:wght@400;600&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
     <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-
-    {{-- agora-video --}}
-    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.22.0.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
-
     @vite(['resources/css/app.css'])
     @csrf
 </head>
@@ -36,42 +29,44 @@
         @yield('content')
     </div>
 
-    <!-- <script src="{{ mix('js/app.js') }}"></script> -->
-
+    {{-- <script src="{{ mix('js/app.js') }}"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    {{-- agora-video --}}
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.22.0.js"></script>
+
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         // Initialize Pusher
-        Pusher.logToConsole = true;
+        // Pusher.logToConsole = true;
 
-        var pusher = new Pusher('{{ env('
-            PUSHER_APP_KEY ') }}', {
-                cluster: '{{ env('
-                PUSHER_APP_CLUSTER ') }}'
-                , encrypted: true
-            });
+        // var pusher = new Pusher('{{ env('
+        //     PUSHER_APP_KEY ') }}', {
+        //         cluster: '{{ env('
+        //         PUSHER_APP_CLUSTER ') }}'
+        //         , encrypted: true
+        //     });
 
-        var channel = pusher.subscribe('private-App.User.' + {
-            {
-                Auth::id()
-            }
-        });
-        channel.bind('Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', function(data) {
-            alert(data.title + ': ' + data.message);
-            // Update notification bell count
-            var notificationCount = parseInt($('#notification-count').text());
-            $('#notification-count').text(notificationCount + 1);
+        // var channel = pusher.subscribe('private-App.User.' + {
+        //     Auth::id()
+        // }
+        // });
+        // channel.bind('Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', function(data) {
+        //     alert(data.title + ': ' + data.message);
+        //     // Update notification bell count
+        //     var notificationCount = parseInt($('#notification-count').text());
+        //     $('#notification-count').text(notificationCount + 1);
 
-            // Add notification to the dropdown
-            $('#notification-dropdown').prepend(
-                '<a class="dropdown-item" href="' + data.url + '">' + data.message + '</a>'
-            );
-        });
+        //     // Add notification to the dropdown
+        //     $('#notification-dropdown').prepend(
+        //         '<a class="dropdown-item" href="' + data.url + '">' + data.message + '</a>'
+        //     );
+        // });
 
         $(document).on('click', '#updateRecord', function() {
             $('#UpdateModal').modal('show');

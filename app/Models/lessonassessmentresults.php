@@ -27,4 +27,11 @@ class lessonassessmentresults extends Model
     {
         return $this->belongsTo(Lessonassessment::class, 'id');
     }
+
+    // user-relation-to-assessment-results
+
+    public function userAssessments()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

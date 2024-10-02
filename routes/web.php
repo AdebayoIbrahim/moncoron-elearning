@@ -68,15 +68,16 @@ Route::get('/notifications', function () {
 Route::middleware(['auth'])->group(function () {
     // Student routes starts here
     // also addenrollment-type-check
-    Route::middleware(['checkifenrolled', 'checkspecial'])->group(function () {
+    Route::middleware(['checkifenrolled', 'checkspecial', 'lessonaccesscontrol'])->group(function () {
         Route::get('/courses/{courseid}', [MainController::class, 'showcourse'])->name('student.coursedesc');
         // navigate-to-acourse-lesson-for-students
-        Route::get('/courses/{courseid}/lesson/{lessonid}', [MainController::class, 'showlessons'])->name('student.lessonsvie.show');
+        Route::get('/courses/{courseId}/lesson/{lessonId}', [MainController::class, 'showlessons'])->name('student.lessonsvie.show');
         // take-a-lesson-assessment-students
         Route::get('/courses/{courseId}/lesson/{lessonId}/take-assessment', [MainController::class, 'takeAssessment'])->name('student.take-assessment');
         // submit-assess,ent-post-request
-        Route::post('/courses/{courseId}/lesson/{lessonid}', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
+        Route::post('/courses/{courseId}/lesson/{lessonid}/submit-assessment', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
     });
+
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
 
