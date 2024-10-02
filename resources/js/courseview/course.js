@@ -89,26 +89,31 @@ async function handleClick() {
 }
 
 const divs = document.querySelectorAll(".container_lesson_body");
-// Loop through each div and add a click event listener
+// Looping through each div and add a click event listener
 divs.forEach((div, index) => {
-    // algorithm-check-if-prev-completed
-    if (index === 0) {
-    } else {
-        // Get the previous div
-        const prevDiv = divs[index - 1];
-        if (prevDiv.getAttribute("data_attribute") === "current") {
-            // do-nothing
-        } else {
-            div.style.background = "orange";
-        }
-    }
-
     div.addEventListener("click", (event) => {
-        const clickedDiv = event.currentTarget;
-        divs.forEach((div) => (div.style.border = ""));
-        clickedDiv.style.border = "2px solid #5a48c8";
+        let canHighlight = true;
+
+        if (index > 0) {
+            const prevDiv = divs[index - 1];
+            // Checking if the previous div is completed
+            if (prevDiv.getAttribute("data_attribute") !== "current") {
+                event.preventDefault();
+                event.stopPropagation();
+                canHighlight = false;
+                alert(
+                    "This lesson is locked until you complete the previous one."
+                );
+            }
+        }
+        // Only allow highlighting if the lesson is accessible
+        if (canHighlight) {
+            divs.forEach((d) => (d.style.border = ""));
+            event.currentTarget.style.border = "2px solid #5a48c8";
+        }
     });
 });
+
 const nextbtn = document?.querySelector("#next_btn_lesson");
 nextbtn?.addEventListener("click", () => {
     const refreshdivs = document.querySelectorAll(".container_lesson_body");
