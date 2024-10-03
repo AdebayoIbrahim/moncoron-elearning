@@ -11,20 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('lesson_assessment_result', function (Blueprint $table) {
-
-            $table->dropForeign(['lesson_id']);
+        Schema::table('certificates', function (Blueprint $table) {
+            //
+            $table->foreignId('student_id')->constrained('users')->cascadeOnDelete()->after('lesson_id');
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('lesson_assessment_result', function (Blueprint $table) {
-            $table->foreignId('lesson_id')->constrained('course_lessons')->onDelete('cascade');
+        Schema::table('certificates', function (Blueprint $table) {
+            $table->dropColumn('student_id');
         });
     }
 };
