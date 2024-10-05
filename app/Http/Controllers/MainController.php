@@ -106,6 +106,36 @@ class MainController extends Controller
         return view('student.courseview', ['course' => $course, 'lessons' => $lessons, 'routeNamePart' => $routeName]);
     }
 
+    // completion-and-course-and-verificatin
+    public function courseCompletion(Request $request, $courseId)
+    {
+
+        $relatedcourse = Course::find($courseId);
+        // Fetch-user-id
+        $usrid = auth()->user()->id;
+        // fetch-related-lesson-for-the-course
+        $lessonslist = $relatedcourse->lessons;
+
+        //   fetchlast-lesson-for-the-course-whichreturns-theid
+        $lastlesson = max($lessonslist);
+
+        // Fetch-ifuser-cpmleteslast-assessment-for the lesson
+        $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
+
+        if (!$lastassessment) {
+            return redirect('/courses')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
+        };
+
+        // pass-to-thenext-if-user-has-the-last-assessment-nrecord
+        // check-if-user-passes-thelastifinrecord
+        if (!$lastassessment->status === "Passed") {
+            return redirect('/courses')->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your  certification');
+        }
+
+        // if-user-passed-thelast-course-then-give access
+
+        return redir
+    }
     // showlessons-in a specific-course
     public function showlessons($courseid, $lessonid)
     {
