@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Certification;
 use App\Models\Course;
 use App\Models\Course_Lessons;
 use App\Models\Subscriptions;
@@ -112,7 +113,7 @@ class MainController extends Controller
 
         // $relatedcourse = Course::find($courseId);
         // // Fetch-user-id
-        // $usrid = auth()->user()->id;
+        $usrid = auth()->user()->id;
         // // fetch-related-lesson-for-the-course
         // $lessonslist = $relatedcourse->lessons;
 
@@ -132,8 +133,17 @@ class MainController extends Controller
         //     return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your  certification');
         // }
 
+        // find-the-user-certificates-and-pass-to-the-view
+        $certificateuser = User::find($usrid)->userCertificates;
+
+
+
+
         // if-user-passed-thelast-course-then-give access
         // fetch-whats-needed-inthe-certification-details
+
+
+
 
         return view('student.coursecertification', [
             'routeNamePart' => 'Course Completion'
@@ -269,11 +279,14 @@ class MainController extends Controller
         ]);
 
         // type-check-lesson
-        $Lessonpresent = CourseLesson::where('lesson_number', $lessonid);
+        $Lessonpresent = CourseLesson::where('lesson_number', $lessonid)->first();
 
         if (!$Lessonpresent) {
             return redirect('/courses')->with('error', 'Lesson-not-found');
         }
+
+        // if-its-thelast-lesson
+        $islasttakenlesson = false;
 
         // initializing-score
         $totalscore = 0;
@@ -339,7 +352,19 @@ class MainController extends Controller
             ]
         );
 
+        // check-if-the-lesson-taken-is-the-last-one
+        if ((int) $Lessonpresent->max('lesson_number') === (int) $lessonid && round($percentageScore) >= $pass_score) {
+            // certificate-reference-id
+            $referenceId = 'CERT-' . uniqid() . $course_id . $lessonid;
+            // first-add-the-user-certificate-to-db
+            Certification::create([
+                'student_id' => auth()->user()->id,
+                'course_id' => $course_id,
+                'reference_id' => $referenceId
+            ]);
 
+            return redirect('/courses/${courses}/coursecompletion');
+        }
 
         if (round($percentageScore) >= $pass_score) {
             $message = "Congratulations! You passed the assessment with a score of <span style='color: blue; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
