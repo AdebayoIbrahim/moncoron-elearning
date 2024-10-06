@@ -111,45 +111,56 @@ class MainController extends Controller
     public function courseCompletion(Request $request, $courseId)
     {
 
-        // $relatedcourse = Course::find($courseId);
-        // // Fetch-user-id
+        $relatedcourse = Course::find($courseId);
+        // Fetch-user-id
         $usrid = auth()->user()->id;
-        // // fetch-related-lesson-for-the-course
-        // $lessonslist = $relatedcourse->lessons;
+        // fetch-related-lesson-for-the-course
+        $lessonslist = $relatedcourse->lessons;
 
-        // //   fetchlast-lesson-for-the-course-whichreturns-theid
-        // $lastlesson = $lessonslist->max('lesson_number');
+        //   fetchlast-lesson-for-the-course-whichreturns-theid
+        $lastlesson = $lessonslist->max('lesson_number');
 
-        // // Fetch-ifuser-cpmleteslast-assessment-for the lesson
-        // $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
+        // Fetch-ifuser-cpmleteslast-assessment-for the lesson
+        $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
 
-        // if (!$lastassessment) {
-        //     return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
-        // };
+        if (!$lastassessment) {
+            return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
+        };
 
-        // // pass-to-thenext-if-user-has-the-last-assessment-nrecord
-        // // check-if-user-passes-thelastifinrecord
-        // if (!$lastassessment->status === "Passed") {
-        //     return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your  certification');
-        // }
+        // pass-to-thenext-if-user-has-the-last-assessment-nrecord
+        // check-if-user-passes-thelastifinrecord
+        if (!$lastassessment->status === "Passed") {
+            return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your  certification');
+        }
+
 
         // find-the-user-certificates-and-pass-to-the-view
         $certificateuser = User::find($usrid)->userCertificates;
+        // fetch-username-inrelation-to-certificate
+        $certificateusername = User::find($certificateuser->student_id)->name;
 
 
-
+        $certificatedate = $this->getCreatedAtAttribute($certificateuser->created_at);
 
         // if-user-passed-thelast-course-then-give access
         // fetch-whats-needed-inthe-certification-details
 
-
-
-
         return view('student.coursecertification', [
-            'routeNamePart' => 'Course Completion'
-            // 'coursename' => $relatedcourse->name,
+            'routeNamePart' => 'Course Completion',
+            'certificate_ref' => $certificateuser->reference_id,
+            'certificate_name' => $certificateusername,
+            'certificate_date' => $certificatedate,
+            'coursename' => $relatedcourse->name,
         ]);
     }
+
+    // helper-to-format-isodate
+    protected function getCreatedAtAttribute($date)
+    {
+        return \Carbon\Carbon::parse($date)->format('M d Y');
+    }
+
+
     // showlessons-in a specific-course
     public function showlessons($courseid, $lessonid)
     {
