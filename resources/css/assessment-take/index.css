@@ -106,7 +106,7 @@ section.btn-actions-cbt button {
     padding-top: 0.8rem;
     width: 75rem;
     height: 660px;
-    border: 2px solid red;
+    border: 2px solid rgba(87, 100, 170, 0.51);
     margin: auto;
     font-family: "Poppins";
 }

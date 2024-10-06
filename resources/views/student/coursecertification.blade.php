@@ -24,7 +24,7 @@
                 text-align: center">CERTIFICATE OF COMPLETION</h1>
             <div style="padding-top: 1.5rem;text-align:center">
                 <h3 style="text-align: center; color: rgba(0, 0, 0, 1);font-size:1.6rem">AWARDED TO</h3>
-                <h2 style="font-size: 3rem;color: rgba(84, 65, 195, 1);padding-top: 0.6rem;font-weight: bold">{{certificate_name ?? 'Null'}}</h2>
+                <h2 style="font-size: 3rem;color: rgba(84, 65, 195, 1);padding-top: 0.6rem;font-weight: bold">{{$certificate_name ?? 'Null'}}</h2>
             </div>
             <div class="absolute_top_image">
                 <img src="{{asset ('images/Moncoron_cer.png')}}" alt="alternate_img_" srcset="">
@@ -35,7 +35,7 @@
             </div>
             {{-- for-coursename --}}
             <div style="padding-top: 1.4rem">
-                <h3 style="text-align: center; color: rgba(0, 0, 0, 1);font-size:3.0rem">{{coursename ?? "Null"}}</h3>
+                <h3 style="text-align: center; color: rgba(0, 0, 0, 1);font-size:3.0rem">{{$coursename ?? "Null"}}</h3>
             </div>
             {{-- signature --}}
             <div class="signature_signature" style="text-align: right">
@@ -51,8 +51,8 @@
             {{--date---}}
             <div class="d-flex justify-content-start" style="padding-left: 1.4rem;font-weight:400;font-size:18px;flex-direction:column">
                 {{-- dat-of-access --}}
-                <div>{{certificate_date ?? 'Null'}}</div>
-                <div><span style="font-weight: 600">To Verify</span>: {{certificate_ref ?? 'Null'}}</div>
+                <div>{{$certificate_date ?? 'Null'}}</div>
+                <div><span style="font-weight: 600">To Verify</span>: {{$certificate_ref ?? 'Null'}}</div>
             </div>
         </div>
     </section>

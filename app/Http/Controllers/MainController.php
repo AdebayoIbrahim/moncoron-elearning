@@ -128,18 +128,20 @@ class MainController extends Controller
         $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
 
         if (!$lastassessment) {
-            return redirect('/courses/${courseId}')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
-        };
+            return redirect("/courses/{$courseId}")->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
+        }
 
         // pass-to-thenext-if-user-has-the-last-assessment-nrecord
         // check-if-user-passes-thelastifinrecord
         if (!$lastassessment->status === "Passed") {
-            return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your  certification');
+            return redirect("/courses/{$courseId}")->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your certification');
         }
 
 
         // find-the-user-certificates-and-pass-to-the-view
-        $certificateuser = User::find($usrid)->userCertificates;
+        $certificateuser = User::find($usrid)->userCertificates->first();
+
+        Log::info('cer' . $certificateuser);
         // fetch-username-inrelation-to-certificate
         $certificateusername = User::find($certificateuser->student_id)->name;
 
@@ -368,6 +370,8 @@ class MainController extends Controller
         );
         $user_id = auth()->user()->id;
 
+       
+
         // check-if-the-lesson-taken-is-the-last-one
         if ((int) $Lessonpresent->max('lesson_number') === (int) $lessonid && round($percentageScore) >= $pass_score) {
             // certificate-reference-id
@@ -379,8 +383,13 @@ class MainController extends Controller
                 'reference_id' => $referenceId
             ]);
 
-            return redirect('/courses/' . $course_id . '/coursecompletion');
+            // return redirect('/courses/' . $course_id . '/coursecompletion');
+            return response()->json([
+                'statustext' => 'certified',
+                
+            ],200);
         }
+
 
         if (round($percentageScore) >= $pass_score) {
             $message = "Congratulations! You passed the assessment with a score of <span style='color: blue; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
