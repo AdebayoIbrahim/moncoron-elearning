@@ -19,6 +19,7 @@
         "@ckeditor/ckeditor5-build-classic": "^42.0.1",
         "@ckeditor/ckeditor5-upload": "^42.0.1",
         "emoji-button": "^2.2.2",
+        "html2pdf.js": "^0.10.2",
         "laravel-echo": "^1.16.1",
         "laravel-mix-vue3": "^0.7.0",
         "pusher-js": "^8.4.0-rc2",

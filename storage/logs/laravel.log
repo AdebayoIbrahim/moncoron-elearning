@@ -2796,3 +2796,51 @@
 #62 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('...')
 #63 {main}
 "} 
+[2024-10-06 11:32:39] local.ERROR: There are no commands defined in the "cache:" namespace.
+
+Did you mean this?
+    cache {"exception":"[object] (Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException(code: 0): There are no commands defined in the \"cache:\" namespace.
+
+Did you mean this?
+    cache at /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php:638)
+[stacktrace]
+#0 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(687): Symfony\\Component\\Console\\Application->findNamespace()
+#1 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(260): Symfony\\Component\\Console\\Application->find()
+#2 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(169): Symfony\\Component\\Console\\Application->doRun()
+#3 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Symfony\\Component\\Console\\Application->run()
+#4 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1187): Illuminate\\Foundation\\Console\\Kernel->handle()
+#5 /home/setup/Desktop/moncoron-elearning/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#6 {main}
+"} 
+[2024-10-06 11:33:05] local.ERROR: There are no commands defined in the "royte:" namespace.
+
+Did you mean this?
+    route {"exception":"[object] (Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException(code: 0): There are no commands defined in the \"royte:\" namespace.
+
+Did you mean this?
+    route at /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php:638)
+[stacktrace]
+#0 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(687): Symfony\\Component\\Console\\Application->findNamespace()
+#1 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(260): Symfony\\Component\\Console\\Application->find()
+#2 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(169): Symfony\\Component\\Console\\Application->doRun()
+#3 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Symfony\\Component\\Console\\Application->run()
+#4 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1187): Illuminate\\Foundation\\Console\\Kernel->handle()
+#5 /home/setup/Desktop/moncoron-elearning/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#6 {main}
+"} 
+[2024-10-06 11:33:09] local.ERROR: There are no commands defined in the "route:" namespace.
+
+Did you mean this?
+    route {"exception":"[object] (Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException(code: 0): There are no commands defined in the \"route:\" namespace.
+
+Did you mean this?
+    route at /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php:638)
+[stacktrace]
+#0 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(687): Symfony\\Component\\Console\\Application->findNamespace()
+#1 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(260): Symfony\\Component\\Console\\Application->find()
+#2 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(169): Symfony\\Component\\Console\\Application->doRun()
+#3 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Symfony\\Component\\Console\\Application->run()
+#4 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1187): Illuminate\\Foundation\\Console\\Kernel->handle()
+#5 /home/setup/Desktop/moncoron-elearning/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#6 {main}
+"} 

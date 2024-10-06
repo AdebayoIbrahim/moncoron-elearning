@@ -103,6 +103,7 @@ section.btn-actions-cbt button {
 }
 
 .certificate_view {
+    padding-top: 0.8rem;
     width: 75rem;
     height: 660px;
     border: 2px solid red;

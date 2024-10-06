@@ -1,13 +1,9 @@
 @extends('layouts.app')
 @section('content')
 @include('partials.header')
-@vite(['resources/css/assessment-take/index.css'])
-
-
-<link href="//cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" type="text/css" />
-<script src="//cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script>
-{{-- confettti-scripts --}}
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+@vite(['resources/css/assessment-take/index.css','resources/js/create-assessment/certify.js'])
+-- confettti-scripts --}}
+<script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
 <div class="container">
     <section class="hero_certificate_header">
         <div class="text-certificate-area">
@@ -63,53 +59,9 @@
 
     <section class="action_buttons_certificate">
         <div>
-            <button class="mui-btn mui-btn--raised mui-btn--primary">Download</button>
+            <button class="btn btn-primary md" id="certificate_download">Download</button>
         </div>
     </section>
 
 </div>
 @endsection
-<script>
-    const confettiDuration = 10000;
-    const animationEndTime = Date.now() + confettiDuration;
-    const confettiDefaults = {
-        startVelocity: 40
-        , spread: 360
-        , ticks: 80
-        , gravity: 0.8
-        , zIndex: 1000
-        , colors: ['#FFC107', '#FF5722', '#8BC34A', '#03A9F4', '#E91E63', '#9C27B0', '#673AB7']
-    , };
-
-    function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
-    const confettiInterval = setInterval(function() {
-        const timeLeft = animationEndTime - Date.now();
-
-        if (timeLeft <= 0) {
-            clearInterval(confettiInterval);
-            return;
-        }
-
-        const particleCount = 100 * (timeLeft / confettiDuration);
-        confetti({
-            ...confettiDefaults
-            , particleCount
-            , origin: {
-                x: randomInRange(0.1, 0.3)
-                , y: Math.random() - 0.2
-            }
-        });
-        confetti({
-            ...confettiDefaults
-            , particleCount
-            , origin: {
-                x: randomInRange(0.7, 0.9)
-                , y: Math.random() - 0.2
-            }
-        });
-    }, 200); // Slightly faster intervals for a continuous flow
-
-</script>
