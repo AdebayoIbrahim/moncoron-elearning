@@ -87,13 +87,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pay', [MainController::class, 'handlePayment'])->name('pay');
     Route::get('/profile', [MainController::class, 'profile'])->name('student.profile');
 
-    Route::get('/send-broadcast', function () {
-        $user = User::find(2); // Assuming a user with ID 1 exists
-        $message = new Message(['content' => 'Hello World']);
-        broadcast(new MessageSent($user, $message));
-        return 'Broadcast sent';
-    });
-
     Route::get('/test-broadcast', function () {
         return view('test-broadcast');
     });
