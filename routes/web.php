@@ -64,6 +64,9 @@ Route::get('/notifications', function () {
     return view('notifications.index');
 })->middleware('auth');
 
+// certifications-routes-
+Route::get('/courses/{courseId}/coursecompletion', [MainController::class, 'courseCompletion'])->name('student.coursecompletion');
+
 // Maincontroller-has-student-controllerstoo
 Route::middleware(['auth'])->group(function () {
     // Student routes starts here
@@ -77,8 +80,7 @@ Route::middleware(['auth'])->group(function () {
         // submit-assess,ent-post-request
         Route::post('/courses/{courseId}/lesson/{lessonId}/submit-assessment', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
     });
-    // certifications-routes-
-    Route::get('/courses/{courseId}/coursecompletion', [MainController::class, 'courseCompletion'])->name('student.coursecompletion');
+
 
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');

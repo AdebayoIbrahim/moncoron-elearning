@@ -108,10 +108,14 @@ class MainController extends Controller
     }
 
     // completion-and-course-and-verificatin
-    public function courseCompletion(Request $request, $courseId)
+    public function courseCompletion($courseId)
     {
 
         $relatedcourse = Course::find($courseId);
+
+        if (!$relatedcourse) {
+            return redirect('/courses')->with('error', 'Course not found.');
+        }
         // Fetch-user-id
         $usrid = auth()->user()->id;
         // fetch-related-lesson-for-the-course
@@ -124,7 +128,7 @@ class MainController extends Controller
         $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
 
         if (!$lastassessment) {
-            return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
+            return redirect('/courses/${courseId}')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
         };
 
         // pass-to-thenext-if-user-has-the-last-assessment-nrecord
@@ -375,7 +379,7 @@ class MainController extends Controller
                 'reference_id' => $referenceId
             ]);
 
-            return redirect('/courses/${courses}/coursecompletion');
+            return redirect('/courses/' . $course_id . '/coursecompletion');
         }
 
         if (round($percentageScore) >= $pass_score) {
@@ -385,86 +389,5 @@ class MainController extends Controller
             $message = "Unfortunately, you did not pass the assessment. Your score is <span style='color: red; font-weight: bold;'>" . round($percentageScore) . "%</span>.";
             return response()->json(['statustext' => 'failed', 'message' => $message], 200);
         }
-    }
-
-
-    // Attempt Assessment
-    public function attemptAssessment(Request $request, Course $course, CourseAssessment $assessment)
-    {
-        $user = Auth::user();
-        if (!$user->courses->contains($course->id)) {
-            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
-        }
-
-        $assessment->questions = json_decode($assessment->questions, true);
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
-
-        // Retrieve previous attempts
-        $previousAttempts = CourseAssessmentSubmission::where('user_id', $user->id)
-            ->where('course_assessment_id', $assessment->id)
-            ->count();
-
-        if ($previousAttempts >= 3) {
-            return redirect()->route('student.courses.assessments', $course->id)
-                ->with('error', 'You have reached the maximum number of attempts for this assessment.');
-        }
-
-        return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart', 'previousAttempts'));
-    }
-
-    // Submit Assessment
-    public function submitAssessment(Request $request, Course $course, CourseAssessment $assessment)
-    {
-        $validatedData = $request->validate([
-            'questions' => 'required|array',
-            'questions.*' => 'required|integer',
-        ]);
-
-        $user = Auth::user();
-        $answers = $validatedData['questions'];
-        $score = 0;
-
-        // Ensure questions is treated as an array
-        $questions = is_array($assessment->questions) ? $assessment->questions : json_decode($assessment->questions, true);
-
-        if (!is_array($questions)) {
-            return redirect()->route('student.courses.assessments', $course->id)
-                ->with('error', 'There was an issue with the assessment format. Please contact support.');
-        }
-
-        $totalQuestions = count($questions);
-
-        foreach ($questions as $questionIndex => $question) {
-            if (!isset($answers[$questionIndex])) {
-                continue;
-            }
-
-            $selectedOptionIndex = $answers[$questionIndex];
-
-            if (isset($question['options'][$selectedOptionIndex]['correct']) && $question['options'][$selectedOptionIndex]['correct']) {
-                $score += 2; // Each correct answer gives 2 points
-            }
-        }
-
-        $percentageScore = ($score / ($totalQuestions * 2)) * 100;
-
-        CourseAssessmentSubmission::create([
-            'user_id' => $user->id,
-            'course_assessment_id' => $assessment->id,
-            'answers' => json_encode($answers),
-            'score' => $score,
-        ]);
-
-        if ($percentageScore >= 70) {
-            // Award leaderboard points
-            $user->increment('leaderboard_points', 5);
-
-            // Generate certificate
-            $this->generateCertificate($user, $course);
-        }
-
-        return redirect()->route('student.courses.assessments', $course->id)
-            ->with('success', "Assessment submitted successfully. You scored {$percentageScore}%");
     }
 }
