@@ -362,14 +362,15 @@ class MainController extends Controller
                 'status' => round($percentageScore) >= $pass_score ? "Passed" : "Failed",
             ]
         );
+        $user_id = auth()->user()->id;
 
         // check-if-the-lesson-taken-is-the-last-one
         if ((int) $Lessonpresent->max('lesson_number') === (int) $lessonid && round($percentageScore) >= $pass_score) {
             // certificate-reference-id
-            $referenceId = 'CERT-' . uniqid() . $course_id . $lessonid;
+            $referenceId = 'CERT-' . uniqid() . $course_id . $lessonid . $user_id;
             // first-add-the-user-certificate-to-db
             Certification::create([
-                'student_id' => auth()->user()->id,
+                'student_id' => $user_id,
                 'course_id' => $course_id,
                 'reference_id' => $referenceId
             ]);

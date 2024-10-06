@@ -76,9 +76,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/courses/{courseId}/lesson/{lessonId}/take-assessment', [MainController::class, 'takeAssessment'])->name('student.take-assessment');
         // submit-assess,ent-post-request
         Route::post('/courses/{courseId}/lesson/{lessonId}/submit-assessment', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
-        // certifications-routes-
-        Route::get('/courses/{courseId}/coursecompletion', [MainController::class, 'courseCompletion'])->name('student.coursecompletion');
     });
+    // certifications-routes-
+    Route::get('/courses/{courseId}/coursecompletion', [MainController::class, 'courseCompletion'])->name('student.coursecompletion');
 
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
