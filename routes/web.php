@@ -17,7 +17,6 @@ use App\Http\Controllers\CourseAssessmentController;
 use App\Http\Controllers\DawahController;
 use App\Http\Controllers\DawahPostController;
 use App\Http\Controllers\DawahTeacherController;
-use App\Http\Controllers\LeaderBoardController;
 use App\Http\Controllers\VideoCallController;
 use App\Http\Controllers\LessonsAssessmentsNew;
 use App\Events\StartVideoChat;
@@ -29,6 +28,7 @@ use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgoraController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Leaderboardcontroller;
 // CKEditor upload route
 Route::post('/upload-image', [CKEditorController::class, 'uploadImage'])->name('ckeditor.upload');
 
@@ -64,6 +64,9 @@ Route::get('/notifications', function () {
     return view('notifications.index');
 })->middleware('auth');
 
+// certifications-routes-
+Route::get('/courses/{courseId}/coursecompletion', [MainController::class, 'courseCompletion'])->name('student.coursecompletion');
+
 // Maincontroller-has-student-controllerstoo
 Route::middleware(['auth'])->group(function () {
     // Student routes starts here
@@ -76,9 +79,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/courses/{courseId}/lesson/{lessonId}/take-assessment', [MainController::class, 'takeAssessment'])->name('student.take-assessment');
         // submit-assess,ent-post-request
         Route::post('/courses/{courseId}/lesson/{lessonId}/submit-assessment', [MainController::class, 'submitlessonAssessment'])->name("student.submit-assessment");
-        // certifications-routes-
-        Route::get('/courses/{courseId}/coursecompletion', [MainController::class, 'courseCompletion'])->name('student.coursecompletion');
     });
+
 
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
@@ -86,13 +88,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateprogress', [MainController::class, 'updateProgress'])->name('updateprogress');
     Route::post('/pay', [MainController::class, 'handlePayment'])->name('pay');
     Route::get('/profile', [MainController::class, 'profile'])->name('student.profile');
-
-    Route::get('/send-broadcast', function () {
-        $user = User::find(2); // Assuming a user with ID 1 exists
-        $message = new Message(['content' => 'Hello World']);
-        broadcast(new MessageSent($user, $message));
-        return 'Broadcast sent';
-    });
 
     Route::get('/test-broadcast', function () {
         return view('test-broadcast');
@@ -125,6 +120,15 @@ Route::middleware(['auth'])->group(function () {
         // Send a message to a specific lesson in a specific course
         Route::post('/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
     });
+
+    // leader-board-routesAdmin-and-all-only-auth-checks
+    Route::get('/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('student.leaderboard');
+
+
+
+    // Endsg-eneric-leaderboard
+
+
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment
@@ -269,8 +273,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'listTeachers'])->name('admin.dawah-posts.teachers');
         Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
-
-        Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
         //ends
         // Routes for Dawah posts and teachers
         // Admin and Teacher course assessments routes

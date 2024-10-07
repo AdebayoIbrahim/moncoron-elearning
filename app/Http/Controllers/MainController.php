@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Certification;
 use App\Models\Course;
 use App\Models\Course_Lessons;
 use App\Models\Subscriptions;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Unicodeveloper\Paystack\Facades\Paystack;
 use Illuminate\Support\Facades\Log;
+use App\Models\leaderboard;
 
 
 class MainController extends Controller
@@ -107,39 +109,65 @@ class MainController extends Controller
     }
 
     // completion-and-course-and-verificatin
-    public function courseCompletion(Request $request, $courseId)
+    public function courseCompletion($courseId)
     {
 
-        // $relatedcourse = Course::find($courseId);
-        // // Fetch-user-id
-        // $usrid = auth()->user()->id;
-        // // fetch-related-lesson-for-the-course
-        // $lessonslist = $relatedcourse->lessons;
+        $relatedcourse = Course::find($courseId);
 
-        // //   fetchlast-lesson-for-the-course-whichreturns-theid
-        // $lastlesson = $lessonslist->max('lesson_number');
+        if (!$relatedcourse) {
+            return redirect('/courses')->with('error', 'Course not found.');
+        }
+        // Fetch-user-id
+        $usrid = auth()->user()->id;
+        // fetch-related-lesson-for-the-course
+        $lessonslist = $relatedcourse->lessons;
 
-        // // Fetch-ifuser-cpmleteslast-assessment-for the lesson
-        // $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
+        //   fetchlast-lesson-for-the-course-whichreturns-theid
+        $lastlesson = $lessonslist->max('lesson_number');
 
-        // if (!$lastassessment) {
-        //     return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
-        // };
+        // Fetch-ifuser-cpmleteslast-assessment-for the lesson
+        $lastassessment = lessonassessmentresults::where('course_id', $courseId)->where('lesson_id', $lastlesson)->first();
 
-        // // pass-to-thenext-if-user-has-the-last-assessment-nrecord
-        // // check-if-user-passes-thelastifinrecord
-        // if (!$lastassessment->status === "Passed") {
-        //     return redirect('/courses/{courseId}')->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your  certification');
-        // }
+        if (!$lastassessment) {
+            return redirect("/courses/{$courseId}")->with('error', 'Seems You haven\'t completed the course, Your certificate is not ready!');
+        }
+
+        // pass-to-thenext-if-user-has-the-last-assessment-nrecord
+        // check-if-user-passes-thelastifinrecord
+        if (!$lastassessment->status === "Passed") {
+            return redirect("/courses/{$courseId}")->with('error', 'Seems You haven\'t Passed the Last lesson, Take The Assessment and claim Your certification');
+        }
+
+
+        // find-the-user-certificates-and-pass-to-the-view
+        $certificateuser = User::find($usrid)->userCertificates->first();
+
+        Log::info('cer' . $certificateuser);
+        // fetch-username-inrelation-to-certificate
+        $certificateusername = User::find($certificateuser->student_id)->name;
+
+
+        $certificatedate = $this->getCreatedAtAttribute($certificateuser->created_at);
 
         // if-user-passed-thelast-course-then-give access
         // fetch-whats-needed-inthe-certification-details
 
         return view('student.coursecertification', [
-            'routeNamePart' => 'Course Completion'
-            // 'coursename' => $relatedcourse->name,
+            'routeNamePart' => 'Course Completion',
+            'certificate_ref' => $certificateuser->reference_id,
+            'certificate_name' => $certificateusername,
+            'certificate_date' => $certificatedate,
+            'coursename' => $relatedcourse->name,
         ]);
     }
+
+    // helper-to-format-isodate
+    protected function getCreatedAtAttribute($date)
+    {
+        return \Carbon\Carbon::parse($date)->format('M d Y');
+    }
+
+
     // showlessons-in a specific-course
     public function showlessons($courseid, $lessonid)
     {
@@ -269,11 +297,14 @@ class MainController extends Controller
         ]);
 
         // type-check-lesson
-        $Lessonpresent = CourseLesson::where('lesson_number', $lessonid);
+        $Lessonpresent = CourseLesson::where('lesson_number', $lessonid)->first();
 
         if (!$Lessonpresent) {
             return redirect('/courses')->with('error', 'Lesson-not-found');
         }
+
+        // if-its-thelast-lesson
+        $islasttakenlesson = false;
 
         // initializing-score
         $totalscore = 0;
@@ -338,7 +369,39 @@ class MainController extends Controller
                 'status' => round($percentageScore) >= $pass_score ? "Passed" : "Failed",
             ]
         );
+        $user_id = auth()->user()->id;
 
+
+
+        // check-if-the-lesson-taken-is-the-last-one
+        if ((int) $Lessonpresent->max('lesson_number') === (int) $lessonid && round($percentageScore) >= $pass_score) {
+            // certificate-reference-id
+            $referenceId = 'CERT-' . uniqid() . $course_id . $lessonid . $user_id;
+            // first-add-the-user-certificate-to-db
+            Certification::create([
+                'student_id' => $user_id,
+                'course_id' => $course_id,
+                'reference_id' => $referenceId
+            ]);
+
+            // moreso-add-to-theuser-MCP-points/
+            // For-acourse-completion-add-10MCP points
+            $user_point_exist = leaderboard::where('student_id', $user_id)->value('points');
+            $moncoron_point = 15;
+
+            $tabulated_score = $user_point_exist ? ((int)$user_point_exist + $moncoron_point) : 0 + $moncoron_point;
+            leaderboard::updateOrCreate([
+                'student_id' => $user_id,
+            ], [
+                'points' => $tabulated_score,
+                'country' => auth()->user()->country
+            ]);
+            // return redirect('/courses/' . $course_id . '/coursecompletion');
+            return response()->json([
+                'statustext' => 'certified',
+
+            ], 200);
+        }
 
 
         if (round($percentageScore) >= $pass_score) {
@@ -350,84 +413,6 @@ class MainController extends Controller
         }
     }
 
+    // leaderboardcontroller
 
-    // Attempt Assessment
-    public function attemptAssessment(Request $request, Course $course, CourseAssessment $assessment)
-    {
-        $user = Auth::user();
-        if (!$user->courses->contains($course->id)) {
-            return redirect()->route('student.courses')->with('error', 'You are not registered for this course.');
-        }
-
-        $assessment->questions = json_decode($assessment->questions, true);
-        $routeName = Route::currentRouteName();
-        $routeNamePart = ucfirst(last(explode('.', $routeName))) ?: 'Assessment';
-
-        // Retrieve previous attempts
-        $previousAttempts = CourseAssessmentSubmission::where('user_id', $user->id)
-            ->where('course_assessment_id', $assessment->id)
-            ->count();
-
-        if ($previousAttempts >= 3) {
-            return redirect()->route('student.courses.assessments', $course->id)
-                ->with('error', 'You have reached the maximum number of attempts for this assessment.');
-        }
-
-        return view('student.assessments.attempt', compact('course', 'assessment', 'routeNamePart', 'previousAttempts'));
-    }
-
-    // Submit Assessment
-    public function submitAssessment(Request $request, Course $course, CourseAssessment $assessment)
-    {
-        $validatedData = $request->validate([
-            'questions' => 'required|array',
-            'questions.*' => 'required|integer',
-        ]);
-
-        $user = Auth::user();
-        $answers = $validatedData['questions'];
-        $score = 0;
-
-        // Ensure questions is treated as an array
-        $questions = is_array($assessment->questions) ? $assessment->questions : json_decode($assessment->questions, true);
-
-        if (!is_array($questions)) {
-            return redirect()->route('student.courses.assessments', $course->id)
-                ->with('error', 'There was an issue with the assessment format. Please contact support.');
-        }
-
-        $totalQuestions = count($questions);
-
-        foreach ($questions as $questionIndex => $question) {
-            if (!isset($answers[$questionIndex])) {
-                continue;
-            }
-
-            $selectedOptionIndex = $answers[$questionIndex];
-
-            if (isset($question['options'][$selectedOptionIndex]['correct']) && $question['options'][$selectedOptionIndex]['correct']) {
-                $score += 2; // Each correct answer gives 2 points
-            }
-        }
-
-        $percentageScore = ($score / ($totalQuestions * 2)) * 100;
-
-        CourseAssessmentSubmission::create([
-            'user_id' => $user->id,
-            'course_assessment_id' => $assessment->id,
-            'answers' => json_encode($answers),
-            'score' => $score,
-        ]);
-
-        if ($percentageScore >= 70) {
-            // Award leaderboard points
-            $user->increment('leaderboard_points', 5);
-
-            // Generate certificate
-            $this->generateCertificate($user, $course);
-        }
-
-        return redirect()->route('student.courses.assessments', $course->id)
-            ->with('success', "Assessment submitted successfully. You scored {$percentageScore}%");
-    }
 }

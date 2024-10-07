@@ -57,7 +57,7 @@
                                             {{$lesson->comment ?? 0}} Comment
                                         </p>
                                         @if($lesson->is_accessible)
-                                        <i class="fa-solid fa-circle-play styled-icon"></i>
+                                        <i class="fa-solid fa-circle-play styled-icon play-btn"></i>
                                         @else
                                         <i class="fa-solid fa-lock styled-icon"></i>
                                         @endif

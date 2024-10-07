@@ -52,3 +52,70 @@ div.notification {
 .not_text > a {
     text-decoration: none;
 }
+
+/* LEADERBOARD-STYLES-STARTS-HERE */
+.container_leaderboard {
+    position: relative;
+    padding: 3rem;
+    border-radius: 0.6rem;
+    background: white;
+}
+.leaderboard_switcher {
+    margin-top: 2rem;
+    width: 100%;
+}
+.switcher_toggle {
+    font-size: 1.25rem;
+    flex: 6;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+/* current-hifhlighted */
+.current::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    width: calc(100%);
+    background: #d36f35;
+    height: 2px;
+    text-align: center;
+    left: 0px;
+    border-radius: 5px;
+    animation: FadeIn 500ms ease-in-out;
+}
+
+@keyframes FadeIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.leaderboard_section_lists {
+    margin-top: 3rem;
+    width: 100%;
+}
+.leaderboard_users {
+    padding-block: 1rem;
+    margin-top: 5px;
+    border-bottom: 2px solid rgba(206, 206, 206, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.points_user {
+    color: rgb(16, 16, 229);
+}
+.user-name_leaderboard {
+    font-weight: 500;
+}
+
+@media only screen and (max-width: 500px) {
+    .container_leaderboard {
+        padding: 1.4rem;
+    }
+}
+/* LEADERBOARD-STYLE-END-HERE */

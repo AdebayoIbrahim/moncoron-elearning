@@ -108,7 +108,7 @@ async function processSubmission() {
         if (response) {
             // console.log(response);
             updateModals(response?.data);
-            modal.show();
+            response?.statustext !== "certified" && modal.show();
         }
     } catch (err) {
         window.alert("An error occoured!,", err.status);
@@ -141,6 +141,8 @@ function updateModals(response) {
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonpass;
         urlnavigate = response?.url;
+    } else if (response.statustext === "certified") {
+        window.open(`/courses/${courseId}/coursecompletion`, "_self");
     }
 
     document.getElementById("next_lesson")?.setAttribute("href", urlnavigate);
