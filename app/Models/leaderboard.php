@@ -11,7 +11,7 @@ class leaderboard extends Model
     use HasFactory;
 
     protected $table = "leaderboards";
-    protected $fillable = ['student_id', 'points'];
+    protected $fillable = ['student_id', 'points', 'country'];
 
     // on-to-one-user-relation
     public function users()
