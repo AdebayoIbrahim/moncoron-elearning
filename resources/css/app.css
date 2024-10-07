@@ -113,4 +113,9 @@ div.notification {
     font-weight: 500;
 }
 
+@media only screen and (max-width: 500px) {
+    .container_leaderboard {
+        padding: 1.4rem;
+    }
+}
 /* LEADERBOARD-STYLE-END-HERE */

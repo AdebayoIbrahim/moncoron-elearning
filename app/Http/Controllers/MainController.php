@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Unicodeveloper\Paystack\Facades\Paystack;
 use Illuminate\Support\Facades\Log;
+use App\Models\leaderboard;
 
 
 class MainController extends Controller
@@ -383,6 +384,14 @@ class MainController extends Controller
                 'reference_id' => $referenceId
             ]);
 
+            // moreso-add-to-theuser-MCP-points/
+            // For-acourse-completion-add-10MCP points
+            $mocoron_point = 15;
+            leaderboard::updateOrCreate([
+                'student_id' => $user_id,
+            ], [
+                'points' => $mocoron_point
+            ]);
             // return redirect('/courses/' . $course_id . '/coursecompletion');
             return response()->json([
                 'statustext' => 'certified',

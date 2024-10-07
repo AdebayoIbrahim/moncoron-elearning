@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\leaderboard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class Leaderboardcontroller extends Controller
 {
@@ -10,7 +12,12 @@ class Leaderboardcontroller extends Controller
     // load-leader-bord-view
     public function leaderboardview()
     {
-        return view('student.leaderboard');
+
+
+        Log::info("leader" . leaderboard::Local()->get());
+        return view('student.leaderboard', [
+            'routeNamePart' => 'Leaderboard'
+        ]);
     }
     // fetch-allcontrollers
     public function fetchleaderboards(Request $request)
