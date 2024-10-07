@@ -390,7 +390,8 @@ class MainController extends Controller
             leaderboard::updateOrCreate([
                 'student_id' => $user_id,
             ], [
-                'points' => $mocoron_point
+                'points' => $mocoron_point,
+                'country' => auth()->user()->country
             ]);
             // return redirect('/courses/' . $course_id . '/coursecompletion');
             return response()->json([
