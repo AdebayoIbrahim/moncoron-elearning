@@ -30,7 +30,7 @@ class leaderboard extends Model
     {
         // get-user-country-or-region
         $user_region = auth()->user()->country;
-        $user_data = $query->where('student_id', $user_region);
+        $user_data = $query->where('country', $user_region);
         return $user_data;
     }
 }

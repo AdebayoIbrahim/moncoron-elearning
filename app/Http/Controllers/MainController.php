@@ -399,7 +399,6 @@ class MainController extends Controller
             // return redirect('/courses/' . $course_id . '/coursecompletion');
             return response()->json([
                 'statustext' => 'certified',
-
             ], 200);
         }
 
