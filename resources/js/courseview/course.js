@@ -123,10 +123,12 @@ nextbtn?.addEventListener("click", () => {
 
         if (lessonid.trim() !== "") {
             // append-location-to-theurl
-            window.open(
-                window.location.href.concat(`/lesson/${Number(lessonid)}`),
-                "_self"
-            );
+            let stringtextconcat;
+            window.location.href.endsWith("/")
+                ? (stringtextconcat = `lesson/${Number(lessonid)}`)
+                : (stringtextconcat = `/lesson/${Number(lessonid)}`);
+
+            window.open(window.location.href.concat(stringtextconcat), "_self");
         }
     }
 });

@@ -140,6 +140,9 @@ div.container_lesson_body {
     font-size: 1.3rem;
     margin-bottom: 5px;
 }
+.play-btn {
+    color: rgb(33, 88, 131);
+}
 .btn_side {
     padding-top: 2rem;
     display: flex;
