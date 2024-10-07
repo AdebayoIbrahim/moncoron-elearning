@@ -386,11 +386,14 @@ class MainController extends Controller
 
             // moreso-add-to-theuser-MCP-points/
             // For-acourse-completion-add-10MCP points
-            $mocoron_point = 15;
+            $user_point_exist = leaderboard::where('student_id', $user_id)->value('points');
+            $moncoron_point = 15;
+
+            $tabulated_score = $user_point_exist ? ((int)$user_point_exist + $moncoron_point) : 0 + $moncoron_point;
             leaderboard::updateOrCreate([
                 'student_id' => $user_id,
             ], [
-                'points' => $mocoron_point,
+                'points' => $tabulated_score,
                 'country' => auth()->user()->country
             ]);
             // return redirect('/courses/' . $course_id . '/coursecompletion');
