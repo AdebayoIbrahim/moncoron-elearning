@@ -56,7 +56,9 @@ div.notification {
 /* LEADERBOARD-STYLES-STARTS-HERE */
 .container_leaderboard {
     position: relative;
-    padding-inline: 3rem;
+    padding: 3rem;
+    border-radius: 0.6rem;
+    background: white;
 }
 .leaderboard_switcher {
     margin-top: 2rem;
@@ -75,11 +77,40 @@ div.notification {
     position: absolute;
     bottom: -10px;
     width: calc(100%);
-    background: rgb(30, 0, 255);
+    background: #d36f35;
     height: 2px;
     text-align: center;
     left: 0px;
     border-radius: 5px;
+    animation: FadeIn 500ms ease-in-out;
+}
+
+@keyframes FadeIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.leaderboard_section_lists {
+    margin-top: 3rem;
+    width: 100%;
+}
+.leaderboard_users {
+    padding-block: 1rem;
+    margin-top: 5px;
+    border-bottom: 2px solid rgba(206, 206, 206, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.points_user {
+    color: rgb(16, 16, 229);
+}
+.user-name_leaderboard {
+    font-weight: 500;
 }
 
 /* LEADERBOARD-STYLE-END-HERE */
