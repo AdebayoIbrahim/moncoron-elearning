@@ -52,3 +52,34 @@ div.notification {
 .not_text > a {
     text-decoration: none;
 }
+
+/* LEADERBOARD-STYLES-STARTS-HERE */
+.container_leaderboard {
+    position: relative;
+    padding-inline: 3rem;
+}
+.leaderboard_switcher {
+    margin-top: 2rem;
+    width: 100%;
+}
+.switcher_toggle {
+    font-size: 1.25rem;
+    flex: 6;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+/* current-hifhlighted */
+.current::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    width: calc(100%);
+    background: rgb(30, 0, 255);
+    height: 2px;
+    text-align: center;
+    left: 0px;
+    border-radius: 5px;
+}
+
+/* LEADERBOARD-STYLE-END-HERE */

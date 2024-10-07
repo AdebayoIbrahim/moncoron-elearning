@@ -17,7 +17,6 @@ use App\Http\Controllers\CourseAssessmentController;
 use App\Http\Controllers\DawahController;
 use App\Http\Controllers\DawahPostController;
 use App\Http\Controllers\DawahTeacherController;
-use App\Http\Controllers\LeaderBoardController;
 use App\Http\Controllers\VideoCallController;
 use App\Http\Controllers\LessonsAssessmentsNew;
 use App\Events\StartVideoChat;
@@ -29,6 +28,7 @@ use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgoraController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Leaderboardcontroller;
 // CKEditor upload route
 Route::post('/upload-image', [CKEditorController::class, 'uploadImage'])->name('ckeditor.upload');
 
@@ -120,6 +120,15 @@ Route::middleware(['auth'])->group(function () {
         // Send a message to a specific lesson in a specific course
         Route::post('/courses/{courseId}/lesson/{lessonId}/message', [ChatmessagesController::class, 'sendMessage'])->name('chat.send');
     });
+
+    // leader-board-routesAdmin-and-all-only-auth-checks
+    Route::get('/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('student.leaderboard');
+
+
+
+    // Endsg-eneric-leaderboard
+
+
     // group-admin-ensure-admin-and-auth-middleware-forany-courseidroutestoo
     Route::middleware(['admin', 'checkspecial'])->group(function () {
         // Creating a new assessment
@@ -264,8 +273,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'listTeachers'])->name('admin.dawah-posts.teachers');
         Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
-
-        Route::get('/admin/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
         //ends
         // Routes for Dawah posts and teachers
         // Admin and Teacher course assessments routes

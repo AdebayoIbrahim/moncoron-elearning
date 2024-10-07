@@ -370,7 +370,7 @@ class MainController extends Controller
         );
         $user_id = auth()->user()->id;
 
-       
+
 
         // check-if-the-lesson-taken-is-the-last-one
         if ((int) $Lessonpresent->max('lesson_number') === (int) $lessonid && round($percentageScore) >= $pass_score) {
@@ -386,8 +386,8 @@ class MainController extends Controller
             // return redirect('/courses/' . $course_id . '/coursecompletion');
             return response()->json([
                 'statustext' => 'certified',
-                
-            ],200);
+
+            ], 200);
         }
 
 
@@ -399,4 +399,7 @@ class MainController extends Controller
             return response()->json(['statustext' => 'failed', 'message' => $message], 200);
         }
     }
+
+    // leaderboardcontroller
+
 }
