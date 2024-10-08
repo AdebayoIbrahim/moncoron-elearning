@@ -12,3 +12,14 @@ function setActive(e) {
 
     e.currentTarget.classList.add("current");
 }
+
+// fething-scorebaord-useeffect
+window.onload = async function () {
+    try {
+        const response = await axios.get(`/scoreboard?type=${currentDefault}`);
+        console.log(response?.data);
+    } catch (err) {
+        console.error(err);
+        window.alert("Error Getting Scoreboard!");
+    }
+};

@@ -124,7 +124,7 @@ Route::middleware(['auth'])->group(function () {
     // leader-board-routesAdmin-and-all-only-auth-checks
     Route::get('/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('student.leaderboard');
 
-
+    Route::get('/scoreboard', [LeaderboardController::class, 'fetchleaderboards'])->name('student.scoreboard');
 
     // Endsg-eneric-leaderboard
 
