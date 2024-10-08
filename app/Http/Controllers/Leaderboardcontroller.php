@@ -26,10 +26,10 @@ class Leaderboardcontroller extends Controller
         $json_data = [];
         switch ($typehandling) {
             case "global":
-                $json_data = $this->jsonDataconstruct(leaderboard::Allleaderboards());
+                $json_data = $this->jsonDataconstruct(leaderboard::Allleaderboards()->orderBy('points', 'desc')->get());
                 break;
             case "local":
-                $json_data = $this->jsonDataconstruct(leaderboard::Local()->get());
+                $json_data = $this->jsonDataconstruct(leaderboard::Local()->orderBy('points', 'desc')->get());
                 break;
 
             default:

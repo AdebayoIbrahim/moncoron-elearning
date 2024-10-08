@@ -20,9 +20,9 @@ class leaderboard extends Model
     }
 
     // scope-all-leaderboards-also-globals
-    public function scopeAllleaderboards()
+    public function scopeAllleaderboards($query)
     {
-        return leaderboard::all();
+        return $query;
     }
 
     // scope-local-leaderboards`
