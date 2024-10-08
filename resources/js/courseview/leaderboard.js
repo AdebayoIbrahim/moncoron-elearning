@@ -11,6 +11,8 @@ function setActive(e) {
     toggleSwitcher.forEach((nav) => nav.classList.remove("current"));
 
     e.currentTarget.classList.add("current");
+    currentDefault = e.currentTarget.innerText.toLowerCase();
+    console.log(currentDefault);
 }
 
 // fething-scorebaord-useeffect

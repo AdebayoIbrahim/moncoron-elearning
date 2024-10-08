@@ -97,6 +97,7 @@ div.notification {
 .leaderboard_section_lists {
     margin-top: 3rem;
     width: 100%;
+    /* display: none; */
 }
 .leaderboard_users {
     padding-block: 1rem;
@@ -111,6 +112,19 @@ div.notification {
 }
 .user-name_leaderboard {
     font-weight: 500;
+}
+.loader_spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* background: red; */
+}
+.spinner_size {
+    color: #d36f35 !important;
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
 }
 
 @media only screen and (max-width: 500px) {

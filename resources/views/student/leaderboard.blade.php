@@ -18,8 +18,15 @@
                         <div class="switcher_toggle">Global</div>
                     </div>
                 </div>
+
+                {{-- loader-animation --}}
+                <div class="loader_spinner">
+                    <div class="spinner-border text-secondary spinner_size" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
                 {{-- leadboad-autofill-from-API --}}
-                <div class="leaderboard_section_lists">
+                <div class="leaderboard_section_lists" id="scoreboards">
                     @for($i = 0; $i < 10; $i++) <div class="leaderboard_users">
                         <div style="display: flex;align-items:center;gap:3rem">
                             <div style="width: 18px;font-weight:600;">{{$i + 1}}</div>
@@ -37,8 +44,7 @@
             </div>
     </div>
     </main>
-
-
 </div>
 </div>
+
 @endsection
