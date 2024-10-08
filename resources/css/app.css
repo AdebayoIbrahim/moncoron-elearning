@@ -59,6 +59,7 @@ div.notification {
     padding: 3rem;
     border-radius: 0.6rem;
     background: white;
+    min-height: 90vh;
 }
 .leaderboard_switcher {
     margin-top: 2rem;
@@ -97,6 +98,7 @@ div.notification {
 .leaderboard_section_lists {
     margin-top: 3rem;
     width: 100%;
+    display: none;
 }
 .leaderboard_users {
     padding-block: 1rem;
@@ -111,6 +113,32 @@ div.notification {
 }
 .user-name_leaderboard {
     font-weight: 500;
+}
+.loader_spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* background: red; */
+}
+.spinner_size {
+    color: #d36f35 !important;
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+}
+#empty_text {
+    display: none;
+}
+
+.leader_board_fst_flex {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+.number_sort {
+    width: 18px;
+    font-weight: 600;
 }
 
 @media only screen and (max-width: 500px) {

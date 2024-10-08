@@ -18,27 +18,23 @@
                         <div class="switcher_toggle">Global</div>
                     </div>
                 </div>
-                {{-- leadboad-autofill-from-API --}}
-                <div class="leaderboard_section_lists">
-                    @for($i = 0; $i < 10; $i++) <div class="leaderboard_users">
-                        <div style="display: flex;align-items:center;gap:3rem">
-                            <div style="width: 18px;font-weight:600;">{{$i + 1}}</div>
-                            <i class="fa-solid fa-user" style="font-size: 1.2rem"></i>
-                            <div class="user-name_leaderboard">
-                                Fatimo Ojo
-                            </div>
-                        </div>
 
-                        <div class="points_user">
-                            +40MCP
-                        </div>
+                {{-- loader-animation --}}
+                <div class="loader_spinner">
+                    <div class="spinner-border text-secondary spinner_size" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div id="empty_text">
+                        <h5>No Scoreboard Data Yet!</h5>
+                    </div>
                 </div>
-                @endfor
+                {{-- leadboad-autofill-from-API --}}
+                <div class="leaderboard_section_lists" id="scoreboards">
+
+                </div>
             </div>
+        </main>
     </div>
-    </main>
-
-
 </div>
-</div>
+
 @endsection
