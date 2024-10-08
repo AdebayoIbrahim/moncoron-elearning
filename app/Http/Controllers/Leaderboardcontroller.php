@@ -33,7 +33,7 @@ class Leaderboardcontroller extends Controller
                 break;
 
             default:
-                return response()->json(['error no matched leaderboard'], 404);
+                return response()->json(['error' => 'error no matched leaderboard'], 404);
         }
         return response()->json($json_data, 200);
     }

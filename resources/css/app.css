@@ -127,6 +127,19 @@ div.notification {
     height: 60px;
     font-size: 1.2rem;
 }
+#empty_text {
+    display: none;
+}
+
+.leader_board_fst_flex {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+.number_sort {
+    width: 18px;
+    font-weight: 600;
+}
 
 @media only screen and (max-width: 500px) {
     .container_leaderboard {
