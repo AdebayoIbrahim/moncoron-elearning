@@ -13,10 +13,17 @@ class Leaderboardcontroller extends Controller
     // load-leader-bord-view
     public function leaderboardview()
     {
+        $usrrole = auth()->user()->role;
         // Log::info("leader" . leaderboard::Local()->get());
-        return view('student.leaderboard', [
-            'routeNamePart' => 'Leaderboard'
-        ]);
+        if ($usrrole === 'admin') {
+            return view('admin.leaderboard', [
+                'routeNamePart' => 'Leaderboard'
+            ]);
+        } else {
+            return view('student.leaderboard', [
+                'routeNamePart' => 'Leaderboard'
+            ]);
+        }
     }
     // fetch-allcontrollers
     public function fetchleaderboards(Request $request)

@@ -83,6 +83,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/dashboard', [MainController::class, 'dashboard'])->name('student.dashboard');
+
     Route::get('/courses', [MainController::class, 'courses'])->name('student.courses');
 
     Route::post('/updateprogress', [MainController::class, 'updateProgress'])->name('updateprogress');
@@ -125,7 +126,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('student.leaderboard');
 
     Route::get('/scoreboard', [LeaderboardController::class, 'fetchleaderboards'])->name('student.scoreboard');
-
     // Endsg-eneric-leaderboard
 
 
@@ -179,6 +179,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('admin/publish-assessment/{id}', [LessonAssessmentController::class, 'publishAssessment'])->name('assessments.publish');
         Route::post('admin/unpublish-assessment/{id}', [LessonAssessmentController::class, 'unpublishAssessment'])->name('assessments.unpublish');
         Route::post('admin/delete-assessment/{id}', [LessonAssessmentController::class, 'deleteAssessment'])->name('assessments.delete');
+
+        Route::get('/admin/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('admin.leaderboard');
 
         Route::post('admin/assessments/delete/{id}', [LessonAssessmentController::class, 'deleteAssessmentWithConfirmation'])->name('assessments.delete');
         // Admin Routes for Managing Assessments
