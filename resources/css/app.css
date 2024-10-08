@@ -59,6 +59,7 @@ div.notification {
     padding: 3rem;
     border-radius: 0.6rem;
     background: white;
+    min-height: 90vh;
 }
 .leaderboard_switcher {
     margin-top: 2rem;
@@ -97,7 +98,7 @@ div.notification {
 .leaderboard_section_lists {
     margin-top: 3rem;
     width: 100%;
-    /* display: none; */
+    display: none;
 }
 .leaderboard_users {
     padding-block: 1rem;
