@@ -20,9 +20,16 @@
                 <button type="button" class="btn btn-primary btn-md" id="add_assessment_btn">{{$hasassessment ? 'Manage Assessment' : 'Add Assessment'}}</button>
                 {{-- //TODO:check --for-use-type-for-join-toappearhere-andon-condition --}}
 
-                <button id="" class="btn btn-primary " style="margin-left: 5px">
+                {{-- TODO -featurenot available currently--}}
+                {{-- <button id="" class="btn btn-primary " style="margin-left: 5px">
                     <i class="fa-solid fa-calendar-days"></i>
                     Schedule a live class
+                </button> --}}
+
+                {{-- view-lessons-attendace-lists --}}
+                <button id="attendance_view" class="btn btn-primary " style="margin-left: 5px">
+                    <i class="fa-solid fa-sheet-plastic"></i>
+                    View Attendance
                 </button>
             </div>
 

@@ -553,3 +553,8 @@ function handleUserUnpublished(user) {
         remotePlayerContainer.remove();
     }
 }
+
+// view-lesson_attendance-shets
+const attendacebtn = document.querySelector("#attendance_view");
+
+attendacebtn.addEventListener("click", () => {});
