@@ -59,7 +59,7 @@ div.notification {
     padding: 3rem;
     border-radius: 0.6rem;
     background: white;
-    min-height: 90vh;
+    min-height: 70vh;
 }
 .leaderboard_switcher {
     margin-top: 2rem;
@@ -117,7 +117,7 @@ div.notification {
 .loader_spinner {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 60%;
     transform: translate(-50%, -50%);
     /* background: red; */
 }
