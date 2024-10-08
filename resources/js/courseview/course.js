@@ -77,14 +77,13 @@ async function handleClick() {
             }
         );
         // TODO:add-logic-to-reload-after-success-respoonse
-        if (response.ok) {
+        if (response) {
             confirm("Lesson Added Successfully!");
             window.location.reload();
-        } else {
-            window.alert("Failed to add lesson. Check console for details.");
         }
     } catch (error) {
         console.error("Error adding lesson:", error);
+        window.alert("Failed to add lesson. Check console for details.");
     }
 }
 

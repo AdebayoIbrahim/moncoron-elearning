@@ -78,6 +78,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href={{route('admin.leaderboard')}} class="nav-link nav-links d-flex align-items-center gap-2 {{ request()->routeIs('admin.leaderboard') ? 'active' : '' }} text-white">
+                        <i class="fa fa-users mx-2"></i> Leaderboard
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.courses') }}" class="nav-link nav-links d-flex align-items-center gap-2 {{ (request()->routeIs('admin.courses') || request()->routeIs('admin.courseview')) ? 'active' : '' }} text-white">
                         <i class="fa fa-book mx-2"></i> Courses
                     </a>
