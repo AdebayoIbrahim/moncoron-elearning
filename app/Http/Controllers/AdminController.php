@@ -296,6 +296,29 @@ class AdminController extends Controller
 
         return response()->json($assessment, 201);
     }
+
+    // attendance-list-function
+    public function fetchattendace($courseId, $lessonId)
+    {
+
+
+        return view('admin.attendancefetch');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // outdated-assessments  controllers-below
 
     public function manageAssessments($courseId)
