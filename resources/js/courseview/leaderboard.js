@@ -12,7 +12,8 @@ function setActive(e) {
 
     e.currentTarget.classList.add("current");
     currentDefault = e.currentTarget.innerText.toLowerCase();
-    console.log(currentDefault);
+    // refetchAPIqueryparamschanges
+    fetchScoreboards();
 }
 
 const spinner = document.querySelector(".spinner_size");
@@ -35,7 +36,14 @@ const MCPoints = document.createElement("div");
 MCPoints.className = "points_user";
 
 // fething-scorebaord-useeffect
-window.onload = async function () {
+window.onload = function () {
+    fetchScoreboards();
+};
+async function fetchScoreboards() {
+    flushNodes(scoreboardCt);
+    scoreboardCt.style.display = "none";
+    spinner.style.display = "block";
+
     try {
         const response = await axios.get(`/scoreboard?type=${currentDefault}`);
         if (response) {
@@ -45,7 +53,7 @@ window.onload = async function () {
         console.error(err);
         window.alert("Error Getting Scoreboard!");
     }
-};
+}
 function handleupdate(data) {
     if (data.length < 1) {
         spinner.style.display = "none";
@@ -71,5 +79,11 @@ function handleupdate(data) {
             scoreboardCt.style.display = "block";
             spinner.style.display = "none";
         });
+    }
+}
+
+function flushNodes(nodel) {
+    for (const nodes of nodel.childNodes) {
+        nodes.remove();
     }
 }
