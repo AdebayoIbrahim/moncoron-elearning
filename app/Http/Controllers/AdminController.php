@@ -300,23 +300,23 @@ class AdminController extends Controller
     // attendance-list-function
     public function fetchattendace($courseId, $lessonId)
     {
+        $coursecheck = Course::find($courseId);
+        if (!$coursecheck) {
+
+            return redirect("/courses")->with('error', 'course not found');
+        }
+
+        // fetch-related-attendance-lists
+        $courselessons = CourseLesson::where('lesson_number', $lessonId)->first();
+        $attendance_data = $courselessons->attendance;
 
 
-        return view('admin.attendancefetch');
+
+        return view('admin.attendancefetch', [
+            'routeNamePart' => "Attendance",
+            'attendance' => $attendance_data,
+        ]);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // outdated-assessments  controllers-below

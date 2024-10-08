@@ -12,4 +12,11 @@ class lesson_attendance extends Model
     protected $table = "lesson_attendance";
 
     protected $fillable = ['course_id', 'lesson_id', 'name', 'student_id'];
+
+
+    // add-on-tone-lesson-relation
+    public function lesson()
+    {
+        return $this->hasOne(CourseLesson::class, 'lesson_number');
+    }
 }

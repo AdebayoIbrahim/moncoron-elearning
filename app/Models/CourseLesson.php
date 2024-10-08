@@ -10,8 +10,8 @@ class CourseLesson extends Model
     use HasFactory;
 
     // Specify the correct table name
-   
-    
+
+
     protected $fillable = [
         'course_id',
         'name',
@@ -21,7 +21,7 @@ class CourseLesson extends Model
         'status',
         'image'
     ];
-    
+
 
     public function course()
     {
@@ -32,8 +32,8 @@ class CourseLesson extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_course_lessons', 'lesson_id')
-                    ->withPivot('completed')
-                    ->withTimestamps();
+            ->withPivot('completed')
+            ->withTimestamps();
     }
     public function userCourseLessons()
     {
@@ -43,5 +43,10 @@ class CourseLesson extends Model
     public function chatMessages()
     {
         return $this->hasMany(ChatMessage::class, 'lesson_id');
+    }
+    // add-on-tone-attendance-relation
+    public function attendance()
+    {
+        return $this->hasOne(lesson_attendance::class, 'lesson_id');
     }
 }
