@@ -11,6 +11,7 @@ use App\Models\CourseAssessment;
 use App\Models\UserLessonAssessment;
 use App\Models\User;
 use App\Models\Lessonassessment;
+use App\Models\LessonAttendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -308,8 +309,12 @@ class AdminController extends Controller
 
         // fetch-related-attendance-lists
         $courselessons = CourseLesson::where('lesson_number', $lessonId)->first();
-        $attendance_data = $courselessons->attendance;
 
+        if (!$courselessons) {
+            return redirect("/courses/{$courseId}")->with('error', 'Lesson not found');
+        }
+
+        $attendance_data = LessonAttendance::where('course_id', $courseId)->where("lesson_id", $lessonId)->get();
 
 
         return view('admin.attendancefetch', [
@@ -317,7 +322,6 @@ class AdminController extends Controller
             'attendance' => $attendance_data,
         ]);
     }
-
 
     // outdated-assessments  controllers-below
 

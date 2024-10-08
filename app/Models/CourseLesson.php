@@ -44,9 +44,4 @@ class CourseLesson extends Model
     {
         return $this->hasMany(ChatMessage::class, 'lesson_id');
     }
-    // add-on-tone-attendance-relation
-    public function attendance()
-    {
-        return $this->hasOne(lesson_attendance::class, 'lesson_id');
-    }
 }
