@@ -362,3 +362,8 @@
 #60 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('...')
 #61 {main}
 "} 
+[2024-10-09 00:45:48] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:48:01] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:53:33] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:54:12] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:54:51] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  

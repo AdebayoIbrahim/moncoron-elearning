@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
-@vite(['resources/css/assessment-take/index.css'])
+@vite(['resources/css/assessment-take/index.css','resources/js/courseview/attendance.js'])
 <div class="container-fluid">
     <div class="row">
         @include('partials.admin_sidebar')
@@ -16,20 +16,22 @@
                         <tr>
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Time</th>
+                            <th scope="col">Date | Time</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($attendance as $participate)
+
                         <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
+                            <td>{{$loop->index + 1}}</td>
+                            <td>{{$participate -> name}}</td>
+                            @php
+                            $formattedDate = $participate->created_at->format('d/m/Y h:i A');
+                            @endphp
+                            <td>{{$formattedDate}}</td>
                         </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Kelvin</td>
-                            <td>Otto</td>
-                        </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -37,7 +39,7 @@
             @if(!$attendance->isEmpty())
             <section class="action_buttons_certificate">
                 <div>
-                    <button class="btn btn-primary md" id="certificate_download">Download</button>
+                    <button class="btn btn-primary md" id="attendance_download">Download</button>
                 </div>
             </section>
             @endif

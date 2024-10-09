@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 use Unicodeveloper\Paystack\Facades\Paystack;
 use Illuminate\Support\Facades\Log;
 use App\Models\leaderboard;
-
+use App\Models\LessonAttendance;
 
 class MainController extends Controller
 {
@@ -356,6 +356,7 @@ class MainController extends Controller
         }
 
 
+
         $pass_score = 60;
         lessonassessmentresults::updateOrCreate(
             [
@@ -370,6 +371,19 @@ class MainController extends Controller
             ]
         );
         $user_id = auth()->user()->id;
+
+        // mark-attendance-fortheuser
+        $attendance = LessonAttendance::where('course_id', $course_id)->where('lesson_id', $lessonid)->where('student_id', $user_id)->first();
+
+        if (!$attendance) {
+            LessonAttendance::updateOrCreate([
+                'course_id' => $course_id,
+                'lesson_id' => $lessonid,
+                'student_id' => auth()->user()->id,
+            ], [
+                'name' => auth()->user()->name,
+            ]);
+        }
 
 
 
