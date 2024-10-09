@@ -303,7 +303,6 @@ class AdminController extends Controller
     {
         $coursecheck = Course::find($courseId);
         if (!$coursecheck) {
-
             return redirect("/courses")->with('error', 'course not found');
         }
 

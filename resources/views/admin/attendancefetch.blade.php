@@ -16,20 +16,22 @@
                         <tr>
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Time</th>
+                            <th scope="col">Date | Time</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($attendance as $participate)
+
                         <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
+                            <td>{{$loop->index + 1}}</td>
+                            <td>{{$participate -> name}}</td>
+                            @php
+                            $formattedDate = $participate->created_at->format('d/m/Y h:i A');
+                            @endphp
+                            <td>{{$formattedDate}}</td>
                         </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Kelvin</td>
-                            <td>Otto</td>
-                        </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
             </div>
