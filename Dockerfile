@@ -3,19 +3,19 @@ FROM php:8.3-fpm
 
 # Install necessary PHP extensions and Nginx
 RUN apt-get update && \
-    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev && \
+    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev git unzip && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo pdo_mysql && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy the composer.json and composer.lock files to the container
-COPY composer.json composer.lock ./
-
-# Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy application files to the container
 COPY . .
+
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Image config
 ENV SKIP_COMPOSER 1
