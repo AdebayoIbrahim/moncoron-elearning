@@ -367,3 +367,7 @@
 [2024-10-09 00:53:33] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
 [2024-10-09 00:54:12] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
 [2024-10-09 00:54:51] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:57:03] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:57:11] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:57:57] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-09 00:58:42] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  

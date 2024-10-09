@@ -108,7 +108,7 @@ async function processSubmission() {
         if (response) {
             // console.log(response);
             updateModals(response?.data);
-            response?.statustext !== "certified" && modal.show();
+            // response?.statustext !== "certified" && modal.show();
         }
     } catch (err) {
         window.alert("An error occoured!,", err.status);
@@ -133,14 +133,17 @@ function updateModals(response) {
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonpass;
         urlnavigate = response?.url;
+        modal.show();
     } else if (response.statustext === "failed") {
         iconmodal.innerHTML = failicon;
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonfail;
+        modal.show();
     } else if (response.statustext === "redirect") {
         resultmodalText.innerHTML = response?.message;
         footerCont.innerHTML = buttonpass;
         urlnavigate = response?.url;
+        modal.show();
     } else if (response.statustext === "certified") {
         window.open(`/courses/${courseId}/coursecompletion`, "_self");
     }
@@ -172,11 +175,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const loader = document.getElementById("loadingAnimation");
     setTimeout(() => {
         loader.classList.add("invisible_loader");
-    }, 2000);
+    }, 1500);
 
     const timerElement = document.getElementById("question_timer");
     let timeLimit = parseInt(timerElement.getAttribute("data-time-limit"));
-    // startTimer(timeLimit, timerElement);
+    startTimer(timeLimit, timerElement);
 });
 
 // track-if-checked-and-styled
