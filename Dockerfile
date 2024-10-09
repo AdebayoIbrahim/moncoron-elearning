@@ -8,8 +8,17 @@ RUN apt-get update && \
     docker-php-ext-install gd pdo pdo_mysql && \
     rm -rf /var/lib/apt/lists/*
 
+# Set the working directory
+WORKDIR /var/www/html
+
 # Copy application files to the container
 COPY . .
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Image config
 ENV SKIP_COMPOSER 1
@@ -26,8 +35,11 @@ ENV LOG_CHANNEL stderr
 # Allow composer to run as root
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# Copy Nginx configuration file (make sure you have a nginx.conf in the same directory)
+# Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
+
+# Link the site configuration to enable it
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 # Expose port 80 for web traffic
 EXPOSE 80
