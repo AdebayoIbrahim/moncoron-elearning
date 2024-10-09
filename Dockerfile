@@ -1,24 +1,36 @@
+# Use PHP 8.3 with Nginx and PHP-FPM
 FROM php:8.3-fpm
 
-# Install necessary PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
-
-# Install Nginx
+# Install necessary PHP extensions and Nginx
 RUN apt-get update && \
-    apt-get install -y nginx && \
+    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo pdo_mysql && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Nginx configuration
-COPY ./nginx.conf /etc/nginx/sites-available/default
+# Copy application files to the container
+COPY . .
 
-# Copy your application files
-COPY ./your-laravel-app /var/www/html
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
 
-# Set the working directory
-WORKDIR /var/www/html
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
 
-# Expose port 80
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+# Copy Nginx configuration file (make sure you have a nginx.conf in the same directory)
+COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
+
+# Expose port 80 for web traffic
 EXPOSE 80
 
-# Start PHP-FPM and Nginx
+# Start Nginx and PHP-FPM
 CMD service nginx start && php-fpm
