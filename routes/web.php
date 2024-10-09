@@ -178,11 +178,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('admin/manage-assessments', [LessonAssessmentController::class, 'manageAssessments'])->name('assessments.manage');
         Route::post('admin/publish-assessment/{id}', [LessonAssessmentController::class, 'publishAssessment'])->name('assessments.publish');
         Route::post('admin/unpublish-assessment/{id}', [LessonAssessmentController::class, 'unpublishAssessment'])->name('assessments.unpublish');
-        
+
         Route::get('/admin/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('admin.leaderboard');
 
 
-      
+
         // Admin Routes for Managing Assessments
         Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('course_assessments.index');
 
@@ -272,7 +272,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/admin/dawah-posts/{id}', [DawahPostController::class, 'update'])->name('admin.dawah-posts.update');
         Route::delete('/admin/dawah-posts/{id}', [DawahPostController::class, 'destroy'])->name('admin.dawah-posts.destroy');
         Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'teachers'])->name('admin.dawah-posts.teachers');
-        Route::get('/admin/dawah-posts/teacher-profile/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
+        // Route::get('/admin/dawah-posts/teacher-profile/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
 
         Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'listTeachers'])->name('admin.dawah-posts.teachers');
         Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
