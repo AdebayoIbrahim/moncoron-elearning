@@ -1,20 +1,24 @@
-FROM richarvey/nginx-php-fpm:1.7.2
+FROM php:8.3-fpm
 
-COPY . .
+# Install necessary PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
 
-# Image config
-ENV SKIP_COMPOSER 1
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
+# Install Nginx
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    rm -rf /var/lib/apt/lists/*
 
-# Laravel config
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
+# Copy Nginx configuration
+COPY ./nginx.conf /etc/nginx/sites-available/default
 
-# Allow composer to run as root
-ENV COMPOSER_ALLOW_SUPERUSER 1
+# Copy your application files
+COPY ./your-laravel-app /var/www/html
 
-CMD ["/start.sh"]
+# Set the working directory
+WORKDIR /var/www/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start PHP-FPM and Nginx
+CMD service nginx start && php-fpm
