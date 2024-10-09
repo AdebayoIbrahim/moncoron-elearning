@@ -16,8 +16,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 # Copy application files to the container
 COPY . .
 
-# Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install Composer dependencies in two steps
+RUN composer install --no-dev --no-autoloader && composer dump-autoload
+
 
 # Image config
 ENV SKIP_COMPOSER 1
