@@ -178,12 +178,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('admin/manage-assessments', [LessonAssessmentController::class, 'manageAssessments'])->name('assessments.manage');
         Route::post('admin/publish-assessment/{id}', [LessonAssessmentController::class, 'publishAssessment'])->name('assessments.publish');
         Route::post('admin/unpublish-assessment/{id}', [LessonAssessmentController::class, 'unpublishAssessment'])->name('assessments.unpublish');
-        Route::post('admin/delete-assessment/{id}', [LessonAssessmentController::class, 'deleteAssessment'])->name('assessments.delete');
-
+        
         Route::get('/admin/leaderboard', [LeaderboardController::class, 'leaderboardview'])->name('admin.leaderboard');
 
 
-        Route::post('admin/assessments/delete/{id}', [LessonAssessmentController::class, 'deleteAssessmentWithConfirmation'])->name('assessments.delete');
+      
         // Admin Routes for Managing Assessments
         Route::get('/admin/courses/{course}/assessments', [CourseAssessmentController::class, 'index'])->name('course_assessments.index');
 
