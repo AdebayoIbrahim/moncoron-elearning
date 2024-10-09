@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
-@vite(['resources/css/assessment-take/index.css'])
+@vite(['resources/css/assessment-take/index.css','resources/js/courseview/attendance.js'])
 <div class="container-fluid">
     <div class="row">
         @include('partials.admin_sidebar')
@@ -39,7 +39,7 @@
             @if(!$attendance->isEmpty())
             <section class="action_buttons_certificate">
                 <div>
-                    <button class="btn btn-primary md" id="certificate_download">Download</button>
+                    <button class="btn btn-primary md" id="attendance_download">Download</button>
                 </div>
             </section>
             @endif
