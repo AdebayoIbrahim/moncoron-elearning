@@ -57,6 +57,9 @@ COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 # Set necessary permissions on storage, cache, and public directories
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public
 
+# Set appropriate permissions
+RUN chmod -R 755 /app/public
+
 # Expose port 80 for web traffic
 EXPOSE 80
 
