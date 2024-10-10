@@ -12,7 +12,7 @@ USER root
 
 # Install necessary PHP extensions and Nginx, including oniguruma for mbstring
 RUN apt-get update && \
-    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev && \
+    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev curl && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
     rm -rf /var/lib/apt/lists/*
@@ -26,6 +26,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy all project files to the container
 COPY . /app
+
+# Ensure the /app directory is writable by the non-root user
+RUN chown -R user:user /app
+
+# Switch to the non-root user for the next steps
+USER user
 
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
@@ -48,8 +54,8 @@ RUN npm ci
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
-# Switch back to the non-root user
-USER user
+# Ensure Nginx and the necessary folders are accessible by the non-root user
+RUN chown -R user:user /var/run/nginx /var/log/nginx
 
 # Expose port 80 for web traffic
 EXPOSE 80
