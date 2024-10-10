@@ -26,24 +26,17 @@ COPY . /app
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
 
-# Clear Composer cache as root
+# Copy the .env file (or .env.example) into the container
+COPY .env.example /app/.env
+
+# Clear Composer cache
 RUN composer clear-cache
 
-# Switch to the non-root user before running Composer commands
-USER user
+# Install Composer dependencies, ignoring platform requirements
+RUN composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
-# Install Composer dependencies, ignore platform requirements, and skip scripts
-RUN composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif --no-scripts --no-progress --prefer-dist
-
-# Run the dump-autoload command
-RUN composer dump-autoload
-
-# Re-enable Laravel scripts for post-install processes, such as package discovery
-# Note: Uncomment the following line if you want to run it after verifying installation works.
-# RUN composer run-script post-autoload-dump
-
-# Switch back to root for further commands
-USER root
+# Generate optimized autoload files and run post-install scripts
+RUN composer dump-autoload && composer run-script post-autoload-dump
 
 # Install Node.js dependencies
 RUN npm ci
