@@ -17,6 +17,12 @@ RUN apt-get update && \
     docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
     rm -rf /var/lib/apt/lists/*
 
+
+# Install Node.js and npm
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+    
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
