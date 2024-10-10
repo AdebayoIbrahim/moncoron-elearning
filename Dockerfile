@@ -31,9 +31,12 @@ COPY . /app
 RUN chmod 755 /app/artisan
 
 # Clear Composer cache
+# Switch to the non-root user before running Composer commands
+USER user
+
 RUN composer clear-cache
 
-# Install Composer dependencies, ignoring platform requirements
+# Install Composer dependencies as non-root user
 RUN composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
 # Generate optimized autoload files and run post-install scripts
@@ -44,9 +47,6 @@ RUN npm ci
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
-
-# Switch back to the non-root user
-USER user
 
 # Ensure Nginx and the necessary folders are accessible by the non-root user
 RUN chown -R user:user /app /var/run/nginx /var/log/nginx
