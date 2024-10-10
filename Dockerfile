@@ -35,8 +35,9 @@ COPY . /app
 # Ensure the /app directory is writable by the non-root user
 RUN chown -R user:user /app
 
-# Ensure storage and cache directories are writable by the web server (run as root)
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+# Ensure storage and cache directories are writable by the web server
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
+    chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Switch to the non-root user for the next steps
 USER user
