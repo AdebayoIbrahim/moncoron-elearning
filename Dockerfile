@@ -4,8 +4,11 @@ FROM php:8.3-fpm
 # Create a non-root user
 RUN useradd -m user
 
-# Set the user to the non-root user
-USER user
+# Set the working directory
+WORKDIR /app
+
+# Switch to root user for package installation
+USER root
 
 # Install necessary PHP extensions and Nginx
 RUN apt-get update && \
@@ -14,21 +17,14 @@ RUN apt-get update && \
     docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy application files to the container
-COPY . /app/
-
-# Set the working directory
-WORKDIR /app
-
-# Copy the environment file
-COPY .env.example /app/.env
-
-
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Ensure .env file is readable and artisan is executable
-RUN chmod 755 /app/artisan && chmod 755 /app/.env
+# Copy the .env.example file as .env
+COPY .env.example /app/.env
+
+# Ensure artisan is executable
+RUN chmod 755 /app/artisan
 
 # Clear Composer cache
 RUN composer clear-cache
@@ -44,6 +40,9 @@ RUN npm ci
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
+
+# Switch back to the non-root user
+USER user
 
 # Expose port 80 for web traffic
 EXPOSE 80
