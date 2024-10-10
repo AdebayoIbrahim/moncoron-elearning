@@ -27,6 +27,10 @@ COPY . /app/
 # Clear Composer cache
 RUN composer clear-cache
 
+# Allow Composer to run plugins as root (if running as root)
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+
 # Install Composer dependencies while ignoring platform requirements for missing extensions
 RUN composer install --no-dev --ignore-platform-req=ext-exif && composer dump-autoload
 
