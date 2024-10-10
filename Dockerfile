@@ -10,19 +10,17 @@ WORKDIR /app
 # Switch to root user for package installation
 USER root
 
-# Install necessary PHP extensions and Nginx, including oniguruma for mbstring
+# Install necessary PHP extensions and Nginx
 RUN apt-get update && \
-    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev && \
+    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev curl && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
     rm -rf /var/lib/apt/lists/*
-
 
 # Install Node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-    
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -31,9 +29,6 @@ COPY . /app
 
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
-
-# Copy the .env file (or .env.example) into the container
-# COPY .env.example /app/.env
 
 # Clear Composer cache
 RUN composer clear-cache
@@ -53,8 +48,11 @@ COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 # Switch back to the non-root user
 USER user
 
+# Ensure Nginx and the necessary folders are accessible by the non-root user
+RUN chown -R user:user /app /var/run/nginx /var/log/nginx
+
 # Expose port 80 for web traffic
 EXPOSE 80
 
 # Start Nginx and PHP-FPM
-CMD service nginx start && php-fpm
+CMD ["sh", "-c", "nginx -g 'daemon off;' & php-fpm"]
