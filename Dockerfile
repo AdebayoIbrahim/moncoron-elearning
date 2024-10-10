@@ -33,10 +33,14 @@ RUN composer clear-cache
 USER user
 
 # Install Composer dependencies, ignore platform requirements, and skip scripts
-RUN composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif --no-scripts && composer dump-autoload
+RUN composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif --no-scripts --no-progress --prefer-dist
+
+# Run the dump-autoload command
+RUN composer dump-autoload
 
 # Re-enable Laravel scripts for post-install processes, such as package discovery
-RUN composer run-script post-autoload-dump
+# Note: Uncomment the following line if you want to run it after verifying installation works.
+# RUN composer run-script post-autoload-dump
 
 # Switch back to root for further commands
 USER root
