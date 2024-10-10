@@ -33,7 +33,7 @@ COPY . /app
 RUN chmod 755 /app/artisan
 
 # Copy the .env file (or .env.example) into the container
-COPY .env.example /app/.env
+# COPY .env.example /app/.env
 
 # Clear Composer cache
 RUN composer clear-cache
