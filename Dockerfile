@@ -17,6 +17,11 @@ RUN apt-get update && \
     docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
     rm -rf /var/lib/apt/lists/*
 
+# Create necessary Nginx directories and set permissions
+RUN mkdir -p /var/lib/nginx/tmp/client_body /var/log/nginx /var/lib/nginx/body && \
+    chown -R user:user /var/lib/nginx /var/log/nginx /var/lib/nginx/tmp/client_body && \
+    chmod -R 755 /var/lib/nginx /var/log/nginx /var/lib/nginx/tmp/client_body
+
 # Install Node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
@@ -56,6 +61,9 @@ COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
 # Expose port 80 for web traffic
 EXPOSE 80
+
+# Switch back to root to start services
+USER root
 
 # Start Nginx and PHP-FPM
 CMD ["sh", "-c", "nginx -g 'daemon off;' & php-fpm"]
