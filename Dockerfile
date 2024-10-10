@@ -29,8 +29,8 @@ RUN chmod 755 /app/artisan
 # Clear Composer cache
 RUN composer clear-cache
 
-# Install Composer dependencies, ignore platform requirements, and skip scripts
-RUN composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif --no-scripts && composer dump-autoload
+# Allow Composer to run as root and install Composer dependencies, ignore platform requirements, and skip scripts
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif --no-scripts && composer dump-autoload
 
 # Re-enable Laravel scripts for post-install processes, such as package discovery
 RUN composer run-script post-autoload-dump
