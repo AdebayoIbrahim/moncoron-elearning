@@ -44,31 +44,26 @@ RUN chmod 755 /app/artisan
 # Copy the .env file (or .env.example) into the container
 COPY .env.example /app/.env
 
-# Clear Composer cache and install Composer dependencies as root
-USER root
-RUN composer clear-cache && \
-    composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
+# Clear Composer cache
+RUN composer clear-cache
 
-# Generate optimized autoload files and run post-install scripts as root
+# Install Composer dependencies, ignoring platform requirements
+RUN composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
+
+# Generate optimized autoload files and run post-install scripts
 RUN composer dump-autoload && composer run-script post-autoload-dump
-
-# Switch back to non-root user
-USER user
 
 # Install Node.js dependencies
 RUN npm ci
+
+# Ensure storage and cache directories are writable by the web server
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/css /app/public/js
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
 # Expose port 80 for web traffic
 EXPOSE 80
-
-# Switch back to root to start services
-USER root
-
-# Set permissions for storage and cache
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
 # Start Nginx and PHP-FPM
 CMD ["sh", "-c", "nginx -g 'daemon off;' & php-fpm"]
