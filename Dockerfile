@@ -35,10 +35,6 @@ COPY . /app
 # Ensure the /app directory is writable by the non-root user
 RUN chown -R user:user /app
 
-# Set permissions for Laravel storage and cache directories
-RUN chown -R user:user /app/storage /app/bootstrap/cache && \
-    chmod -R 775 /app/storage /app/bootstrap/cache
-
 # Switch to the non-root user for the next steps
 USER user
 
@@ -60,8 +56,14 @@ RUN composer dump-autoload && composer run-script post-autoload-dump
 # Install Node.js dependencies
 RUN npm ci
 
+# Ensure storage and cache directories are writable by the web server
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
+
+# Set Nginx root directory
+RUN sed -i 's|root /var/www/html/public;|root /app/public;|' /etc/nginx/sites-available/default
 
 # Expose port 80 for web traffic
 EXPOSE 80
