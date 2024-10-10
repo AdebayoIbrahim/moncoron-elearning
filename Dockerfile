@@ -1,50 +1,51 @@
+# Use PHP 8.3 with Nginx and PHP-FPM
 FROM php:8.3-fpm
 
-# Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
+# Create a non-root user
+RUN useradd -m user
 
-# Set working directory
-WORKDIR /var/www
+# Set the user to the non-root user
+USER user
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl \
-    libzip-dev
+# Install necessary PHP extensions and Nginx
+RUN apt-get update && \
+    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
+    rm -rf /var/lib/apt/lists/*
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy application files to the container
+COPY . /app/
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
-RUN docker-php-ext-install gd
+# Set the working directory
+WORKDIR /app
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copy the environment file
+COPY .env /app/.env
 
-# Add user for laravel application
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
-COPY . /var/www
+# Ensure .env file is readable and artisan is executable
+RUN chmod 755 /app/artisan && chmod 755 /app/.env
 
-# Copy existing application directory permissions
-COPY --chown=www:www . /var/www
+# Clear Composer cache
+RUN composer clear-cache
 
-# Change current user to www
-USER www
+# Install Composer dependencies, ignore platform requirements, and skip scripts
+RUN composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif --no-scripts && composer dump-autoload
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# Re-enable Laravel scripts for post-install processes, such as package discovery
+RUN composer run-script post-autoload-dump
+
+# Install Node.js dependencies
+RUN npm ci
+
+# Copy Nginx configuration file
+COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
+
+# Expose port 80 for web traffic
+EXPOSE 80
+
+# Start Nginx and PHP-FPM
+CMD service nginx start && php-fpm
