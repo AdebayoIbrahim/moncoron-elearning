@@ -35,6 +35,9 @@ COPY . /app
 # Ensure the /app directory is writable by the non-root user
 RUN chown -R user:user /app
 
+# Ensure storage and cache directories are writable by the web server (run as root)
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
 # Switch to the non-root user for the next steps
 USER user
 
@@ -55,9 +58,6 @@ RUN composer dump-autoload && composer run-script post-autoload-dump
 
 # Install Node.js dependencies
 RUN npm ci
-
-# Ensure storage and cache directories are writable by the web server
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
