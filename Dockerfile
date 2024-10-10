@@ -10,7 +10,7 @@ WORKDIR /app
 # Switch to root user for package installation
 USER root
 
-# Install necessary PHP extensions and Nginx
+# Install necessary PHP extensions and Nginx, including oniguruma for mbstring
 RUN apt-get update && \
     apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev curl && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
@@ -27,18 +27,26 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copy all project files to the container
 COPY . /app
 
+# Ensure the /app directory is writable by the non-root user
+RUN chown -R user:user /app
+
+# Switch to the non-root user for the next steps
+USER user
+
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
 
+# Copy the .env file (or .env.example) into the container
+COPY .env.example /app/.env
 
 # Clear Composer cache
 RUN composer clear-cache
 
-# Install Composer dependencies without running scripts
-RUN composer install --ignore-platform-reqs --prefer-dist --no-progress --no-suggest --no-interaction --no-dev --no-autoloader --no-scripts
+# Install Composer dependencies, ignoring platform requirements
+RUN composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
-# Generate optimized autoload files
-RUN composer dump-autoload
+# Generate optimized autoload files and run post-install scripts
+RUN composer dump-autoload && composer run-script post-autoload-dump
 
 # Install Node.js dependencies
 RUN npm ci
@@ -46,8 +54,8 @@ RUN npm ci
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
-# Switch back to the non-root user
-USER user
+# Ensure Nginx and the necessary folders are accessible by the non-root user
+RUN chown -R user:user /var/run/nginx /var/log/nginx
 
 # Expose port 80 for web traffic
 EXPOSE 80
