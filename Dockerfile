@@ -21,7 +21,8 @@ COPY . /app/
 WORKDIR /app
 
 # Copy the environment file
-COPY .env /app/.env
+COPY .env.example /app/.env
+
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
