@@ -21,6 +21,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set the working directory
 WORKDIR /app
 
+# Copy application files (including composer.json) to the container
+COPY . /app/
+
 # Clear Composer cache
 RUN composer clear-cache
 
