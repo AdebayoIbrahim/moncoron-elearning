@@ -30,8 +30,8 @@ COPY . /app/
 # Clear Composer cache
 RUN composer clear-cache
 
-# Install Composer dependencies
-RUN composer install --no-dev --no-autoloader && composer dump-autoload
+# Install Composer dependencies while ignoring platform requirements for missing extensions
+RUN composer install --no-dev --no-autoloader --ignore-platform-req=ext-exif && composer dump-autoload
 
 # Install Node.js dependencies
 RUN npm ci
