@@ -54,9 +54,6 @@ RUN npm ci
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
-# Ensure Nginx and the necessary folders are accessible by the non-root user
-RUN chown -R user:user /var/run/nginx /var/log/nginx
-
 # Expose port 80 for web traffic
 EXPOSE 80
 
