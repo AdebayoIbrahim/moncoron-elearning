@@ -27,6 +27,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copy all project files to the container
 COPY . /app
 
+# Copy the .env.example file to .env
+COPY .env.example /app/.env
+
 # Ensure /app directory is writable by the non-root user
 RUN chown -R user:user /app
 
