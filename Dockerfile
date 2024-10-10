@@ -10,9 +10,9 @@ WORKDIR /app
 # Switch to root user for package installation
 USER root
 
-# Install necessary PHP extensions and Nginx
+# Install necessary PHP extensions and Nginx, including oniguruma for mbstring
 RUN apt-get update && \
-    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git && \
+    apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo pdo_mysql mbstring exif pcntl bcmath && \
     rm -rf /var/lib/apt/lists/*
