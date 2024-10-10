@@ -1,41 +1,50 @@
-# Use PHP 8.3 with FPM
 FROM php:8.3-fpm
 
-# Install necessary system packages
-RUN apt-get update && \
-    apt-get install -y \
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /var/www/
+
+# Set working directory
+WORKDIR /var/www
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
     libpng-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
     libfreetype6-dev \
-    zlib1g-dev \
-    git \
+    locales \
     zip \
-    unzip && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd pdo pdo_mysql && \
-    rm -rf /var/lib/apt/lists/*
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libzip-dev
 
-# Copy Composer from its official image
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
-WORKDIR /app
+# Install extensions
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
+RUN docker-php-ext-install gd
 
-# Copy application files (including composer.json) to the container
-COPY . /app/
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Clear Composer cache
-RUN composer clear-cache
+# Add user for laravel application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
 
-# Allow Composer to run plugins as root (if running as root)
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Copy existing application directory contents
+COPY . /var/www
 
+# Copy existing application directory permissions
+COPY --chown=www:www . /var/www
 
-# Install Composer dependencies while ignoring platform requirements for missing extensions
-RUN composer install --no-dev --ignore-platform-req=ext-exif && composer dump-autoload
+# Change current user to www
+USER www
 
-# Expose port 80
-EXPOSE 80
-
-# Start PHP-FPM
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
 CMD ["php-fpm"]
