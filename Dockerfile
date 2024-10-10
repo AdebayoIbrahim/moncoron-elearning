@@ -10,7 +10,7 @@ WORKDIR /app
 # Switch to root user for package installation
 USER root
 
-# Install necessary PHP extensions and Nginx
+# Install necessary PHP extensions and Nginx, including oniguruma for mbstring
 RUN apt-get update && \
     apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev curl && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
@@ -35,6 +35,10 @@ COPY . /app
 # Ensure the /app directory is writable by the non-root user
 RUN chown -R user:user /app
 
+# Set permissions for Laravel storage and cache directories
+RUN chown -R user:user /app/storage /app/bootstrap/cache && \
+    chmod -R 775 /app/storage /app/bootstrap/cache
+
 # Switch to the non-root user for the next steps
 USER user
 
@@ -55,10 +59,6 @@ RUN composer dump-autoload && composer run-script post-autoload-dump
 
 # Install Node.js dependencies
 RUN npm ci
-
-# Set permissions for storage and bootstrap/cache
-RUN chown -R user:user /app/storage /app/bootstrap/cache && \
-    chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
