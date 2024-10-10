@@ -30,14 +30,19 @@ COPY . /app
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
 
-# Clear Composer cache
-# Switch to the non-root user before running Composer commands
-USER user
+# Ensure the /app directory is writable by the user
+RUN chown -R user:user /app
 
+# Clear Composer cache
+USER user
 RUN composer clear-cache
 
-# Install Composer dependencies as non-root user
+# Install Composer dependencies as root user first
+USER root
 RUN composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
+
+# Switch back to the non-root user after installation
+USER user
 
 # Generate optimized autoload files and run post-install scripts
 RUN composer dump-autoload && composer run-script post-autoload-dump
