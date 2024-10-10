@@ -20,10 +20,10 @@ RUN apt-get update && \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy the .env.example file as .env
-COPY .env.example /app/.env
+# Copy all project files to the container
+COPY . /app
 
-# Ensure artisan is executable
+# Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
 
 # Clear Composer cache
