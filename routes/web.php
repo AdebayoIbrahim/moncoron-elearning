@@ -152,7 +152,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('courses/{courseId}/lessons/{lessonId}/assessment', [LessonController::class, 'showAssessment'])->name('lessons.assessment');
 
         // Submitting the assessment
-        Route::post('courses/{courseId}/lessons/{lessonId}/assessment/submit', [LessonAssessmentController::class, 'submitAssessment'])->name('student.assessments.submit');
+    
         // getlessons-in-acourse
         Route::get('courses/{course_id}/lessons/{id}', [LessonController::class, 'show'])->name('lessons.show');
 
@@ -292,10 +292,8 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-    Route::post('/courses/{courseId}/lessons/{lessonId}/assessments/submit', [LessonAssessmentController::class, 'submitAssessment'])->name('student.assessments.submit');
-
+   
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/take', [LessonAssessmentController::class, 'showStudentAssessment'])->name('student.assessments.take');
-    Route::post('courses/{courseId}/lessons/{lessonId}/assessments/submit', [LessonAssessmentController::class, 'submitStudentAssessment'])->name('student.assessments.submit');
 
 
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/result', [LessonAssessmentController::class, 'showAssessmentResult'])->name('student.assessments.result');
@@ -350,3 +348,11 @@ Route::get('/info', function () {
     return phpinfo();
 });
 
+Route::get('/testdb', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'Database connection is working!';
+    } catch (\Exception $e) {
+        return 'Could not connect to the database. '.$e->getMessage();
+    }
+});
