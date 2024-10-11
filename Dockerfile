@@ -61,6 +61,13 @@ RUN npm ci
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
+# Copy deploy script
+COPY ./scripts/deploy.sh /usr/local/bin/deploy.sh
+RUN chmod +x /usr/local/bin/deploy.sh
+
+# Run deploy script
+RUN /usr/local/bin/deploy.sh
+
 # Expose port 80 for web traffic
 EXPOSE 80
 
