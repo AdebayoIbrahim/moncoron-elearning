@@ -1,39 +1,24 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+set -e  # Exit immediately if a command exits with a non-zero status
 
-# Ensure the script is running in the right directory
-cd /app
+# Log function to track the output
+log() {
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
+}
 
-echo "Running composer"
-# Install Prestissimo for faster Composer installs (optional)
-composer global require hirak/prestissimo
+# Move to the application directory
+log "Navigating to /app directory"
+cd /app || { log "Failed to change directory to /app"; exit 1; }
 
-# Install Composer dependencies
-echo "Installing Composer dependencies..."
-composer install --no-dev --prefer-dist --no-scripts --no-progress --no-suggest
+log "Running composer"
+composer global require hirak/prestissimo || { log "Composer global require failed"; exit 1; }
+composer install --no-dev --working-dir=/app || { log "Composer install failed"; exit 1; }
 
-# Generating application key (uncomment if needed)
-# echo "Generating application key..."
-# php artisan key:generate --force
+log "Caching config..."
+php artisan config:cache || { log "Config cache failed"; exit 1; }
 
-echo "Clearing application cache..."
-php artisan cache:clear
+log "Caching routes..."
+php artisan route:cache || { log "Route cache failed"; exit 1; }
 
-echo "Clearing configuration cache..."
-php artisan config:clear
-
-echo "Clearing route cache..."
-php artisan route:clear
-
-echo "Caching configuration..."
-php artisan config:cache
-
-echo "Caching routes..."
-php artisan route:cache
-
-echo "Running migrations..."
-php artisan migrate --force
-
-echo "Deployment complete!"
+log "Deploy script finished successfully"
