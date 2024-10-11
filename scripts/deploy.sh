@@ -11,10 +11,6 @@ log() {
 log "Navigating to /app directory"
 cd /app || { log "Failed to change directory to /app"; exit 1; }
 
-# Run Composer install (Composer is already installed, no need to install it again)
-log "Running composer install"
-composer install --no-dev --working-dir=/app || { log "Composer install failed"; exit 1; }
-
 # Cache the application configuration
 log "Caching config..."
 php artisan config:cache || { log "Config cache failed"; exit 1; }
