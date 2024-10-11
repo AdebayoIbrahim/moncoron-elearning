@@ -349,3 +349,14 @@ Route::get('/token', function () {
 Route::get('/info', function () {
     return phpinfo();
 });
+
+
+Route::get('/testdb', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'Database connection is working!';
+    } catch (\Exception $e) {
+        return 'Could not connect to the database. '.$e->getMessage();
+    }
+});
+
