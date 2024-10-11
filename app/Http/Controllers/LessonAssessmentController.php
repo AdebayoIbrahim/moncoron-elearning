@@ -184,16 +184,6 @@ class LessonAssessmentController extends Controller
         ));
     }
 
-    private function generateCertificate(User $user, $courseId)
-    {
-        $course = Course::findOrFail($courseId);
-        $existingCertificate = FacadesStorage::exists('certificates/' . $user->id . '/' . $course->id . '.pdf');
-
-        if (!$existingCertificate) {
-            $certificate = PDF::loadView('certificates.completion', ['user' => $user, 'course' => $course]);
-            FacadesStorage::put('certificates/' . $user->id . '/' . $course->id . '.pdf', $certificate->output());
-        }
-    }
 
     public function destroy($courseId, $id)
     {
