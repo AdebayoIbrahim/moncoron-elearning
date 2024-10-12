@@ -11,6 +11,13 @@ log() {
 log "Navigating to /app directory"
 cd /app || { log "Failed to change directory to /app"; exit 1; }
 
+# Clear old cached data
+log "Clearing old cache..."
+php artisan view:clear || { log "View cache clear failed"; exit 1; }
+php artisan config:clear || { log "Config cache clear failed"; exit 1; }
+php artisan route:clear || { log "Route cache clear failed"; exit 1; }
+php artisan cache:clear || { log "Application cache clear failed"; exit 1; }
+
 # Cache the application configuration
 log "Caching config..."
 php artisan config:cache || { log "Config cache failed"; exit 1; }
@@ -19,11 +26,12 @@ php artisan config:cache || { log "Config cache failed"; exit 1; }
 log "Caching routes..."
 php artisan route:cache || { log "Route cache failed"; exit 1; }
 
+# Link storage if not already linked
 if [ ! -L /app/public/storage ]; then
-    echo "Attempting to link storage"
-    php artisan storage:link
+    log "Attempting to link storage"
+    php artisan storage:link || { log "Storage link failed"; exit 1; }
 else
-    echo "Storage link already exists."
+    log "Storage link already exists."
 fi
 
 log "Deploy script finished successfully"
