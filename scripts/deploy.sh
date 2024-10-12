@@ -19,4 +19,11 @@ php artisan config:cache || { log "Config cache failed"; exit 1; }
 log "Caching routes..."
 php artisan route:cache || { log "Route cache failed"; exit 1; }
 
+if [ ! -L public/storage ]; then
+    echo "Attemting to link storage".
+    php artisan storage:link
+else
+    echo "Storage link already exists."
+fi
+
 log "Deploy script finished successfully"
