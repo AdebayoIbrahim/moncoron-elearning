@@ -59,8 +59,8 @@ RUN chmod +x /usr/local/bin/deploy.sh
 # Switch back to non-root user
 USER user
 
-# Install Node.js dependencies
-RUN npm ci
+# Install Node.js dependencies and build assets
+RUN npm ci && npm run build
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
