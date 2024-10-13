@@ -371,3 +371,27 @@
 [2024-10-09 00:57:11] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
 [2024-10-09 00:57:57] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
 [2024-10-09 00:58:42] local.INFO: cer{"id":18,"course_id":8,"reference_id":"CERT-6705d23c36797841","created_at":"2024-10-09T00:45:48.000000Z","updated_at":"2024-10-09T00:45:48.000000Z","student_id":1}  
+[2024-10-11 12:01:20] local.ERROR: Unable to prepare route [courses/{courseId}/lessons/{lessonId}/assessments/submit] for serialization. Another route has already been assigned name [student.assessments.submit]. {"exception":"[object] (LogicException(code: 0): Unable to prepare route [courses/{courseId}/lessons/{lessonId}/assessments/submit] for serialization. Another route has already been assigned name [student.assessments.submit]. at /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php:247)
+[stacktrace]
+#0 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php(208): Illuminate\\Routing\\AbstractRouteCollection->addToSymfonyRoutesCollection()
+#1 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Routing/RouteCollection.php(246): Illuminate\\Routing\\AbstractRouteCollection->toSymfonyRouteCollection()
+#2 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php(192): Illuminate\\Routing\\RouteCollection->toSymfonyRouteCollection()
+#3 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php(163): Illuminate\\Routing\\AbstractRouteCollection->dumper()
+#4 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteCacheCommand.php(109): Illuminate\\Routing\\AbstractRouteCollection->compile()
+#5 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteCacheCommand.php(68): Illuminate\\Foundation\\Console\\RouteCacheCommand->buildRouteCacheFile()
+#6 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteCacheCommand->handle()
+#7 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#8 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#9 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#10 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#11 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Console/Command.php(212): Illuminate\\Container\\Container->call()
+#12 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Command/Command.php(279): Illuminate\\Console\\Command->execute()
+#13 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Console/Command.php(181): Symfony\\Component\\Console\\Command\\Command->run()
+#14 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(1049): Illuminate\\Console\\Command->run()
+#15 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(318): Symfony\\Component\\Console\\Application->doRunCommand()
+#16 /home/setup/Desktop/moncoron-elearning/vendor/symfony/console/Application.php(169): Symfony\\Component\\Console\\Application->doRun()
+#17 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Symfony\\Component\\Console\\Application->run()
+#18 /home/setup/Desktop/moncoron-elearning/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1187): Illuminate\\Foundation\\Console\\Kernel->handle()
+#19 /home/setup/Desktop/moncoron-elearning/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#20 {main}
+"} 
