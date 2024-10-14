@@ -7,10 +7,10 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 p-4">
             <div class="card">
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>{{ session('error') }}</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{ session('error') }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
                 @endif
                 <div class="card-body p-3">
                     <div class="row my-bold-row">
@@ -33,7 +33,8 @@
                                 <div class="card-body d-flex justify-content-between align-items-start">
                                     <div>
                                         <div class="my-bold-num fw-semibold">
-                                            {{ $dawahs->count() }}
+                                            {{-- {{ $dawahs->count() }} --}}
+                                            {{$dawahs}}
                                             <span class="fa fa-book" style="margin-left: 90px;"></span>
                                         </div>
                                         <div class="fw-semibold my-bold-num-text">All Dawah</div>
@@ -83,7 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- /.col-->                
+                        <!-- /.col-->
                     </div>
                 </div>
             </div>

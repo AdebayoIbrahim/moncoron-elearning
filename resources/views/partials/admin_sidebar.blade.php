@@ -119,7 +119,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link nav-links d-flex align-items-center gap-2 text-white">
+                    <a href="{{route('admin.dawahview')}}" class="nav-link nav-links d-flex align-items-center gap-2 {{ request()->routeIs('admin.dawahview') ? 'active' : '' }} text-white">
                         <i class="fa fa-book mx-2"></i> Dawah
                     </a>
                 </li>
