@@ -230,7 +230,7 @@ div.media_audio_container {
 /* player-ends */
 
 .absolute_player_audio {
-    /* display: none; */
+    display: none;
 }
 .audio-box-show {
     display: block;

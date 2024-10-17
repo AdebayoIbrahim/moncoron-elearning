@@ -32,7 +32,7 @@ function setActive(e) {
 
 const Audiolist = document.querySelectorAll(".media_audio_container");
 const AudioOverlay = document.querySelector(".absolute_player_audio");
-
+const closeAudiobtn = document.querySelector(".close_audio");
 Audiolist?.forEach((audiobtn) => {
     audiobtn.addEventListener("click", () => {
         // make -the -audio -src -empty
@@ -53,4 +53,7 @@ Audiolist?.forEach((audiobtn) => {
         audiotg.play();
     });
 });
+closeAudiobtn.oncclick = function () {
+    AudioOverlay?.classList.remove("audio-box-show");
+};
 // dawa-view-js-end
