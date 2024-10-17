@@ -1,5 +1,8 @@
 import axios from "axios";
 const currenturl = window.location.href;
+const player = new Plyr("audio", {});
+const originUrl = window.location.origin;
+window.player = player;
 // dawah-view-js-start
 const Daheeselect = document.getElementById("dahee_select");
 
@@ -25,8 +28,29 @@ function setActive(e) {
     // fetchScoreboards();
 }
 
-const player = new Plyr("audio", {});
-// Expose player so it can be used from the console
-window.player = player;
+// select-all-audio-divs-andmaped-them-to-trigger-audio-pla
 
+const Audiolist = document.querySelectorAll(".media_audio_container");
+const AudioOverlay = document.querySelector(".absolute_player_audio");
+
+Audiolist?.forEach((audiobtn) => {
+    audiobtn.addEventListener("click", () => {
+        // make -the -audio -src -empty
+        const audiotg = AudioOverlay?.getElementsByTagName("audio")[0];
+        // make-src-attr-rmpyu
+        audiotg.setAttribute("src", "");
+
+        // gethecurrently-clicked-element-and-target-the-audio-src
+        const audiodatacurr = audiobtn
+            ?.querySelector("#hidden_source")
+            ?.getAttribute("data-attribute");
+
+        // TODO: LOCAL TEST -ONLY
+        // then-repass-the-current-audio-to-it
+        audiotg?.setAttribute("src", `${originUrl}/${audiodatacurr}`);
+        // then-trigger-display
+        AudioOverlay.classList.add("audio-box-show");
+        audiotg.play();
+    });
+});
 // dawa-view-js-end

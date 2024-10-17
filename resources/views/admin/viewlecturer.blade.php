@@ -65,8 +65,8 @@
 </div>
 {{-- absolute-audio-player --}}
 <div class="absolute_player_audio">
+    <div class="close_audio"><i class="fa fa-times" aria-hidden="true" style="color: #d6f2ff;font-size:1.5rem"></i></div>
     <audio src={{asset ('images/horse.mp3')}} crossorigin playsinline controls>
     </audio>
 </div>
-
 @endsection

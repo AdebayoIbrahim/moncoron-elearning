@@ -222,6 +222,7 @@ div.media_audio_container {
 
 .plyr__progress input[type="range"] {
     color: #d36f35 !important;
+    width: 98% !important;
 }
 .plyr__controls input[type="range"] {
     color: #d36f35 !important;
@@ -229,9 +230,22 @@ div.media_audio_container {
 /* player-ends */
 
 .absolute_player_audio {
-    display: none;
+    /* display: none; */
+}
+.audio-box-show {
+    display: block;
 }
 .play_name_container .hidden_source {
     display: none;
+}
+.close_audio {
+    z-index: 9999;
+    background: transparent;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 12rem;
+    top: 25%;
+    cursor: pointer;
 }
 /* DAWAH--STYLES-ENDS-HERE */
