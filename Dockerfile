@@ -42,8 +42,10 @@ USER user
 RUN chmod 755 /app/artisan
 
 # Copy the .env file (or .env.example) into the container
-#skip this -as -its already cached and setup in hosting-service
 # COPY .env.example /app/.env
+
+# Copy deploy script
+COPY ./scripts/deploy.sh /usr/local/bin/deploy.sh
 
 # Clear Composer cache and install Composer dependencies as root
 USER root
@@ -53,18 +55,15 @@ RUN composer clear-cache && \
 # Generate optimized autoload files and run post-install scripts as root
 RUN composer dump-autoload && composer run-script post-autoload-dump
 
+RUN chmod +x /usr/local/bin/deploy.sh
 # Switch back to non-root user
 USER user
 
-# Install Node.js dependencies
-RUN npm ci
+# Install Node.js dependencies and build assets
+RUN npm ci && npm run build
 
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
-
-# Copy deploy script
-COPY ./scripts/deploy.sh /usr/local/bin/deploy.sh
-RUN chmod +x /usr/local/bin/deploy.sh
 
 # Run deploy script
 RUN /usr/local/bin/deploy.sh
