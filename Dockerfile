@@ -42,7 +42,8 @@ USER user
 RUN chmod 755 /app/artisan
 
 # Copy the .env file (or .env.example) into the container
-COPY .env.example /app/.env
+#skip this -as -its already cached and setup in hosting-service
+# COPY .env.example /app/.env
 
 # Clear Composer cache and install Composer dependencies as root
 USER root
