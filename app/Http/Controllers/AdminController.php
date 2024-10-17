@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use App\Models\Course;
 use App\Models\Dawah;
-use App\Models\DawahPost;
 use App\Models\CourseLesson;
 use App\Models\CourseAssessment;
 use App\Models\UserLessonAssessment;
@@ -28,7 +27,7 @@ class AdminController extends Controller
         $studentusers = User::where('role', 'student')->get();
         $lecturerusers = User::where('role', 'lecturer')->get();
         $teacherusers = User::where('role', 'teacher')->get();
-        $dawahs = Dawah::all();
+        $dawahs = 5;
         $courses = Course::all();
         $routeNamePart = ucfirst(last(explode('.', Route::currentRouteName())));
 

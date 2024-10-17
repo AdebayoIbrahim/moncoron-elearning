@@ -7,30 +7,18 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ChunkUploadController;
 use App\Http\Controllers\CKEditorController;
-use App\Http\Controllers\StudentAssessmentController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ChatmessagesController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LessonAssessmentController;
 use App\Http\Controllers\CourseAssessmentController;
-use App\Http\Controllers\DawahController;
-use App\Http\Controllers\DawahPostController;
-use App\Http\Controllers\DawahTeacherController;
-use App\Http\Controllers\VideoCallController;
-use App\Http\Controllers\LessonsAssessmentsNew;
-use App\Events\StartVideoChat;
-use App\Events\MessageSent;
-use App\Models\User;
-use App\Models\Message;
-use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgoraController;
+use App\Http\Controllers\Dawahcontroller;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Leaderboardcontroller;
-// CKEditor upload route
-Route::post('/upload-image', [CKEditorController::class, 'uploadImage'])->name('ckeditor.upload');
 
 Route::get('/', function () {
     return view('index');
@@ -152,7 +140,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('courses/{courseId}/lessons/{lessonId}/assessment', [LessonController::class, 'showAssessment'])->name('lessons.assessment');
 
         // Submitting the assessment
-    
+
         // getlessons-in-acourse
         Route::get('courses/{course_id}/lessons/{id}', [LessonController::class, 'show'])->name('lessons.show');
 
@@ -246,37 +234,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/admin/users/delete/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
 
 
+        // -------------DAWAH-ADMIN-SECTION--------
+        Route::get('/admin/dawah', [Dawahcontroller::class, 'Indexview'])->name('admin.dawahview');
+        Route::get('/admin/dawah/{dawahId}', [Dawahcontroller::class, 'Adminlecturerview'])->name('admin.lecturerview');
 
-        Route::get('/admin/dawah', [DawahController::class, 'index'])->name('admin.dawah.index');
-        Route::get('/admin/dawah/create', [DawahController::class, 'create'])->name('admin.dawah.create');
-        Route::post('/admin/dawah', [DawahController::class, 'store'])->name('admin.dawah.store');
-        Route::get('/admin/dawah/{dawahId}/edit', [DawahController::class, 'edit'])->name('admin.dawah.edit');
-        Route::put('/admin/dawah/{dawahId}', [DawahController::class, 'update'])->name('admin.dawah.update');
-        Route::delete('/admin/dawah/{dawahId}', [DawahController::class, 'destroy'])->name('admin.dawah.destroy');
 
-        Route::get('/admin/dawah/{dawahId}/assign-teacher', [DawahController::class, 'assignTeacherForm'])->name('admin.dawah.assign-teacher-form');
-        Route::post('/admin/dawah/{dawahId}/assign-teacher', [DawahController::class, 'assignTeacher'])->name('admin.dawah.assign-teacher');
 
-        Route::get('/admin/dawah/{dawahId}/lessons', [DawahController::class, 'viewLessons'])->name('admin.dawah.view-lessons');
-        Route::get('/admin/dawah/{dawahId}/create-lesson', [DawahController::class, 'createLessonForm'])->name('admin.dawah.create-lesson');
-        Route::post('/admin/dawah/{dawahId}/lessons', [DawahController::class, 'storeLesson'])->name('admin.dawah.store-lesson');
-        Route::get('/admin/dawah/{dawahId}/edit-lesson/{lessonId}', [DawahController::class, 'editLessonForm'])->name('admin.dawah.edit-lesson');
-        Route::put('/admin/dawah/{dawahId}/lessons/{lessonId}', [DawahController::class, 'updateLesson'])->name('admin.dawah.update-lesson');
-        Route::delete('/admin/dawah/{dawahId}/lessons/{lessonId}', [DawahController::class, 'deleteLesson'])->name('admin.dawah.delete-lesson');
+        // -------------DAWAH-ADMIN-SECTION-ENDS--------
 
-        Route::get('/admin/dawah-posts', [DawahPostController::class, 'index'])->name('admin.dawah-posts.index');
-        Route::get('/admin/dawah-posts/create', [DawahPostController::class, 'create'])->name('admin.dawah-posts.create');
-        Route::post('/admin/dawah-posts/store', [DawahPostController::class, 'store'])->name('admin.dawah-posts.store');
-        Route::get('/admin/dawah-posts/{id}', [DawahPostController::class, 'show'])->name('admin.dawah-posts.show');
-        Route::get('/admin/dawah-posts/{id}/edit', [DawahPostController::class, 'edit'])->name('admin.dawah-posts.edit');
-        Route::put('/admin/dawah-posts/{id}', [DawahPostController::class, 'update'])->name('admin.dawah-posts.update');
-        Route::delete('/admin/dawah-posts/{id}', [DawahPostController::class, 'destroy'])->name('admin.dawah-posts.destroy');
-        Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'teachers'])->name('admin.dawah-posts.teachers');
-        // Route::get('/admin/dawah-posts/teacher-profile/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
 
-        Route::get('/admin/dawah-posts/teachers', [DawahPostController::class, 'listTeachers'])->name('admin.dawah-posts.teachers');
-        Route::get('/admin/dawah-posts/teacher/{id}', [DawahPostController::class, 'teacherProfile'])->name('admin.dawah-posts.teacher-profile');
-        //ends
         // Routes for Dawah posts and teachers
         // Admin and Teacher course assessments routes
         Route::prefix('admin/courses/{course}')->group(function () {
@@ -292,7 +258,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-   
+
     Route::get('courses/{courseId}/lessons/{lessonId}/assessments/take', [LessonAssessmentController::class, 'showStudentAssessment'])->name('student.assessments.take');
 
 
@@ -353,6 +319,6 @@ Route::get('/testdb', function () {
         DB::connection()->getPdo();
         return 'Database connection is working!';
     } catch (\Exception $e) {
-        return 'Could not connect to the database. '.$e->getMessage();
+        return 'Could not connect to the database. ' . $e->getMessage();
     }
 });

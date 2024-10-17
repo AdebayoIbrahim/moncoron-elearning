@@ -1,0 +1,251 @@
+/* ALL_REMAINING-CSS-STYLES */
+/* DAWAH---STYLES-START */
+/* ADMIN */
+div.dawah_overlay_container {
+    position: relative;
+}
+div.overlaydawah_banner {
+    position: relative;
+    padding: 2rem;
+    border-radius: 0.6rem;
+    background: white;
+    min-height: 25vh;
+}
+div.lecturers_list_admin {
+    margin-top: 1.2rem;
+    position: relative;
+    padding-inline: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    border-radius: 0.6rem;
+    background: white;
+    min-height: 25vh;
+}
+.spinner_dawah {
+    color: #d36f35 !important;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    /* text-align: center; */
+}
+div.flex_lecturer_gtoup {
+    display: flex;
+    flex-direction: column;
+    /* gap: 0.35rem; */
+    width: 100%;
+}
+.lecturer_overlay {
+    background: white;
+    border-radius: 1rem;
+    align-items: center;
+    cursor: pointer;
+    transition: all 400ms ease;
+    padding-inline: 1rem;
+    padding-block: 0.4rem;
+
+    &:hover {
+        background: rgb(203 203 203 / 0.3);
+    }
+}
+/* END-ADMIN */
+
+.loader_spinner_lecturer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* background: red; */
+}
+.loader_spinner_lecturer .spinner_size {
+    color: #d36f35 !important;
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+}
+
+/* DAWAH_PROFILE_VIEW */
+.lecturer_view_container {
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.lecturer_bio {
+    /* height: 30vh; */
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-block: 1.5rem;
+    background: #dfdada;
+}
+.name_lecturer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+}
+
+.upload_contents {
+    padding-top: 1rem;
+    display: grid;
+    place-items: center;
+}
+.upload_contents input {
+    color: #333;
+    /* font-size: 1.2rem; */
+    margin: 0 auto;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.6rem;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(203 203 203 / 0.3);
+    width: 90%;
+    display: block;
+    transition: all 0.3s;
+}
+
+/* lectures-switch-nav */
+.lecture_switcher {
+    margin-top: 0.8rem;
+    width: 100%;
+}
+.switcher_toggle {
+    font-size: 1.2rem;
+    flex: 6;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+/* current-hifhlighted */
+.active::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    width: calc(100% - 20%);
+    background: #481acb;
+    height: 2px;
+    text-align: center;
+    left: 0px;
+    transform: translateX(20%);
+    border-radius: 5px;
+    animation: FadeIn 500ms ease-in-out;
+}
+
+@keyframes FadeIn {
+    from {
+        transform: scale(0) translateX(0%);
+    }
+    to {
+        transform: scale(1) translateX(20%);
+    }
+}
+.media_targets {
+    padding-top: 1rem;
+    margin-inline: 10%;
+    padding-bottom: 2rem;
+}
+div.uploaded_media {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+    padding-top: 0.6rem;
+}
+
+div.play_name_container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+div.media_audio_container {
+    padding-top: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid #d36f35;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    align-items: center;
+
+    &:hover {
+        background: rgb(203 203 203 / 0.3);
+    }
+    padding-inline: 1rem;
+}
+.play_icon_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(203 203 203 / 0.3);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.play_icon {
+    color: #481acb;
+    font-size: 1.2rem;
+}
+.small_icon {
+    font-size: 1rem;
+}
+
+.absolute_player_audio {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 3.5rem;
+    background: black;
+}
+
+/* player-controls-styles */
+.plyr__controls {
+    background-color: #545871 !important;
+}
+
+.plyr__controls button {
+    color: #d6f2ff;
+}
+.plyr__controls button:hover {
+    background-color: #9da3d1 !important;
+}
+.plyr__controls button:active {
+    background-color: #9da3d1 !important;
+}
+.plyr__controls button:focus {
+    background-color: #9da3d1 !important;
+}
+.plyr__time {
+    color: #f5f5f5;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.plyr__progress input[type="range"] {
+    color: #d36f35 !important;
+    width: 98% !important;
+}
+.plyr__controls input[type="range"] {
+    color: #d36f35 !important;
+}
+/* player-ends */
+
+.absolute_player_audio {
+    display: none;
+}
+.audio-box-show {
+    display: block;
+}
+.play_name_container .hidden_source {
+    display: none;
+}
+.close_audio {
+    z-index: 9999;
+    background: transparent;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 12rem;
+    top: 25%;
+    cursor: pointer;
+}
+/* DAWAH--STYLES-ENDS-HERE */
