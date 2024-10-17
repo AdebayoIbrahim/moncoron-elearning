@@ -30,6 +30,7 @@
                 {{-- leadboad-autofill-from-API --}}
                 <div class="leaderboard_section_lists" id="scoreboards">
 
+
                 </div>
             </div>
         </main>

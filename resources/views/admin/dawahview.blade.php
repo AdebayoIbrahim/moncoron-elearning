@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 @section('content')
 @include('partials.admin_header')
-@vite(['resources/css/Main/main.css'])
+@vite(['resources/css/Main/main.css','resources/css/Main/main.js'])
 <div class="container-fluid">
     <div class="row">
         @include('partials.admin_sidebar')
@@ -36,28 +36,25 @@
                     </button>
                 </div>
                 <section class="pt-3 " style="text-align: center">
-                    <div class="spinner-border text-secondary spinner_dawah" role="status">
+                    {{-- <div class="spinner-border text-secondary spinner_dawah" role="status">
                         <span class="visually-hidden">Loading...</span>
-                    </div>
+                    </div> --}}
 
                     {{-- lecturer-details --}}
                     <div class="flex_lecturer_gtoup">
+                        @for($i = 0; $i < 5; $i++) <div class=" d-flex justify-content-between lecturer_overlay" id="dahee_select">
 
-                        @for($i = 0; $i < 5; $i++) <div class="p-2 d-flex justify-content-between" style="background: white;border-radius: 1rem">
-
-                            <div class="d-flex " style="align-items: center;gap: 3rem">
+                            <div class="d-flex" style="align-items: center;gap: 1.3rem">
                                 {{-- div-image --}}
-
-
-                                <div class="d-flex " style="flex-direction: column; gap: 0.2rem; align-items: center">
+                                <img src={{asset ('/images/Qari.jpeg')}} alt="dahee_image" style="width: 70px;height: 70px; border-radius: 50%;object-fit:cover;">
+                                <div class="d-flex" style="flex-direction: column; gap: 0rem; align-items: center;margin-top:25px">
                                     <div style="font-weight: 500;font-size: 1rem">Mufti Menk</div>
                                     <p style="font-weight: 500;font-size: 0.9rem;color: #9d9d9d">Joined 2016</p>
                                 </div>
                             </div>
 
-                            <div><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                            <div style="cursor: pointer"><i class="fa-solid fa-ellipsis-vertical" style="font-size: 1.2rem"></i></div>
                     </div>
-
                     @endfor
             </div>
             </section>

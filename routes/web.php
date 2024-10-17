@@ -233,8 +233,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admin/users/unsuspend/{id}', [App\Http\Controllers\AdminController::class, 'unsuspendUser'])->name('admin.users.unsuspend');
         Route::delete('/admin/users/delete/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
 
+
         // -------------DAWAH-ADMIN-SECTION--------
         Route::get('/admin/dawah', [Dawahcontroller::class, 'Indexview'])->name('admin.dawahview');
+        Route::get('/admin/dawah/{dawahId}', [Dawahcontroller::class, 'Adminlecturerview'])->name('admin.lecturerview');
 
 
 
