@@ -14,7 +14,6 @@
                 </div>
             </div> --}}
         <section class="lecturer_view_container">
-
             <section class="lecturer_bio">
                 <img src={{asset ('/images/Qari.jpeg')}} alt="dahee_image" style="width: 200px;height: 200px; border-radius: 50%;object-fit:cover;">
                 <div id="name_lecturer">
@@ -38,19 +37,28 @@
                         <div class="switcher_toggle">Video</div>
                     </div>
                 </div>
-                {{-- is-uploaded-medias --}}
-                <div class="media_targets">
-                    <div class="uploaded_media">
-                        @for($i = 0; $i < 10; $i++) <div>
-                            <audio src=""></audio>
-                    </div>
-                    @endfor
-                </div>
-    </div>
-    </section>
-    </section>
+            </section>
 
-</div>
+            {{-- is-uploaded-medias --}}
+            <div class="media_targets">
+                <div class="uploaded_media">
+                    @for($i = 0; $i < 10; $i++) <div class="media_audio_container">
+                        <div class="play_name_container">
+                            <div class="play_icon_container"><i class="fa fa-play play_icon" aria-hidden="true"></i></div>
+                            <div style="font-size: 1.2rem" aria-details="audio-title">Seeroh {{$i + 1}}</div>
+                        </div>
+                        {{-- <audio src={{asset ('images/horse.mp3')}} controls></audio> --}}
+
+                        <div>
+                            <i class="fas fa-download play_icon small_icon" aria-hidden="true"></i>
+                        </div>
+                </div>
+                @endfor
+            </div>
+
+        </section>
+
+    </div>
 </div>
 
 @endsection

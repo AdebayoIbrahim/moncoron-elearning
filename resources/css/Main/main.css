@@ -66,7 +66,7 @@ div.flex_lecturer_gtoup {
 /* DAWAH_PROFILE_VIEW */
 .lecturer_view_container {
     width: 100%;
-    padding-top: 1rem;
+    padding-block: 1rem;
 }
 .lecturer_bio {
     /* height: 30vh; */
@@ -119,7 +119,7 @@ div.flex_lecturer_gtoup {
 .active::after {
     content: "";
     position: absolute;
-    bottom: -10px;
+    bottom: -8px;
     width: calc(100% - 20%);
     background: #481acb;
     height: 2px;
@@ -138,9 +138,47 @@ div.flex_lecturer_gtoup {
         transform: scale(1) translateX(20%);
     }
 }
+.media_targets {
+    padding-top: 1rem;
+    margin-inline: 10%;
+}
 div.uploaded_media {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+div.play_name_container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+div.media_audio_container {
+    padding-top: 1.2rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid #d36f35;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    align-items: center;
+}
+.play_icon_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(203 203 203 / 0.3);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.play_icon {
+    color: #481acb;
+    font-size: 1.2rem;
+}
+.small_icon {
+    font-size: 1rem;
 }
 /* DAWAH--STYLES-ENDS-HERE */
