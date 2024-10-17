@@ -66,7 +66,8 @@ div.flex_lecturer_gtoup {
 /* DAWAH_PROFILE_VIEW */
 .lecturer_view_container {
     width: 100%;
-    padding-block: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 .lecturer_bio {
     /* height: 30vh; */
@@ -88,7 +89,6 @@ div.flex_lecturer_gtoup {
     padding-top: 1rem;
     display: grid;
     place-items: center;
-    /* grid-template-columns: repeat(auto-fit,minmax()); */
 }
 .upload_contents input {
     color: #333;
@@ -141,6 +141,7 @@ div.flex_lecturer_gtoup {
 .media_targets {
     padding-top: 1rem;
     margin-inline: 10%;
+    padding-bottom: 2rem;
 }
 div.uploaded_media {
     display: grid;
@@ -149,6 +150,7 @@ div.uploaded_media {
     justify-content: center;
     align-items: center;
     gap: 1.2rem;
+    padding-top: 0.6rem;
 }
 
 div.play_name_container {
@@ -157,13 +159,18 @@ div.play_name_container {
     gap: 1.5rem;
 }
 div.media_audio_container {
-    padding-top: 1.2rem;
+    padding-top: 1rem;
     padding-bottom: 0.9rem;
     border-bottom: 1px solid #d36f35;
     display: flex;
     justify-content: space-between;
     cursor: pointer;
     align-items: center;
+
+    &:hover {
+        background: rgb(203 203 203 / 0.3);
+    }
+    padding-inline: 1rem;
 }
 .play_icon_container {
     display: flex;
@@ -180,5 +187,51 @@ div.media_audio_container {
 }
 .small_icon {
     font-size: 1rem;
+}
+
+.absolute_player_audio {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 3.5rem;
+    background: black;
+}
+
+/* player-controls-styles */
+.plyr__controls {
+    background-color: #545871 !important;
+}
+
+.plyr__controls button {
+    color: #d6f2ff;
+}
+.plyr__controls button:hover {
+    background-color: #9da3d1 !important;
+}
+.plyr__controls button:active {
+    background-color: #9da3d1 !important;
+}
+.plyr__controls button:focus {
+    background-color: #9da3d1 !important;
+}
+.plyr__time {
+    color: #f5f5f5;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.plyr__progress input[type="range"] {
+    color: #d36f35 !important;
+}
+.plyr__controls input[type="range"] {
+    color: #d36f35 !important;
+}
+/* player-ends */
+
+.absolute_player_audio {
+    display: none;
+}
+.play_name_container .hidden_source {
+    display: none;
 }
 /* DAWAH--STYLES-ENDS-HERE */

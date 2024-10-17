@@ -2,6 +2,8 @@
 @section('content')
 @include('partials.admin_header')
 @vite(['resources/css/Main/main.css','resources/css/Main/main.js'])
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 <div class="container-fluid">
     <div class="row">
         {{-- loader-animation --}}
@@ -46,6 +48,8 @@
                         <div class="play_name_container">
                             <div class="play_icon_container"><i class="fa fa-play play_icon" aria-hidden="true"></i></div>
                             <div style="font-size: 1.2rem" aria-details="audio-title">Seeroh {{$i + 1}}</div>
+                            <div id="hidden_source" data-attribute="images/horse.mp3">
+                            </div>
                         </div>
                         {{-- <audio src={{asset ('images/horse.mp3')}} controls></audio> --}}
 
@@ -55,10 +59,14 @@
                 </div>
                 @endfor
             </div>
-
         </section>
 
     </div>
+</div>
+{{-- absolute-audio-player --}}
+<div class="absolute_player_audio">
+    <audio src={{asset ('images/horse.mp3')}} crossorigin playsinline controls>
+    </audio>
 </div>
 
 @endsection
