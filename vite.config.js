@@ -25,6 +25,8 @@ export default defineConfig({
                 "resources/js/bootstrap.js",
                 "resources/js/echo.js",
                 "resources/js/utils.js",
+                "resources/Main/main.css",
+                "resources/Main/main.js",
             ],
             refresh: true,
         }),
@@ -41,5 +43,5 @@ export default defineConfig({
         alias: {
             vue: "vue/dist/vue.esm-bundler.js",
         },
-    }
+    },
 });

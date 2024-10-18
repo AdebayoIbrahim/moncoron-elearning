@@ -116,7 +116,7 @@ div.flex_lecturer_gtoup {
     cursor: pointer;
 }
 /* current-hifhlighted */
-.active::after {
+.activePane::after {
     content: "";
     position: absolute;
     bottom: -8px;
@@ -169,6 +169,10 @@ div.media_audio_container {
 
     &:hover {
         background: rgb(203 203 203 / 0.3);
+
+        .play_hover {
+            color: #d36f35;
+        }
     }
     padding-inline: 1rem;
 }
@@ -219,14 +223,23 @@ div.media_audio_container {
     font-size: 16px;
     font-weight: bold;
 }
-
 .plyr__progress input[type="range"] {
-    color: #d36f35 !important;
-    width: 98% !important;
+    width: 99% !important;
+}
+.plyr__progress,
+.plyr__progress__container {
+    width: 99% !important;
 }
 .plyr__controls input[type="range"] {
     color: #d36f35 !important;
 }
+.plyr--stopped .plyr__progress {
+    width: 99% !important;
+}
+.plyr__progress__buffer {
+    width: 99% !important;
+}
+
 /* player-ends */
 
 .absolute_player_audio {
@@ -244,7 +257,7 @@ div.media_audio_container {
     width: 50px;
     height: 50px;
     position: absolute;
-    right: 12rem;
+    right: 12.4rem;
     top: 25%;
     cursor: pointer;
 }

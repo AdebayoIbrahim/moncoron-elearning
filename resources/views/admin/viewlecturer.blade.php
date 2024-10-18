@@ -2,8 +2,7 @@
 @section('content')
 @include('partials.admin_header')
 @vite(['resources/css/Main/main.css','resources/css/Main/main.js'])
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
 <div class="container-fluid">
     <div class="row">
         {{-- loader-animation --}}
@@ -35,7 +34,7 @@
                 {{-- <div><input type="text" name="lexture_search" id="search_lecture" placeholder="Search...."></div> --}}
                 <div class="lecture_switcher">
                     <div class="d-flex" style="gap: 3rem;">
-                        <div class="switcher_toggle active">Audio</div>
+                        <div class="switcher_toggle activePane">Audio</div>
                         <div class="switcher_toggle">Video</div>
                     </div>
                 </div>
@@ -46,7 +45,7 @@
                 <div class="uploaded_media">
                     @for($i = 0; $i < 10; $i++) <div class="media_audio_container">
                         <div class="play_name_container">
-                            <div class="play_icon_container"><i class="fa fa-play play_icon" aria-hidden="true"></i></div>
+                            <div class="play_icon_container"><i class="fa fa-play play_icon play_hover" aria-hidden="true"></i></div>
                             <div style="font-size: 1.2rem" aria-details="audio-title">Seeroh {{$i + 1}}</div>
                             <div id="hidden_source" data-attribute="images/horse.mp3">
                             </div>

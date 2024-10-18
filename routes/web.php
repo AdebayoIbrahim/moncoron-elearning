@@ -303,22 +303,43 @@ Route::post('verify', [AuthController::class, 'verify'])->name('verify');
 Route::post('changepassword', [AuthController::class, 'changepassword'])->name('changepassword');
 Route::post('register', [AuthController::class, 'register'])->name('register');
 
-// Chunk upload routes
-Route::post('upload-chunk', [ChunkUploadController::class, 'uploadChunk'])->name('upload.chunk');
-Route::post('finish-upload', [ChunkUploadController::class, 'finishUpload'])->name('upload.finish');
-Route::get('/token', function () {
-    return csrf_token();
-});
-// getphp-ifo-testing-ini
-Route::get('/info', function () {
-    return phpinfo();
-});
 
-Route::get('/testdb', function () {
-    try {
-        DB::connection()->getPdo();
-        return 'Database connection is working!';
-    } catch (\Exception $e) {
-        return 'Could not connect to the database. ' . $e->getMessage();
-    }
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Chunk upload routes
+// Route::post('upload-chunk', [ChunkUploadController::class, 'uploadChunk'])->name('upload.chunk');
+// Route::post('finish-upload', [ChunkUploadController::class, 'finishUpload'])->name('upload.finish');
+
+// miscelleneous-routes
+// getphp-ifo-testing-ini
+// Route::get('/info', function () {
+//     return phpinfo();
+// });
+// Route::get('/token', function () {
+//     return csrf_token();
+// });
+// Route::get('/testdb', function () {
+//     try {
+//         DB::connection()->getPdo();
+//         return 'Database connection is working!';
+//     } catch (\Exception $e) {
+//         return 'Could not connect to the database. ' . $e->getMessage();
+//     }
+// });
+// Route::get('/check-pusher-key', function () {
+//     dd(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'));
+// });
