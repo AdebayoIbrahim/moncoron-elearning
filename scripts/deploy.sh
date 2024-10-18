@@ -11,6 +11,10 @@ log() {
 log "Navigating to /app directory"
 cd /app || { log "Failed to change directory to /app"; exit 1; }
 
+# Install Composer dependencies
+log "Installing Composer dependencies..."
+composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader || { log "Composer install failed"; exit 1; }
+
 # Clear old cached data
 log "Clearing old cache..."
 php artisan view:clear || { log "View cache clear failed"; exit 1; }
