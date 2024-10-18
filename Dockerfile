@@ -52,6 +52,7 @@ USER root
 
 
 RUN chmod +x /usr/local/bin/deploy.sh
+RUN /usr/local/bin/deploy.sh
 # Switch back to non-root user
 USER user
 RUN composer clear-cache && \
