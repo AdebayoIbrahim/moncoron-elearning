@@ -16,7 +16,7 @@ log "Clearing old cache..."
 php artisan view:clear || { log "View cache clear failed"; exit 1; }
 php artisan config:clear || { log "Config cache clear failed"; exit 1; }
 php artisan route:clear || { log "Route cache clear failed"; exit 1; }
-php artisan cache:clear || { log "Application cache clear failed"; exit 1; }
+# php artisan cache:clear || { log "Application cache clear failed"; exit 1; }
 
 # Cache the application configuration
 log "Caching config..."
