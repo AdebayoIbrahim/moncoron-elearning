@@ -303,6 +303,23 @@ Route::post('verify', [AuthController::class, 'verify'])->name('verify');
 Route::post('changepassword', [AuthController::class, 'changepassword'])->name('changepassword');
 Route::post('register', [AuthController::class, 'register'])->name('register');
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Chunk upload routes
 // Route::post('upload-chunk', [ChunkUploadController::class, 'uploadChunk'])->name('upload.chunk');
 // Route::post('finish-upload', [ChunkUploadController::class, 'finishUpload'])->name('upload.finish');
