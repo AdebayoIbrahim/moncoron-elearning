@@ -52,12 +52,13 @@ USER root
 
 
 RUN chmod +x /usr/local/bin/deploy.sh
-RUN /usr/local/bin/deploy.sh
+
 # Switch back to non-root user
 USER user
 RUN composer clear-cache && \
     composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
+RUN /usr/local/bin/deploy.sh
 # Generate optimized autoload files and run post-install scripts as root
 RUN composer dump-autoload && composer run-script post-autoload-dump
 # Install Node.js dependencies and build assets
@@ -67,7 +68,7 @@ RUN npm ci && npm run build
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
 # Run deploy script
-RUN /usr/local/bin/deploy.sh
+# RUN /usr/local/bin/deploy.sh
 
 # Expose port 80 for web traffic
 EXPOSE 80
