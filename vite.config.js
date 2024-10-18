@@ -26,7 +26,7 @@ export default defineConfig({
                 "resources/js/echo.js",
                 "resources/js/utils.js",
                 "resources/css/Main/main.css",
-                "resources/js/Main/main.js",
+                "resources/css/Main/main.js",
             ],
             refresh: true,
         }),
