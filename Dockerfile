@@ -41,6 +41,9 @@ USER user
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
 
+ # Copy the .env file (or .env.example) into the container
+COPY .env.docker /app/.env
+
 # Switch back to root user to copy the deploy script
 USER root
 
