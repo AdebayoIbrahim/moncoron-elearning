@@ -41,7 +41,7 @@ return [
                 'encrypted' => true,
                 'host' => env('LARAVEL_ECHO_SERVER_REDIS_HOST', '127.0.0.1'),
                 'port' => env('LARAVEL_ECHO_SERVER_REDIS_PORT', 6001),
-                'scheme' => request()->isSecure() ? 'https' : 'http',
+                'scheme' => env('BROADCAST_SCHEME', 'http'), 
             ],
         ],
 
