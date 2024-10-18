@@ -41,15 +41,21 @@ USER user
 # Ensure artisan is executable (after copying files)
 RUN chmod 755 /app/artisan
 
+# Switch back to root user to copy the deploy script
+USER root
+
 # Copy deploy script
 COPY ./scripts/deploy.sh /usr/local/bin/deploy.sh
 
-# Clear Composer cache and install Composer dependencies as non-root user
-RUN composer clear-cache && \
-    composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
-
 # Make sure the deploy script is executable
 RUN chmod +x /usr/local/bin/deploy.sh
+
+# Switch back to non-root user for running composer and other commands
+USER user
+
+# Clear Composer cache and install Composer dependencies
+RUN composer clear-cache && \
+    composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
 # Run deploy script as non-root user
 RUN /usr/local/bin/deploy.sh
