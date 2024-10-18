@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo Paaji 2:wght@400;600&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
     <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet">
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     @vite(['resources/css/app.css'])
     @csrf
 </head>

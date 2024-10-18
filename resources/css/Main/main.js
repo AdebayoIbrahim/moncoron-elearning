@@ -20,9 +20,9 @@ toggleSwitcher.forEach((switcher) => {
 });
 
 function setActive(e) {
-    toggleSwitcher.forEach((nav) => nav.classList.remove("active"));
+    toggleSwitcher.forEach((nav) => nav.classList.remove("activePane"));
 
-    e.currentTarget.classList.add("active");
+    e.currentTarget.classList.add("activePane");
     currentDefault = e.currentTarget.innerText.toLowerCase();
     // refetchAPIqueryparamschanges
     // fetchScoreboards();
@@ -53,7 +53,7 @@ Audiolist?.forEach((audiobtn) => {
         audiotg.play();
     });
 });
-closeAudiobtn.oncclick = function () {
+closeAudiobtn.onclick = function () {
     AudioOverlay?.classList.remove("audio-box-show");
 };
 // dawa-view-js-end

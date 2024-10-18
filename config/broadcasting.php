@@ -1,4 +1,3 @@
-
 <?php
 
 return [
@@ -29,20 +28,21 @@ return [
     |
     */
 
-   'connections' => [
-    'pusher' => [
-        'driver' => 'pusher',
-        'key' => env('PUSHER_APP_KEY'),
-        'secret' => env('PUSHER_APP_SECRET'),
-        'app_id' => env('PUSHER_APP_ID'),
-        'options' => [
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'useTLS' => true,
-            'encrypted' => true,
-            'host' => env('LARAVEL_ECHO_SERVER_REDIS_HOST', '127.0.0.1'),
-            'port' => env('LARAVEL_ECHO_SERVER_REDIS_PORT', 6001),
-            'scheme' => 'http',
-        ],
+    'connections' => [
+        'pusher' => [
+            'driver' => 'pusher',
+            'key' => env('PUSHER_APP_KEY'),
+            'secret' => env('PUSHER_APP_SECRET'),
+            'app_id' => env('PUSHER_APP_ID'),
+            'options' => [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                //TODOS:
+                // 'useTLS' => true,
+                // 'encrypted' => true,
+                // 'host' => env('LARAVEL_ECHO_SERVER_REDIS_HOST', '127.0.0.1'),
+                // 'port' => env('LARAVEL_ECHO_SERVER_REDIS_PORT', 6001),
+                // 'scheme' => 'http',
+            ],
         ],
 
         'ably' => [

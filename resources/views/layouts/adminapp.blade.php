@@ -26,6 +26,8 @@
 
     {{-- agora-video --}}
     <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.22.0.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     @vite(['resources/css/app.css'])
 </head>
 
