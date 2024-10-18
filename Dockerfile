@@ -57,11 +57,11 @@ USER user
 RUN composer clear-cache && \
     composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
-# Run deploy script as non-root user
-RUN /usr/local/bin/deploy.sh
-
 # Generate optimized autoload files and run post-install scripts
 RUN composer dump-autoload && composer run-script post-autoload-dump
+
+# Run deploy script as non-root user
+RUN /usr/local/bin/deploy.sh
 
 # Install Node.js dependencies and build assets
 RUN npm ci && npm run build
