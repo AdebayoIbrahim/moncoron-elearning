@@ -30,7 +30,7 @@ return [
     */
 
    'connections' => [
-    'pusher' => [
+        'pusher' => [
         'driver' => 'pusher',
         'key' => env('PUSHER_APP_KEY'),
         'secret' => env('PUSHER_APP_SECRET'),
@@ -39,11 +39,11 @@ return [
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'useTLS' => true,
             'encrypted' => true,
-            'host' => env('LARAVEL_ECHO_SERVER_REDIS_HOST', '127.0.0.1'),
-            'port' => env('LARAVEL_ECHO_SERVER_REDIS_PORT', 6001),
-            'scheme' => 'http',
+            'host' => null, // Can be null if not using a custom host
+            'port' => null, // Can be null if not using a custom port
+            'scheme' => 'https', // Ensure this is set to https for your live site
         ],
-        ],
+    ],
 
         'ably' => [
             'driver' => 'ably',
