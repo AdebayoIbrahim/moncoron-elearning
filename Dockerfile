@@ -55,10 +55,10 @@ RUN chmod +x /usr/local/bin/deploy.sh
 
 # Switch back to non-root user
 USER user
+RUN /usr/local/bin/deploy.sh
 RUN composer clear-cache && \
     composer install --ignore-platform-reqs --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction --no-dev --no-autoloader
 
-RUN /usr/local/bin/deploy.sh
 # Generate optimized autoload files and run post-install scripts as root
 RUN composer dump-autoload && composer run-script post-autoload-dump
 # Install Node.js dependencies and build assets
