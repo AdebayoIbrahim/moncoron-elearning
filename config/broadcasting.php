@@ -37,8 +37,8 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 //TODOS:
-                // 'useTLS' => true,
-                // 'encrypted' => true,
+                'useTLS' => true,
+                'encrypted' => true,
                 // 'host' => env('LARAVEL_ECHO_SERVER_REDIS_HOST', '127.0.0.1'),
                 // 'port' => env('LARAVEL_ECHO_SERVER_REDIS_PORT', 6001),
                 // 'scheme' => 'http',
