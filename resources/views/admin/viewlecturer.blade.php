@@ -43,24 +43,18 @@
             {{-- is-uploaded-medias --}}
             <div class="media_targets">
                 <div class="uploaded_media">
-                    @for($i = 0; $i < 10; $i++) <div class="media_audio_container">
-                        <div class="play_name_container">
-                            <div class="play_icon_container"><i class="fa fa-play play_icon play_hover" aria-hidden="true"></i></div>
-                            <div style="font-size: 1.2rem" aria-details="audio-title">Seeroh {{$i + 1}}</div>
-                            <div id="hidden_source" data-attribute="images/horse.mp3">
-                            </div>
-                        </div>
-                        {{-- <audio src={{asset ('images/horse.mp3')}} controls></audio> --}}
+                    @for($i = 0; $i < 10; $i++) <div class="media_video_conainer">
 
-                        <div>
-                            <i class="fas fa-download play_icon small_icon" aria-hidden="true"></i>
-                        </div>
+
                 </div>
+
                 @endfor
             </div>
-        </section>
-
     </div>
+</div>
+</section>
+
+</div>
 </div>
 {{-- absolute-audio-player --}}
 <div class="absolute_player_audio">
