@@ -42,17 +42,26 @@
 
             {{-- is-uploaded-medias --}}
             <div class="media_targets">
-                <div class="uploaded_media">
-                    @for($i = 0; $i < 10; $i++) <div class="media_video_conainer">
+                <div class="uploaded_media is_video">
+                    @for($i = 0; $i < 6; $i++) <div class="media_video_conainer">
+                        <div>
+                            <video src={{asset ('/images/movie.mp4')}} controls crossorigin playsinline></video>
+                        </div>
+                        {{-- video-title-andlength --}}
+                        <div class="video_footer">
+                            <h6 class="video-name">
+                                Fiqh-Sunah
+                            </h6>
+                            {{-- length-video --}}
+                            <h6 id="video_length">
 
-
+                            </h6>
+                        </div>
                 </div>
-
                 @endfor
             </div>
     </div>
-</div>
-</section>
+    </section>
 
 </div>
 </div>

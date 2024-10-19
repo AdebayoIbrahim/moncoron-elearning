@@ -1,8 +1,28 @@
 import axios from "axios";
+import { getDuration } from "../../js/helpers";
 const currenturl = window.location.href;
-const player = new Plyr("audio", {});
+// Initialize the audio player
+const audioElement = document.querySelector("audio");
+if (audioElement) {
+    const player = new Plyr(audioElement, {});
+    window.player = player;
+} else {
+    console.warn("No audio element found.");
+}
+
+// Initialize video players
+const videoElements = document.querySelectorAll("video");
+if (videoElements.length > 0) {
+    const players = Array.from(videoElements).map((video) => new Plyr(video));
+    window.players = players;
+} else {
+    console.warn("No video elements found.");
+}
+
+// Optional: Get the origin URL
 const originUrl = window.location.origin;
-window.player = player;
+console.log("Origin URL:", originUrl);
+
 // dawah-view-js-start
 const Daheeselect = document.getElementById("dahee_select");
 
@@ -56,4 +76,19 @@ Audiolist?.forEach((audiobtn) => {
 closeAudiobtn.onclick = function () {
     AudioOverlay?.classList.remove("audio-box-show");
 };
+
+// VIDEO-Related
+const media_video = document.querySelectorAll(".media_video_conainer");
+document.addEventListener("DOMContentLoaded", () => {
+    media_video?.forEach((vid) => {
+        const vidEl = vid?.getElementsByTagName("video")[0];
+        getDuration(vidEl).then((duration) => {
+            console.log(duration);
+            // apeend-to-corresponding-text
+            const textduration = vid?.querySelector("#video_length");
+            textduration.innerText = duration;
+        });
+    });
+});
+
 // dawa-view-js-end
