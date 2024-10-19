@@ -38,6 +38,10 @@ ARG PUSHER_APP_KEY
 ARG PUSHER_APP_SECRET
 ARG PUSHER_APP_CLUSTER
 ARG BROADCAST_DRIVER
+ARG REDIS_HOST
+ARG REDIS_CLIENT
+ARG REDIS_PASSWORD
+ARG REDIS_PORT
 
 #SETTINGAPPENVIRONMENTS
 # hard-coded-envs
@@ -94,7 +98,10 @@ ENV PUSHER_APP_CLUSTER=$PUSHER_APP_CLUSTER
 ENV BROADCAST_DRIVER=$BROADCAST_DRIVER
 ENV MIX_PUSHER_APP_KEY=$PUSHER_APP_KEY
 ENV MIX_PUSHER_APP_CLUSTER=$PUSHER_APP_CLUSTER
-
+ENV REDIS_HOST=$REDIS_HOST
+ENV REDIS_CLIENT=$REDIS_CLIENT
+ENV REDIS_PASSWORD=$REDIS_PASSWORD
+ENV REDIS_PORT=$REDIS_PORT
 
 # Create a non-root user
 RUN useradd -m user
@@ -156,15 +163,15 @@ RUN composer clear-cache && \
 # Generate optimized autoload files and run post-install scripts
 RUN composer dump-autoload && composer run-script post-autoload-dump
 
-# Run deploy script as non-root user
-RUN /usr/local/bin/deploy.sh
 
 # Install Node.js dependencies and build assets
 RUN npm ci && npm run build
 
-
 # Copy Nginx configuration file
 COPY ./conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
+
+
+USER root
 
 # Run deploy script as non-root user
 RUN /usr/local/bin/deploy.sh
@@ -173,7 +180,6 @@ RUN /usr/local/bin/deploy.sh
 EXPOSE 80
 
 # Switch back to root to start services
-USER root
 
 # Set permissions for storage and cache
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
