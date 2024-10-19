@@ -55,9 +55,8 @@ return [
             'strict' => true,
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
              'options' => [
-        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,  // Disable SSL verification
-        PDO::MYSQL_ATTR_SSL => false,  // Disable SSL
-    ],
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false
+              ],
             // 'options' => extension_loaded('pdo_mysql') ? array_filter([
             //     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             // ]) : [],
