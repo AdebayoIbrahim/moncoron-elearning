@@ -42,7 +42,7 @@ ARG REDIS_HOST
 ARG REDIS_CLIENT
 ARG REDIS_PASSWORD
 ARG REDIS_PORT
-ARG DB_SSLMODE
+ARG DB_SSL_CERT
 #SETTINGAPPENVIRONMENTS
 # hard-coded-envs
 ENV APP_DEBUG=false
@@ -103,15 +103,25 @@ ENV REDIS_CLIENT=$REDIS_CLIENT
 ENV REDIS_PASSWORD=$REDIS_PASSWORD
 ENV REDIS_PORT=$REDIS_PORT
 ENV DB_SSLMODE=$DB_SSLMODE
+
 # Create a non-root user
 RUN useradd -m user
 
 # Set the working directory
 WORKDIR /app
 
+
 # Switch to root user for package installation
 USER root
 
+# Create the directory for SSL certificates if it doesn't exist
+RUN mkdir -p /etc/ssl/
+# Copy the SSL certificate
+COPY ./ssl/cert.pem /etc/ssl/
+# Install any required PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
+
+ENV DB_SSL_CERT=$DB_SSL_CERT
 # Install necessary PHP extensions and Nginx, including oniguruma for mbstring
 RUN apt-get update && \
     apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev curl && \
