@@ -42,7 +42,7 @@ ARG REDIS_HOST
 ARG REDIS_CLIENT
 ARG REDIS_PASSWORD
 ARG REDIS_PORT
-ARG DB_SSL_CERT
+ARG DB_SSL_CA
 #SETTINGAPPENVIRONMENTS
 # hard-coded-envs
 ENV APP_DEBUG=false
@@ -120,8 +120,9 @@ RUN mkdir -p /etc/ssl/
 COPY ./ssl/cert.pem /etc/ssl/
 # Install any required PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql
-
-ENV DB_SSL_CERT=$DB_SSL_CERT
+# Set permissions for the CA certificate
+RUN chmod 644 /etc/ssl/cert.pem
+ENV DB_SSL_CA=$DB_SSL_CA
 # Install necessary PHP extensions and Nginx, including oniguruma for mbstring
 RUN apt-get update && \
     apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev zip unzip git libonig-dev curl && \
