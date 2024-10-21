@@ -1,4 +1,2 @@
-[2024-10-21 10:03:54] local.INFO: array (
-  'lecturetitle' => 'olo',
-  'video' => 'media/Dawahlectures/WxGkrlfNbbXm1Qye8GswZYcSYTiJiiMDy73M8H4X.mp3',
-)  
+[2024-10-21 12:20:31] local.ALERT: Final [{"lecturetitle":"Multiple try","uploads":[{"video":"media/Dawahlectures/Xb2IvVv8vZVdZDmoQKoQhYJ3W8YM0oHO42qPIqO3.mp4"}]}] 
+[2024-10-21 12:20:47] local.ALERT: Final [{"lecturetitle":"Multiple try","uploads":[{"video":"media/Dawahlectures/Xb2IvVv8vZVdZDmoQKoQhYJ3W8YM0oHO42qPIqO3.mp4"}]},{"lecturetitle":"Second","uploads":[{"audio":"media/Dawahlectures/BPWNeIt4UhCFc1NhQ3FXuZs0dOsowqtZJFjxd8RF.mp3"}]}] 
