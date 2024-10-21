@@ -169,10 +169,9 @@ doneButton?.addEventListener("click", async () => {
                 },
             }
         );
-
-        console.log(request);
+        request && window.alert("Upload Successful!!");
     } catch (err) {
-        window.alert("error uploading.");
+        window.alert("Error uploading:" + err?.response?.data?.message);
     }
 });
 // prepare-file-upload
