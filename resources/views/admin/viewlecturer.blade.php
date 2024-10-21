@@ -54,7 +54,6 @@
                             </h6>
                             {{-- length-video --}}
                             <h6 id="video_length">
-
                             </h6>
                         </div>
                 </div>

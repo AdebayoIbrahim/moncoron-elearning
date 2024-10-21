@@ -237,6 +237,8 @@ Route::middleware(['auth'])->group(function () {
         // -------------DAWAH-ADMIN-SECTION--------
         Route::get('/admin/dawah', [Dawahcontroller::class, 'Indexview'])->name('admin.dawahview');
         Route::get('/admin/dawah/{dawahId}', [Dawahcontroller::class, 'Adminlecturerview'])->name('admin.lecturerview');
+        // admin-dahee-upload-lectures
+        Route::post('/admin/dawah/upload', [Dawahcontroller::class, 'Uploadlecture'])->name('dawah.post');
 
 
 
