@@ -30,7 +30,7 @@
                 </div> --}}
                 <div class="d-flex justify-content-between align-items-center" style="width: 100%">
                     <h5>Lecturers</h5>
-                    <button class="btn btn-primary md">
+                    <button class="btn btn-primary md" id="upload_button">
                         <i class="fa fa-upload" aria-hidden="true"></i>
                         Upload
                     </button>
@@ -66,5 +66,47 @@
 </div>
 </main>
 </div>
+</div>
+
+{{-- modal-overlay --}}
+<div class="modal modal-lg fade" id="upload_lecture" tabindex="-1" aria-labelledby="upload-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex justify-content-between" style="width: 100%">
+                    <h1 class="modal-title fs-5 text-bold text-primary" id="Upload Lecture">Upload Lecture</h1>
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-success" id="upload_done">Upload</button>
+                        <button type="button" class="btn btn-danger" id="upload_close">Close</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <div class="container_upload">
+                    <input class="form-control" id="media_uload_name" type="text" placeholder="Input lecture Title" aria-label="input lecture title" />
+                    <select class="form-select" aria-label="upload_media_type" id="upload_media_type">
+                        <option selected>Select Media Type</option>
+                        <option value="video">Video</option>
+                        <option value="audio">Audio</option>
+                    </select>
+
+                    {{-- upload-ui --}}
+                    <div class="upload_container">
+                        <label for="upload_btn" style="color: rgb(155, 82, 224);  " class="upload_content_btn">
+                            <div style="font-size: 1.1rem;" class="text_helper_upload"><i class="fas fa-file-upload " style="margin-right: 1rem;font-size: 1.3rem"></i>Upload Files</div>
+                        </label>
+                        <input type="file" id="upload_btn" class="upload_input">
+
+                    </div>
+                    {{-- upload-checker-areaa --}}
+                    <div class="uploaded_file">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

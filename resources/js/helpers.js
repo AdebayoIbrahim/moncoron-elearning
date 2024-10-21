@@ -66,3 +66,75 @@ readAllnotification?.addEventListener("click", async () => {
         window.alert("Error marking as read!");
     }
 });
+
+// get-vide-duration
+// export function getDuration(videoElement) {
+//     return new Promise((resolve) => {
+//         videoElement.addEventListener("loadedmetadata", () => {
+//             const videoDuration = videoElement.duration;
+
+//             // Convert to minutes and seconds
+//             const minutes = Math.floor(videoDuration / 60);
+//             const seconds = Math.floor(videoDuration % 60);
+
+//             // Resolve the Promise with the formatted time
+//             resolve(`${minutes}m ${seconds}s`);
+//         });
+//     });
+// }
+export function getDuration(videoElement) {
+    return new Promise((resolve) => {
+        // if video loaded -already
+        if (videoElement.readyState >= 1) {
+            const videoDuration = videoElement.duration;
+
+            // Convert to minutes and seconds
+            const minutes = Math.floor(videoDuration / 60);
+            const seconds = Math.floor(videoDuration % 60);
+            resolve(`${minutes}m ${seconds}s`);
+        } else {
+            videoElement.addEventListener("loadedmetadata", () => {
+                const videoDuration = videoElement.duration;
+
+                // Convert to minutes and seconds
+                const minutes = Math.floor(videoDuration / 60);
+                const seconds = Math.floor(videoDuration % 60);
+                resolve(`${minutes}m ${seconds}s`);
+            });
+        }
+    });
+}
+
+// clean_node-elements
+
+export function flushNodes(nodel) {
+    for (const nodes of nodel.childNodes) {
+        nodes.remove();
+    }
+}
+
+export function handleUpload(type, upload, wrappwr) {
+    let format;
+    if (upload) {
+        // create-mock-image or audio
+        // blob_url
+        const url = URL.createObjectURL(upload);
+        switch (type) {
+            case "video":
+                format = document.createElement(`video`);
+                format.setAttribute("src", url);
+                format.setAttribute("controls", true);
+                // format.setAttribute("autoplay", false);
+                format.classList.add("pop_upload_file");
+                break;
+            case "audio":
+                format = document.createElement(`audio`);
+                format.setAttribute("src", url);
+                format.setAttribute("controls", true);
+                break;
+            default:
+                throw new Error("unknown file type");
+        }
+    }
+    wrappwr.appendChild(format);
+}

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { flushNodes } from "../helpers";
 
 let currentDefault = `global`;
 const toggleSwitcher = document.querySelectorAll(".switcher_toggle");
@@ -79,11 +80,5 @@ function handleupdate(data) {
             scoreboardCt.style.display = "block";
             spinner.style.display = "none";
         });
-    }
-}
-
-function flushNodes(nodel) {
-    for (const nodes of nodel.childNodes) {
-        nodes.remove();
     }
 }
