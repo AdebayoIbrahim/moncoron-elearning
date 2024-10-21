@@ -49,12 +49,16 @@ div.flex_lecturer_gtoup {
 }
 /* END-ADMIN */
 
-.loader_spinner_lecturer {
+.loader_spinner_lecturer,
+.error_loader {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     /* background: red; */
+}
+.no_display {
+    display: none;
 }
 .loader_spinner_lecturer .spinner_size {
     color: #d36f35 !important;

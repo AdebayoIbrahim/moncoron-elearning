@@ -95,22 +95,23 @@ class Dawahcontroller extends Controller
     {
 
         // fecth-lecturer
-        Log::info("message", ['id' => $daheeId]);
-        $lecturer = User::where('id', $daheeId)->where('role', 'lecturer')->first();
+        // Todo:heckif-lecture
+        $lecturer = User::where('id', $daheeId)->first();
 
         if (!$lecturer) {
             return new JsonResponse(['message' => 'No leturer Found'], 400);
         };
 
         // if-found-fetch-there-details
-        $dawahs = Dawahlecturesmodel::where('dahee_id', $lecturer->id);
+        $dawahs = Dawahlecturesmodel::where('dahee_id', $lecturer->id)->first();
 
         // return_details_asjsonreponse
 
         return response()->json([
             'avatar_url' => null,
             'biography' => null,
-            'uploads' => json_decode($dawahs->uploads, true),
+            'dahee_name' => $lecturer->name,
+            'uploads' => json_decode($dawahs->uploads),
         ], 200);
     }
 }

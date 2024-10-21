@@ -4,7 +4,7 @@
 @vite(['resources/css/Main/main.css','resources/css/Main/main.js'])
 
 <div class="container-fluid">
-    <div class="row">
+    <div class="row container_view_lecturer">
         {{-- loader-animation --}}
         <div class="loader_spinner_lecturer" style="text-align: center">
             <div class="spinner-border text-secondary spinner_size" role="status">
@@ -13,6 +13,9 @@
             <div id="loader_lecturer" class="pt-4">
                 <h5>Fetching Details...</h5>
             </div>
+        </div>
+        <div class="error_loader no_display">
+            <h5 class="placeholer_res" style="text-align:center"></h5>
         </div>
 
 

@@ -8,7 +8,7 @@ const regex = /\/admin\/dawah\/(\d+)$/;
 const match = currenturl.match(regex);
 let slugid;
 match && (slugid = match[1]);
-
+const parentcontainer = document.querySelector(".container_view_lecturer");
 // Initialize the audio player
 const audioElement = document.querySelector("audio");
 if (audioElement) {
@@ -54,6 +54,8 @@ function setActive(e) {
     // refetchAPIqueryparamschanges
     fetchlecturer();
 }
+const spinnerFetch = document.querySelector(".loader_spinner_lecturer");
+const spinnerLoad = document.querySelector(".error_loader");
 
 // useeffect
 window.onload = function () {
@@ -61,13 +63,26 @@ window.onload = function () {
 };
 // fetching-function
 async function fetchlecturer() {
-    //    TODO
-    // flush-some-nodes  and activate-loader
+    flushNodes(parentcontainer);
+    spinnerFetch.style.display = "block";
     try {
         const request = await axios.get(`/admin/daheeh/${slugid}`);
+        // const { response } = request;
         console.log(request);
     } catch (err) {
-        console.log(err);
+        const {
+            response: {
+                data: { message },
+            },
+        } = err;
+        if (err?.response?.status != 500) {
+            spinnerLoad.querySelector("h5").innerText = message;
+        } else {
+            window.alert("server error occured");
+        }
+    } finally {
+        spinnerFetch.style.display = "none";
+        spinnerLoad.classList.remove("no_display");
     }
 }
 
