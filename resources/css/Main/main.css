@@ -355,4 +355,10 @@ div.media_video_conainer * video {
         transform: scale(1);
     }
 }
+.loader_button_done {
+    display: none;
+}
+.show_load {
+    display: inline-block;
+}
 /* DAWAH--STYLES-ENDS-HERE */

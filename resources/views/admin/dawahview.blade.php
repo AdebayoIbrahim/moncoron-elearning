@@ -76,7 +76,10 @@
                 <div class="d-flex justify-content-between" style="width: 100%">
                     <h1 class="modal-title fs-5 text-bold text-primary" id="Upload Lecture">Upload Lecture</h1>
                     <div class="d-flex gap-3">
-                        <button type="button" class="btn btn-success" id="upload_done">Upload</button>
+                        <button type="button" class="btn btn-success" id="upload_done">
+                            <span class="spinner-border spinner-border-sm loader_button_done" role="status" aria-hidden="true"></span>
+                            Upload
+                        </button>
                         <button type="button" class="btn btn-danger" id="upload_close">Close</button>
                     </div>
                 </div>

@@ -4,6 +4,11 @@ import { getDuration, flushNodes, handleUpload } from "../../js/helpers";
 const csrftoken = document.querySelector("input[name=_token]")?.value;
 import { convertBlobtofile } from "../../js/utils";
 const currenturl = window.location.href;
+const regex = /\/admin\/dawah\/(\d+)$/;
+const match = currenturl.match(regex);
+let slugid;
+match && (slugid = match[1]);
+
 // Initialize the audio player
 const audioElement = document.querySelector("audio");
 if (audioElement) {
@@ -30,11 +35,11 @@ const Daheeselect = document.getElementById("dahee_select");
 
 Daheeselect?.addEventListener("click", () => {
     currenturl.endsWith("/")
-        ? window.open(window.location.href.concat("1"), "_self")
-        : window.open(window.location.href.concat("/1"), "_self");
+        ? window.open(window.location.href.concat("2"), "_self")
+        : window.open(window.location.href.concat("/2"), "_self");
 });
 
-let currentDefault = `Audio`;
+let currentDefault = `audio`;
 const toggleSwitcher = document.querySelectorAll(".switcher_toggle");
 
 toggleSwitcher?.forEach((switcher) => {
@@ -47,11 +52,26 @@ function setActive(e) {
     e.currentTarget.classList.add("activePane");
     currentDefault = e.currentTarget.innerText.toLowerCase();
     // refetchAPIqueryparamschanges
-    // fetchScoreboards();
+    fetchlecturer();
 }
 
-// select-all-audio-divs-andmaped-them-to-trigger-audio-pla
+// useeffect
+window.onload = function () {
+    fetchlecturer();
+};
+// fetching-function
+async function fetchlecturer() {
+    //    TODO
+    // flush-some-nodes  and activate-loader
+    try {
+        const request = await axios.get(`/admin/daheeh/${slugid}`);
+        console.log(request);
+    } catch (err) {
+        console.log(err);
+    }
+}
 
+// select-all-audio-divs-andmaped-them-to-trigger-audio-play
 const Audiolist = document.querySelectorAll(".media_audio_container");
 const AudioOverlay = document.querySelector(".absolute_player_audio");
 const closeAudiobtn = document.querySelector(".close_audio");
@@ -97,12 +117,16 @@ document.addEventListener("DOMContentLoaded", () => {
 // ---------------------DAHEE/ADMIN-DAWAHVIEW-------------
 const uploaddawahBtn = document.querySelector("#upload_button");
 // load-modal-up
-const updModal = new bootstrap.Modal(document.querySelector("#upload_lecture"));
-updModal.show();
-const uploadClose = document
+const backdropmodal = document.querySelector("#upload_lecture");
+let updModal;
+if (backdropmodal) {
+    updModal = new bootstrap.Modal(backdropmodal);
+}
+
+document
     .getElementById("upload_close")
     ?.addEventListener("click", () => updModal.hide());
-uploaddawahBtn?.addEventListener("click", () => {});
+uploaddawahBtn?.addEventListener("click", () => updModal.show());
 
 // upload-container
 const selecbutton = document.querySelector("#upload_media_type");
@@ -142,8 +166,9 @@ uploadBtn?.addEventListener("change", (e) => {
     );
 });
 const doneButton = document.getElementById("upload_done");
-
+const loaderbtn = document.querySelector(".loader_button_done");
 doneButton?.addEventListener("click", async () => {
+    loaderbtn.classList.add("show_load");
     const lecturename = document.querySelector("#media_uload_name")?.value;
     const audioFile = uploaded_container
         ?.querySelector("audio")
@@ -169,10 +194,14 @@ doneButton?.addEventListener("click", async () => {
                 },
             }
         );
+        loaderbtn.classList.remove("show_load");
+        updModal.hide();
         request && window.alert("Upload Successful!!");
     } catch (err) {
+        loaderbtn.classList.remove("show_load");
+        updModal.hide();
         window.alert("Error uploading:" + err?.response?.data?.message);
     }
 });
-// prepare-file-upload
+
 // ---------------------DAHEE/ADMIN-DAWAHVIEENDS-------------

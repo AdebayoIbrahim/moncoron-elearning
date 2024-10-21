@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dawahlecturesmodel;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -87,5 +88,29 @@ class Dawahcontroller extends Controller
         ]);
 
         return response()->json(['message' => 'Upload Successfu'], 201);
+    }
+
+    // fetchleturer-bu-id
+    public function fetchlecturerbyId($daheeId)
+    {
+
+        // fecth-lecturer
+        Log::info("message", ['id' => $daheeId]);
+        $lecturer = User::where('id', $daheeId)->where('role', 'lecturer')->first();
+
+        if (!$lecturer) {
+            return new JsonResponse(['message' => 'No leturer Found'], 400);
+        };
+
+        // if-found-fetch-there-details
+        $dawahs = Dawahlecturesmodel::where('dahee_id', $lecturer->id);
+
+        // return_details_asjsonreponse
+
+        return response()->json([
+            'avatar_url' => null,
+            'biography' => null,
+            'uploads' => json_decode($dawahs->uploads, true),
+        ], 200);
     }
 }
