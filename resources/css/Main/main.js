@@ -4,6 +4,11 @@ import { getDuration, flushNodes, handleUpload } from "../../js/helpers";
 const csrftoken = document.querySelector("input[name=_token]")?.value;
 import { convertBlobtofile } from "../../js/utils";
 const currenturl = window.location.href;
+const regex = /\/admin\/dawah\/(\d+)$/;
+const match = currenturl.match(regex);
+let slugid;
+match && (slugid = match[1]);
+const parentcontainer = document.querySelector(".container_view_lecturer");
 // Initialize the audio player
 const audioElement = document.querySelector("audio");
 if (audioElement) {
@@ -30,11 +35,11 @@ const Daheeselect = document.getElementById("dahee_select");
 
 Daheeselect?.addEventListener("click", () => {
     currenturl.endsWith("/")
-        ? window.open(window.location.href.concat("1"), "_self")
-        : window.open(window.location.href.concat("/1"), "_self");
+        ? window.open(window.location.href.concat("2"), "_self")
+        : window.open(window.location.href.concat("/2"), "_self");
 });
 
-let currentDefault = `Audio`;
+let currentDefault = `audio`;
 const toggleSwitcher = document.querySelectorAll(".switcher_toggle");
 
 toggleSwitcher?.forEach((switcher) => {
@@ -47,11 +52,108 @@ function setActive(e) {
     e.currentTarget.classList.add("activePane");
     currentDefault = e.currentTarget.innerText.toLowerCase();
     // refetchAPIqueryparamschanges
-    // fetchScoreboards();
+    fetchlecturer();
+}
+const spinnerFetch = document.querySelector(".loader_spinner_lecturer");
+const spinnerLoad = document.querySelector(".error_loader");
+
+// useeffect
+window.onload = function () {
+    fetchlecturer();
+};
+// fetching-function
+async function fetchlecturer() {
+    flushNodes(parentcontainer);
+    spinnerFetch.style.display = "block";
+    try {
+        const request = await axios.get(`/admin/daheeh/${slugid}`);
+        const { data } = request;
+        console.log(data);
+        updateInterface(data);
+    } catch (err) {
+        console.log(err);
+        if (err) {
+            const message = err?.response?.data?.message;
+            if (err?.response?.status == 400) {
+                spinnerLoad.querySelector("h5").innerText = message;
+            } else {
+                window.alert("server error occured");
+            }
+        }
+    } finally {
+        spinnerFetch.style.display = "none";
+        spinnerLoad.classList.remove("no_display");
+    }
 }
 
-// select-all-audio-divs-andmaped-them-to-trigger-audio-pla
+function updateInterface(datas) {
+    // audio-lectures
+    const audioLectures = datas?.uploads.filter((lecture) =>
+        lecture.uploads.some((upload) => upload.audio)
+    );
 
+    // video-lectures
+    const videoLectures = datas?.uploads.filter((lecture) =>
+        lecture.uploads.some((upload) => upload.video)
+    );
+
+    let appendingData = `
+        <section class="lecturer_view_container">
+            <section class="lecturer_bio">
+                <img src = "${
+                    datas.avatar_url ||
+                    window.location.origin + "/images/Qari.jpeg"
+                }" alt="dahee_image" style="width: 200px;height: 200px; border-radius: 50%;object-fit:cover;">
+                <div id="name_lecturer">
+                    <h4>${datas?.name}</h4>
+                    <p style="max-width: 100ch">${
+                        datas.bio ||
+                        `An esteemed Islamic scholar with a deep and comprehensive understanding of traditional Islamic teachings. Well-versed in various branches of Islamic knowledge, including jurisprudence, theology, and classical Arabic, this scholar has dedicated years to studying the Qur'an, Hadith, and the works of prominent Islamic scholars throughout history. Their expertise encompasses both foundational religious principles and contemporary issues, enabling them to offer insightful guidance and interpretations that remain true to the core tenets of Islam`
+                    }
+                    </p>
+                    <button class="btn btn-primary md">
+                        <i class="fas fa-play"></i>
+                        Play Radio
+                    </button>
+                </div>
+            </section>
+            {{-- div-content-area --}}
+
+            <section class="upload_contents">
+                {{-- <div><input type="text" name="lexture_search" id="search_lecture" placeholder="Search...."></div> --}}
+                <div class="lecture_switcher">
+                    <div class="d-flex" style="gap: 3rem;">
+                        <div class="switcher_toggle activePane">Audio</div>
+                        <div class="switcher_toggle">Video</div>
+                    </div>
+                </div>
+            </section>
+
+            {{-- is-uploaded-medias --}}
+            <div class="media_targets">
+                <div class="uploaded_media is_video">
+                    @for($i = 0; $i < 6; $i++) <div class="media_video_conainer">
+                        <div>
+                            <video src={{asset ('/images/movie.mp4')}} controls crossorigin playsinline></video>
+                        </div>
+                        {{-- video-title-andlength --}}
+                        <div class="video_footer">
+                            <h6 class="video-name">
+                                Fiqh-Sunah
+                            </h6>
+                            {{-- length-video --}}
+                            <h6 id="video_length">
+                            </h6>
+                        </div>
+                </div>
+                @endfor
+            </div>
+    </div>
+    </section>
+    `;
+}
+
+// select-all-audio-divs-andmaped-them-to-trigger-audio-play
 const Audiolist = document.querySelectorAll(".media_audio_container");
 const AudioOverlay = document.querySelector(".absolute_player_audio");
 const closeAudiobtn = document.querySelector(".close_audio");
@@ -97,12 +199,16 @@ document.addEventListener("DOMContentLoaded", () => {
 // ---------------------DAHEE/ADMIN-DAWAHVIEW-------------
 const uploaddawahBtn = document.querySelector("#upload_button");
 // load-modal-up
-const updModal = new bootstrap.Modal(document.querySelector("#upload_lecture"));
-updModal.show();
-const uploadClose = document
+const backdropmodal = document.querySelector("#upload_lecture");
+let updModal;
+if (backdropmodal) {
+    updModal = new bootstrap.Modal(backdropmodal);
+}
+
+document
     .getElementById("upload_close")
     ?.addEventListener("click", () => updModal.hide());
-uploaddawahBtn?.addEventListener("click", () => {});
+uploaddawahBtn?.addEventListener("click", () => updModal.show());
 
 // upload-container
 const selecbutton = document.querySelector("#upload_media_type");
@@ -142,8 +248,9 @@ uploadBtn?.addEventListener("change", (e) => {
     );
 });
 const doneButton = document.getElementById("upload_done");
-
+const loaderbtn = document.querySelector(".loader_button_done");
 doneButton?.addEventListener("click", async () => {
+    loaderbtn.classList.add("show_load");
     const lecturename = document.querySelector("#media_uload_name")?.value;
     const audioFile = uploaded_container
         ?.querySelector("audio")
@@ -169,10 +276,14 @@ doneButton?.addEventListener("click", async () => {
                 },
             }
         );
+        loaderbtn.classList.remove("show_load");
+        updModal.hide();
         request && window.alert("Upload Successful!!");
     } catch (err) {
+        loaderbtn.classList.remove("show_load");
+        updModal.hide();
         window.alert("Error uploading:" + err?.response?.data?.message);
     }
 });
-// prepare-file-upload
+
 // ---------------------DAHEE/ADMIN-DAWAHVIEENDS-------------
