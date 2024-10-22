@@ -140,3 +140,24 @@ export function handleUpload(type, upload, wrappwr) {
     }
     wrappwr.appendChild(format);
 }
+
+export function initializeplayers() {
+    const audioElement = document.querySelector("audio");
+    if (audioElement) {
+        const player = new Plyr(audioElement, {});
+        window.player = player;
+    } else {
+        console.warn("No audio element found.");
+    }
+
+    // Initialize video players
+    const videoElements = document.querySelectorAll("video");
+    if (videoElements.length > 0) {
+        const players = Array.from(videoElements).map(
+            (video) => new Plyr(video)
+        );
+        window.players = players;
+    } else {
+        console.warn("No video elements found.");
+    }
+}

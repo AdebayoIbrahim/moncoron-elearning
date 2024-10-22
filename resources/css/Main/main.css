@@ -74,7 +74,7 @@ div.flex_lecturer_gtoup {
     padding-bottom: 1rem;
 }
 .lecturer_bio {
-    /* height: 30vh; */
+    /* height: 30   text-align: center;vh; */
     display: flex;
     justify-content: center;
     gap: 3rem;
@@ -366,3 +366,10 @@ div.media_video_conainer * video {
     display: inline-block;
 }
 /* DAWAH--STYLES-ENDS-HERE */
+
+/* Media-queries */
+@media only screen and (max-width: 1100px) {
+    .lecturer_bio > *:not(img) {
+        text-align: center;
+    }
+}
