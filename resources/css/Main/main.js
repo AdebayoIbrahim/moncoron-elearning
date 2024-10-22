@@ -1,6 +1,11 @@
 import axios from "axios";
 import * as bootstrap from "bootstrap";
-import { getDuration, flushNodes, handleUpload } from "../../js/helpers";
+import {
+    getDuration,
+    flushNodes,
+    handleUpload,
+    initializeplayers,
+} from "../../js/helpers";
 const csrftoken = document.querySelector("input[name=_token]")?.value;
 import { convertBlobtofile } from "../../js/utils";
 const currenturl = window.location.href;
@@ -10,22 +15,6 @@ let slugid;
 match && (slugid = match[1]);
 const parentcontainer = document.querySelector(".container_view_lecturer");
 // Initialize the audio player
-const audioElement = document.querySelector("audio");
-if (audioElement) {
-    const player = new Plyr(audioElement, {});
-    window.player = player;
-} else {
-    console.warn("No audio element found.");
-}
-
-// Initialize video players
-const videoElements = document.querySelectorAll("video");
-if (videoElements.length > 0) {
-    const players = Array.from(videoElements).map((video) => new Plyr(video));
-    window.players = players;
-} else {
-    console.warn("No video elements found.");
-}
 
 // Optional: Get the origin URL
 const originUrl = window.location.origin;
@@ -40,20 +29,8 @@ Daheeselect?.addEventListener("click", () => {
 });
 
 let currentDefault = `audio`;
-const toggleSwitcher = document.querySelectorAll(".switcher_toggle");
-
-toggleSwitcher?.forEach((switcher) => {
-    switcher.addEventListener("click", setActive);
-});
-
-function setActive(e) {
-    toggleSwitcher?.forEach((nav) => nav.classList.remove("activePane"));
-
-    e.currentTarget.classList.add("activePane");
-    currentDefault = e.currentTarget.innerText.toLowerCase();
-    // refetchAPIqueryparamschanges
-    fetchlecturer();
-}
+// intialize-players()
+initializeplayers();
 const spinnerFetch = document.querySelector(".loader_spinner_lecturer");
 const spinnerLoad = document.querySelector(".error_loader");
 
@@ -64,7 +41,7 @@ window.onload = function () {
 // fetching-function
 async function fetchlecturer() {
     flushNodes(parentcontainer);
-    spinnerFetch.style.display = "block";
+    spinnerFetch && (spinnerFetch.style.display = "block");
     try {
         const request = await axios.get(`/admin/daheeh/${slugid}`);
         const { data } = request;
@@ -84,18 +61,18 @@ async function fetchlecturer() {
         spinnerLoad.classList.remove("no_display");
     }
 }
-
+let audioLectures = [];
+let videoLectures = [];
 function updateInterface(datas) {
     // audio-lectures
-    const audioLectures = datas?.uploads.filter((lecture) =>
+    audioLectures = datas?.uploads.filter((lecture) =>
         lecture.uploads.some((upload) => upload.audio)
     );
 
     // video-lectures
-    const videoLectures = datas?.uploads.filter((lecture) =>
+    videoLectures = datas?.uploads.filter((lecture) =>
         lecture.uploads.some((upload) => upload.video)
     );
-    console.log(audioLectures);
 
     const parensection = document.createElement("section");
     parensection.className = "lecturer_view_container";
@@ -182,6 +159,7 @@ function updateInterface(datas) {
 
 function triggerDivs() {
     // select-all-audio-divs-andmaped-them-to-trigger-audio-play
+    const parentprovider = document.querySelector(".media_targets");
     const Audiolist = document.querySelectorAll(".media_audio_container");
     const AudioOverlay = document.querySelector(".absolute_player_audio");
     const closeAudiobtn = document.querySelector(".close_audio");
@@ -221,11 +199,94 @@ function triggerDivs() {
             });
         });
     });
+
+    triggerbutton(parentprovider);
 }
+
 // runtrigger-divs-autoatically
 triggerDivs();
 // dawa-view-js-end
+function triggerbutton(parent) {
+    const toggleSwitcher = document.querySelectorAll(".switcher_toggle");
+    toggleSwitcher?.forEach((switcher) => {
+        switcher.addEventListener("click", setActive);
+    });
 
+    function setActive(e) {
+        toggleSwitcher?.forEach((nav) => {
+            nav.classList.remove("activePane");
+            flushNodes(parent);
+        });
+
+        e.currentTarget.classList.add("activePane");
+        currentDefault = e.currentTarget.innerText.toLowerCase();
+        // auto-update-baed-on-vide-or-audio
+        rendercurrent();
+        initializeplayers();
+    }
+
+    function rendercurrent() {
+        let contendata = document.createElement("section");
+        if (currentDefault === "audio") {
+            contendata.innerHTML = `
+        ${audioLectures
+            ?.map((audios, index) => {
+                return audios?.length < 1
+                    ? `<h5>No Audio Yet!</h5>`
+                    : `
+        <div class="uploaded_media">
+            <div class="media_audio_container">
+                <div class="play_name_container">
+                    <div class="play_icon_container">
+                        <i class="fa fa-play play_icon play_hover" aria-hidden="true"></i>
+                    </div>
+                    <div style="font-size: 1.2rem" aria-details="audio-title">
+                        ${audios?.lecturetitle || `Lecture ${index}`}
+                    </div>
+                    <div id="hidden_source" data-attribute="${
+                        audios?.uploads[0]?.audio
+                    }"></div>
+                </div>
+                <div>
+                    <i class="fas fa-download play_icon small_icon" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>`;
+            })
+            .join("")}
+      `;
+        } else {
+            contendata.innerHTML = `
+        ${videoLectures
+            ?.map((videos, index) => {
+                return videos?.length < 1
+                    ? `<h5>No Videos Yet!</h5>`
+                    : `
+        <div class="uploaded_media is_video">
+            <div class="media_video_conainer">
+                <div>
+                    <video src="${
+                        videos?.uploads[0]?.video
+                    }" controls crossorigin playsinline></video>
+                </div>
+              
+                <div class="video_footer">
+                    <h6 class="video-name">
+                        ${videos?.lecturetitle || `Lecture ${index}`}
+                    </h6>
+                          
+                    <h6 id="video_length">
+                    </h6>
+                </div>
+            </div>
+        </div>`;
+            })
+            .join("")}
+      `;
+        }
+        parent.appendChild(contendata);
+    }
+}
 // ---------------------DAHEE/ADMIN-DAWAHVIEW-------------
 const uploaddawahBtn = document.querySelector("#upload_button");
 // load-modal-up
