@@ -67,23 +67,90 @@ async function fetchlecturer() {
     spinnerFetch.style.display = "block";
     try {
         const request = await axios.get(`/admin/daheeh/${slugid}`);
-        // const { response } = request;
-        console.log(request);
+        const { data } = request;
+        console.log(data);
+        updateInterface(data);
     } catch (err) {
-        const {
-            response: {
-                data: { message },
-            },
-        } = err;
-        if (err?.response?.status != 500) {
-            spinnerLoad.querySelector("h5").innerText = message;
-        } else {
-            window.alert("server error occured");
+        console.log(err);
+        if (err) {
+            const message = err?.response?.data?.message;
+            if (err?.response?.status == 400) {
+                spinnerLoad.querySelector("h5").innerText = message;
+            } else {
+                window.alert("server error occured");
+            }
         }
     } finally {
         spinnerFetch.style.display = "none";
         spinnerLoad.classList.remove("no_display");
     }
+}
+
+function updateInterface(datas) {
+    // audio-lectures
+    const audioLectures = datas?.uploads.filter((lecture) =>
+        lecture.uploads.some((upload) => upload.audio)
+    );
+
+    // video-lectures
+    const videoLectures = datas?.uploads.filter((lecture) =>
+        lecture.uploads.some((upload) => upload.video)
+    );
+
+    let appendingData = `
+        <section class="lecturer_view_container">
+            <section class="lecturer_bio">
+                <img src = "${
+                    datas.avatar_url ||
+                    window.location.origin + "/images/Qari.jpeg"
+                }" alt="dahee_image" style="width: 200px;height: 200px; border-radius: 50%;object-fit:cover;">
+                <div id="name_lecturer">
+                    <h4>${datas?.name}</h4>
+                    <p style="max-width: 100ch">${
+                        datas.bio ||
+                        `An esteemed Islamic scholar with a deep and comprehensive understanding of traditional Islamic teachings. Well-versed in various branches of Islamic knowledge, including jurisprudence, theology, and classical Arabic, this scholar has dedicated years to studying the Qur'an, Hadith, and the works of prominent Islamic scholars throughout history. Their expertise encompasses both foundational religious principles and contemporary issues, enabling them to offer insightful guidance and interpretations that remain true to the core tenets of Islam`
+                    }
+                    </p>
+                    <button class="btn btn-primary md">
+                        <i class="fas fa-play"></i>
+                        Play Radio
+                    </button>
+                </div>
+            </section>
+            {{-- div-content-area --}}
+
+            <section class="upload_contents">
+                {{-- <div><input type="text" name="lexture_search" id="search_lecture" placeholder="Search...."></div> --}}
+                <div class="lecture_switcher">
+                    <div class="d-flex" style="gap: 3rem;">
+                        <div class="switcher_toggle activePane">Audio</div>
+                        <div class="switcher_toggle">Video</div>
+                    </div>
+                </div>
+            </section>
+
+            {{-- is-uploaded-medias --}}
+            <div class="media_targets">
+                <div class="uploaded_media is_video">
+                    @for($i = 0; $i < 6; $i++) <div class="media_video_conainer">
+                        <div>
+                            <video src={{asset ('/images/movie.mp4')}} controls crossorigin playsinline></video>
+                        </div>
+                        {{-- video-title-andlength --}}
+                        <div class="video_footer">
+                            <h6 class="video-name">
+                                Fiqh-Sunah
+                            </h6>
+                            {{-- length-video --}}
+                            <h6 id="video_length">
+                            </h6>
+                        </div>
+                </div>
+                @endfor
+            </div>
+    </div>
+    </section>
+    `;
 }
 
 // select-all-audio-divs-andmaped-them-to-trigger-audio-play

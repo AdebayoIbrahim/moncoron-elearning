@@ -108,8 +108,10 @@ export function getDuration(videoElement) {
 // clean_node-elements
 
 export function flushNodes(nodel) {
-    for (const nodes of nodel.childNodes) {
-        nodes.remove();
+    if (nodel) {
+        for (const nodes of nodel?.childNodes) {
+            nodes.remove();
+        }
     }
 }
 
