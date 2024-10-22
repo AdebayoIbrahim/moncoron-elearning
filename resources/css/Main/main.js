@@ -137,29 +137,31 @@ function updateInterface(datas) {
   ${
       currentDefault === "audio"
           ? `
+        ${audioLectures
+            ?.map((audios, index) => {
+                return audios?.length < 1
+                    ? `<h5>No Audio Yet!</h5>`
+                    : `
         <div class="uploaded_media">
-            ${audioLectures
-                ?.map(
-                    (audios, index) => `
-                <div class="media_audio_container">
-                    <div class="play_name_container">
-                        <div class="play_icon_container">
-                            <i class="fa fa-play play_icon play_hover" aria-hidden="true"></i>
-                        </div>
-                        <div style="font-size: 1.2rem" aria-details="audio-title">
-                            ${audios?.lecturetitle || `Lecture ${index}`}
-                        </div>
-                        <div id="hidden_source" data-attribute="${
-                            audios?.uploads[0]?.audio
-                        }"></div>
+            <div class="media_audio_container">
+                <div class="play_name_container">
+                    <div class="play_icon_container">
+                        <i class="fa fa-play play_icon play_hover" aria-hidden="true"></i>
                     </div>
-                    <div>
-                        <i class="fas fa-download play_icon small_icon" aria-hidden="true"></i>
+                    <div style="font-size: 1.2rem" aria-details="audio-title">
+                        ${audios?.lecturetitle || `Lecture ${index}`}
                     </div>
-                </div>`
-                )
-                .join("")}
-        </div>
+                    <div id="hidden_source" data-attribute="${
+                        audios?.uploads[0]?.audio
+                    }"></div>
+                </div>
+                <div>
+                    <i class="fas fa-download play_icon small_icon" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>`;
+            })
+            .join("")}
       `
           : ""
   }
@@ -197,7 +199,7 @@ function triggerDivs() {
 
             // TODO: LOCAL TEST -ONLY
             // then-repass-the-current-audio-to-it
-            audiotg?.setAttribute("src", `${originUrl}/${audiodatacurr}`);
+            audiotg?.setAttribute("src", `${audiodatacurr}`);
             // then-trigger-display
             AudioOverlay.classList.add("audio-box-show");
             audiotg.play();
